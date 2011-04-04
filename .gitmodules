@@ -1,0 +1,12 @@
+[submodule "build/qwery"]
+	path = build/qwery
+	url = git://github.com/ded/qwery.git
+[submodule "build/klass"]
+	path = build/klass
+	url = git://github.com/ded/klass.git
+[submodule "build/reqwest"]
+	path = build/reqwest
+	url = git://github.com/ded/Reqwest.git
+[submodule "build/script"]
+	path = build/script
+	url = git://github.com/ded/script.js.git
