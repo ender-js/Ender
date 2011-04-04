@@ -1,7 +1,9 @@
 !function (context) {
 
+  var Q = qwery.noConflict();
+
   function _$(s, r) {
-    this.elements = qwery(s, r);
+    this.elements = Q(s, r);
   }
 
   function reg(c) {
@@ -60,7 +62,15 @@
     return String.prototype.trim ? String.prototype.trim.call(s) : s.replace(/^\s+|\s+$/g, '');
   };
 
-  $.ajax = reqwest;
+  $.ajax = reqwest.noConflict();
+  $.klass = klass.noConflict();
+  $.script = $script.noConflict();
+  $.domReady = $.script.domReady;
+  var old = $;
+  $.noConflict = function () {
+    context.$ = $;
+    return this;
+  };
   context.$ = $;
 
 }(this);
