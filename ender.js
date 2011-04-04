@@ -3,9 +3,11 @@
   * License MIT
   * copyright Dustin Diaz 2011
   */
-!function(context, f) {
-  var fnTest = /xyz/.test(function (){xyz;}) ? /\bsupr\b/ : /.*/,
-      noop = function(){},
+!function (context, f) {
+  var fnTest = /xyz/.test(function () {
+    xyz;
+    }) ? /\bsupr\b/ : /.*/,
+      noop = function (){},
       proto = 'prototype',
       isFn = function (o) {
         return typeof o === f;
@@ -76,6 +78,11 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = klass;
   } else {
+    var old = klass;
+    klass.noConflict = function () {
+      context.klass = klass;
+      return this;
+    };
     context.klass = klass;
   }
 
@@ -486,8 +493,14 @@
     re.test(doc[readyState]) ? timeout(function() { domReady(fn); }, 50) : fn();
   }
 
+  $script.domReady = domReady;
+
+  var old = $script;
+  $script.noConflict = function () {
+    win.$script = $script;
+    return this;
+  };
   win.$script = $script;
-  win.$script.domReady = domReady;
 
 }(this, document, setTimeout);
 
