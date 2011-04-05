@@ -121,3 +121,6 @@ For the individual submodules, see their respective licenses.
 Current times
 -------------
 It's obviously early days for Ender.js, and there are still bugs in each of the respective submodules, but they are each actively being worked on and you can be sure that Ender will pull in these changes as often as possible.
+
+<h3>@todo</h3>
+an event utility is currently in the works. expect multi-event binding, custom (observer) events, delegation, and proper x-browser event workarounds.
