@@ -4,14 +4,18 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>ender.js examples</title>
     <style type="text/css">
+      body {
+        font-family: 'helvetica neue', helvetica, arial;
+        font-weight: 300;
+      }
       #doc {
         width: 750px;
         margin: 0 auto;
-        font: 300 'helvetica neue', helvetica, arial;
         position: relative;
       }
       h1 {
-        font-weight: 300;
+        font-weight: 100;
+        font-size: 50px;
       }
     </style>
     <script src="../ender.js"></script>
@@ -26,9 +30,7 @@
     <script type="text/javascript">
       $.fn({
         color: function (c) {
-          this.css({
-            color: c
-          });
+          this.css('color', c);
           return this;
         }
       });
