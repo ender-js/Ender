@@ -147,9 +147,9 @@
       }
     });
 
-  var old = $;
+  var old = context.$;
   $.noConflict = function () {
-    context.$ = $;
+    context.$ = old;
     return this;
   };
   context.$ = $;

@@ -405,12 +405,12 @@
     return A;
   };
 
-  var old = animate;
-  animate.noConflict = function () {
-    context.animate = animate;
+  var old = context.animate;
+  anim.noConflict = function () {
+    context.animate = old;
     return this;
   };
-  context.animate = animate;
+  context.animate = anim;
 
 }(this);
 !function (context) {
@@ -1529,9 +1529,9 @@
       }
     });
 
-  var old = $;
+  var old = context.$;
   $.noConflict = function () {
-    context.$ = $;
+    context.$ = old;
     return this;
   };
   context.$ = $;
