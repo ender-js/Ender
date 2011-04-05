@@ -1,13 +1,13 @@
 !function (context) {
 
   var Q = qwery.noConflict(),
-      K = klass.noConflict(),
       U = _.noConflict(),
+      K = klass.noConflict(),
       A = animate.noConflict();
 
   function aug(o, o2) {
     for (var k in o2) {
-      o2.hasOwnProperty(k) && (o[k] = o2[k]);
+      Object.prototype.hasOwnProperty.call(o2, k) && (o[k] = o2[k]);
     }
   }
 
