@@ -14,8 +14,9 @@ Examples
 --------
 <h3>DOM queries</h3>
     $('#boosh p').html('hello').css({
-      color: 'red'
-    });
+      color: 'red',
+      'text-decoration': 'underline'
+    }).addClass('blamo');
 
 <h3>Extending</h3>
     $.fn({
