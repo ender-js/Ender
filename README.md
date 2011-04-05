@@ -95,10 +95,7 @@ Ender.js pulls together the beauty of well-designed modular software and proves 
 
 Building
 --------
-For those interested in contributing on the core wrapper itself. Here's the process. Assuming you have git already
-
-  * install [NodeJS](http://nodejs.org)
-  * then run the following commands in your workspace
+For those interested in contributing on the core wrapper itself. Here's the process. Assuming you have git already — *install [NodeJS](http://nodejs.org)* — then run the following commands in your workspace:
 
     git clone https://github.com/ded/Ender.js.git
     cd !$
