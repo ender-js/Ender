@@ -18,7 +18,6 @@
     return extend.call(typeof o == f ? o : noop, o, 1);
   }
 
-
   function wrap(k, fn, supr) {
     return function () {
       var tmp = this.supr;
@@ -41,6 +40,7 @@
   }
 
   function extend(o, fromSub) {
+    noop[proto] = this[proto];
     var supr = this,
         prototype = new noop(),
         isFunction = typeof o == f,
@@ -49,6 +49,9 @@
         fn = function () {
           fromSub || isFn(o) && supr.apply(this, arguments);
           _constructor.apply(this, arguments);
+          if (this.initialize) {
+            this.initialize.apply(this, arguments);
+          }
         };
 
     fn.methods = function (o) {
@@ -58,6 +61,7 @@
     };
 
     fn.methods.call(fn, _methods).prototype.constructor = fn;
+
     fn.extend = arguments.callee;
     fn[proto].implement = fn.statics = function (o, optFn) {
       o = typeof o == 'string' ? (function () {
@@ -68,10 +72,6 @@
       process(this, o, supr);
       return this;
     };
-
-    if (isFunction) {
-      process(fn[proto], this.prototype, supr);
-    }
 
     return fn;
   }
@@ -88,7 +88,6 @@
   }
 
 }(this, 'function');
-
 !function (context, doc) {
 
   var c, i, j, k, l, m, o, p, r, v,
@@ -98,11 +97,11 @@
       idOnly = /^#([\w\-]+$)/,
       classOnly = /^\.([\w\-]+)$/,
       tagOnly = /^([\w\-]+)$/,
-      tagAndOrClass = /^([\w]+)?\.([\w\-])+$/,
+      tagAndOrClass = /^(\w+)?\.([\w\-]+)$/,
       html = doc.documentElement,
       tokenizr = /\s(?![\s\w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^'"]*\])/,
       simple = /^([a-z0-9]+)?(?:([\.\#]+[\w\-\.#]+)?)/,
-      attr = /\[([\w\-]+)(?:([\^\$\*\~]?\=)['"]?([ \w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^]+)["']?)?\]/,
+      attr = /\[([\w\-]+)(?:([\|\^\$\*\~]?\=)['"]?([ \w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^]+)["']?)?\]/,
       chunker = new RegExp(simple.source + '(' + attr.source + ')?');
 
   function array(ar) {
@@ -113,7 +112,6 @@
     return r;
   }
 
-
   var cache = function () {
     this.c = {};
   };
@@ -122,8 +120,7 @@
       return this.c[k] || undefined;
     },
     s: function (k, v) {
-      this.c[k] = v;
-      return v;
+      return this.c[k] = v;
     }
   };
 
@@ -167,8 +164,8 @@
   }
 
   function loopAll(tokens) {
-    var r = [], token = tokens.pop(), intr = q(token), tag = intr[1] || '*', i, l, els;
-    var root = tokens.length && (m = tokens[0].match(idOnly)) ? doc.getElementById(m[1]) : doc;
+    var r = [], token = tokens.pop(), intr = q(token), tag = intr[1] || '*', i, l, els,
+        root = tokens.length && (m = tokens[0].match(idOnly)) ? doc.getElementById(m[1]) : doc;
     if (!root) {
       return r;
     }
@@ -183,7 +180,7 @@
   }
 
   function clean(s) {
-    return cleanCache.g(s) || cleanCache.s(s, s.replace(/([\.\*\+\?\^\$\{\}\(\)\|\[\]\/\\])/g, '\\$1'));
+    return cleanCache.g(s) || cleanCache.s(s, s.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1'));
   }
 
   function checkAttr(qualify, actual, val) {
@@ -193,11 +190,13 @@
     case '^=':
       return actual.match(attrCache.g('^=' + val) || attrCache.s('^=' + val, new RegExp('^' + clean(val))));
     case '$=':
-      return actual.match(attrCache.g('$=' + val) || attrCache.s('$=' + val, new RegExp('$' + clean(val))));
+      return actual.match(attrCache.g('$=' + val) || attrCache.s('$=' + val, new RegExp(clean(val) + '$')));
     case '*=':
       return actual.match(attrCache.g(val) || attrCache.s(val, new RegExp(clean(val))));
     case '~=':
       return actual.match(attrCache.g('~=' + val) || attrCache.s('~=' + val, new RegExp('(?:^|\\s+)' + clean(val) + '(?:\\s+|$)')));
+    case '|=':
+      return actual.match(attrCache.g('|=' + val) || attrCache.s('|=' + val, new RegExp('^' + clean(val) + '(-|$)')));
     }
     return false;
   }
@@ -239,7 +238,7 @@
       return container !== element && container.contains(element);
     } :
     function (element, container) {
-      while ((element = element.parentNode)) {
+      while (element = element.parentNode) {
         if (element === container) {
           return 1;
         }
@@ -307,8 +306,8 @@
         }
         return result;
       }
-      for (items = selector.split(','), i = items.length; item = items[--i];) {
-        collections[i] = _qwery(item);
+      for (items = selector.split(','), i = items.length; i--;) {
+        collections[i] = _qwery(items[i]);
       }
       for (i = collections.length; collection = collections[--i];) {
         var ret = collection;
@@ -576,13 +575,12 @@
 
   var old = $script;
   $script.noConflict = function () {
-    win.$script = $script;
+    win.$script = old;
     return this;
   };
   win.$script = $script;
 
 }(this, document, setTimeout);
-
 //     Underscore.js 1.1.5
 //     (c) 2011 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore is freely distributable under the MIT license.
