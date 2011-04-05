@@ -13,3 +13,9 @@
 [submodule "build/smoosh"]
 	path = build/smoosh
 	url = git://github.com/fat/smoosh.git
+[submodule "build/moshun"]
+	path = build/moshun
+	url = https://ded@github.com/ded/moshun.git
+[submodule "build/underscore"]
+	path = build/underscore
+	url = git://github.com/documentcloud/underscore.git

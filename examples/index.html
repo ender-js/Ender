@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>ender.js examples</title>
+    <style type="text/css">
+      #doc {
+        width: 750px;
+        margin: 0 auto;
+        font: 300 'helvetica neue', helvetica, arial;
+        position: relative;
+      }
+      h1 {
+        font-weight: 300;
+      }
+    </style>
+    <script src="../ender.js"></script>
+  </head>
+  <body>
+    <div id="doc">
+      <h1>Ender.js examples</h1>
+      <p></p>
+      <p></p>
+      <div id="woo"></div>
+    </div>
+    <script type="text/javascript">
+      $.fn({
+        color: function (c) {
+          this.css({
+            color: c
+          });
+          return this;
+        }
+      });
+
+      $('#woo').css({
+          position: 'relative',
+          left: 0,
+          top: 0,
+          width: '50px',
+          height: '50px',
+          backgroundColor: 'red'
+        })
+        .animate('left', {
+          from: 0,
+          to: 500,
+          time: 1000
+        })
+        .animate('opacity', {
+          from: 1,
+          to: 0,
+          time: 1000
+        })
+
+      var F = $.klass(function () {
+        this.o = '';
+      })
+        .methods({
+          get: function () {
+            return this.o
+          },
+          set: function (v) {
+            this.o = v;
+            return this;
+          }
+        });
+
+      $('#doc p').color('green').html((new F()).set('hello world').get());
+
+      $.script('./fixture.js', function () {
+        console.log('loaded fixture');
+      });
+
+    </script>
+  </body>
+</html>
