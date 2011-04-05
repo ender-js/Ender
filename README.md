@@ -96,6 +96,7 @@ Ender.js pulls together the beauty of well-designed modular software and proves 
 Building
 --------
 For those interested in contributing on the core wrapper itself. Here's the process. Assuming you have git already
+
   * install [NodeJS](http://nodejs.org)
   * then run the following commands in your workspace
 
@@ -106,5 +107,6 @@ For those interested in contributing on the core wrapper itself. Here's the proc
 
 License
 -------
-See each respective software license
 Ender.js (the wrapper) is licensed under MIT - copyright 2011 Dustin Diaz
+
+For the individual submodules, see their respective individual licenses.
