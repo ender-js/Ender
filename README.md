@@ -103,8 +103,17 @@ For those interested in contributing on the core wrapper itself. Here's the proc
     git submodule update --init
     make
 
+Take special note that building with Ender will more than likely require frequently updating your submodules. Thus if you're unsure how this works, it's best to [read up on how submodules work](http://www.kernel.org/pub/software/scm/git/docs/git-submodule.html). However the simple answer is to get used to doing this:
+
+    git pull
+    git submodule update
+
 License
 -------
 Ender.js (the wrapper) is licensed under MIT - copyright 2011 Dustin Diaz
 
 For the individual submodules, see their respective licenses.
+
+Current times
+-------------
+It's obviously early days for Ender.js, and there are still bugs in each of the respective submodules, but they are each actively being worked on and you can be sure that Ender will pull in these changes as often as possible.
