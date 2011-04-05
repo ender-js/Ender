@@ -1,11 +1,11 @@
 Ender.js
 --------
-a small yet powerful JavaScript library composed of application agnostic opensource submodules wrapped in a slick intuitive interface. At only 6k Ender.js can help you build anything from small prototypes to providing a solid base for large-scale rich applications.
+a small yet powerful JavaScript library composed of application agnostic opensource submodules wrapped in a slick intuitive interface. At only 7k Ender.js can help you build anything from small prototypes to providing a solid base for large-scale rich applications.
 Inside Ender you get
 
   * a powerful [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
-  * a dynamic [script and dependency loader](https://github.com/ded/script.js)
+  * a dynamic asynchronous [script and dependency loader](https://github.com/ded/script.js)
   * a solid [http request connection manager](https://github.com/ded/Reqwest)
   * an [element animator](https://github.com/ded/moshun)
   * and a core set of utilities provided by [underscore](http://documentcloud.github.com/underscore)
@@ -106,4 +106,4 @@ License
 -------
 Ender.js (the wrapper) is licensed under MIT - copyright 2011 Dustin Diaz
 
-For the individual submodules, see their respective individual licenses.
+For the individual submodules, see their respective licenses.

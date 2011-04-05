@@ -2,7 +2,8 @@
 
   var Q = qwery.noConflict(),
       K = klass.noConflict(),
-      U = _.noConflict();
+      U = _.noConflict(),
+      A = animate.noConflict();
 
   function aug(o, o2) {
     for (var k in o2) {
@@ -47,7 +48,7 @@
 
       animate: function (prop, opts) {
         this.each(function (el) {
-          animate(el, prop, opts);
+          A(el, prop, opts);
         });
         return this;
       },
@@ -112,12 +113,17 @@
         return this;
       },
 
-      css: function (o) {
-        this.each(function (el) {
-          for (var k in o) {
-            o.hasOwnProperty(k) && (el.style[k] = o[k]);
-          }
-        });
+      css: function (o, v) {
+        var fn = U.isString(o) ?
+          function (el) {
+            el.style[o] = v;
+          } :
+          function (el) {
+            for (var k in o) {
+              o.hasOwnProperty(k) && (el.style[k] = o[k]);
+            }
+          };
+        this.each(fn);
         return this;
       },
 
