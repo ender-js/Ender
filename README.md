@@ -108,6 +108,10 @@ Take special note that building with Ender will more than likely require frequen
     git pull
     git submodule update
 
+Why all this?
+-------------
+Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past.
+
 License
 -------
 Ender.js (the wrapper) is licensed under MIT - copyright 2011 Dustin Diaz
