@@ -84,6 +84,7 @@ Examples
     });
 
 <h3>Utility</h3>
+
 Utility methods provided by [underscore](http://documentcloud.github.com/underscore) are augmented onto the '$' object. Some basics are illustrated:
 
     $.map(['a', 'b', 'c'], function (letter) {
@@ -91,6 +92,8 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
     }); // => ['A', 'B', 'C']
 
     $.uniq(['a', 'b', 'b', 'c', 'a']); // => ['a', 'b', 'c']
+
+    $[65 other methods]()
 
 <h3>No Conflict</h3>
 
