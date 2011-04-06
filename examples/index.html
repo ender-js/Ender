@@ -16,6 +16,7 @@
       h1 {
         font-weight: 100;
         font-size: 50px;
+        display: inline-block;
       }
     </style>
     <script src="../ender.js"></script>
@@ -23,7 +24,6 @@
   <body>
     <div id="doc">
       <h1>Ender.js examples</h1>
-      <p></p>
       <p></p>
       <div id="woo"></div>
     </div>
@@ -36,23 +36,53 @@
       });
 
       $('#woo').css({
-          position: 'relative',
-          left: 0,
-          top: 0,
-          border: '5px solid green',
-          width: '50px',
-          height: '50px',
-          borderRadius: '5px',
-          backgroundColor: 'red'
+          position: 'absolute',
+          right: 0,
+          top: '100px',
+          opacity: 0,
+          width: '10px',
+          height: '4px',
+          backgroundColor: 'green'
         })
         .animate({
-          left: 500,
-          top: '100px',
-          borderWidth: 40,
-          borderRadius: 50,
-          opacity: 0,
-          duration: 5000
+          right: 384,
+          "background-color": '#ff0000',
+          opacity: 1,
+          width: $('h1').offset()[0].width,
+          duration: 1000,
+          easing: bounce
         });
+
+
+      // easeout strong
+      function easeOutStrong(t) {
+        return (t == 1) ? 1 : 1 - Math.pow(2, -10 * t);
+      }
+
+      // easeout
+      function easeOut(t) {
+        return Math.sin(t * HALF_PI);
+      }
+
+      // easein
+      function easeIn(t) {
+        return t * t;
+      }
+
+      // easein strong
+      function easeInStrong(t) {
+        return (t == 0) ? 0 : Math.pow(2, 10 * (t - 1));
+      }
+
+      function bounce(t) {
+        if (t < (1 / 2.75))
+        return 7.5625 * t * t;
+        if (t < (2 / 2.75))
+        return 7.5625 * (t-= (1.5 / 2.75)) * t + 0.75;
+        if (t < (2.5 / 2.75))
+        return 7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375;
+        return 7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375;
+      }
 
       var F = $.klass(function () {
         this.o = '';
@@ -67,7 +97,7 @@
           }
         });
 
-      $('#doc p').color('green').html((new F()).set('hello world').get());
+      $('#doc p').color('grey').html((new F()).set('Where battles are won').get());
 
       $.script('./fixture.js', function () {
         console.log('loaded fixture');

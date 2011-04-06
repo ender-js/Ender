@@ -13,12 +13,14 @@ Inside Ender you get
 Examples
 --------
 <h3>DOM queries</h3>
+
     $('#boosh p').html('hello').css({
       color: 'red',
       'text-decoration': 'underline'
     }).addClass('blamo');
 
 <h3>Extending</h3>
+
     $.fn({
       color: function (c) {
         this.css({
@@ -31,6 +33,7 @@ Examples
     $('#boosh a[rel~="bookmark"]').color('orange');
 
 <h3>Classes</h3>
+
     var Person = $.klass(function (name) {
       this.name = name;
     })
@@ -47,6 +50,7 @@ Examples
     (new SuperHuman('bob')).walk();
 
 <h3>AJAX</h3>
+
     $.ajax('path/to/html', function (resp) {
       $('#content').html(resp);
     });
@@ -61,6 +65,7 @@ Examples
     });
 
 <h3>script loading</h3>
+
     $.script(['mod1.js', 'mod2.js'], 'base', function () {
       // script is ready
     });
@@ -71,6 +76,7 @@ Examples
     });
 
 <h3>Animation</h3>
+
     $('p').animate('opacity', {
       from: 0,
       to: 1,
@@ -87,6 +93,7 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
     $.uniq(['a', 'b', 'b', 'c', 'a']); // => ['a', 'b', 'c']
 
 <h3>No Conflict</h3>
+
     var ender = $.noConflict(); // return '$' back to its original owner
     ender('#boosh a.foo').each(fn);
 
