@@ -7,7 +7,7 @@ Inside Ender you get
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
   * a dynamic asynchronous [script and dependency loader](https://github.com/ded/script.js)
   * a solid [http request connection manager](https://github.com/ded/Reqwest)
-  * an [element animator](https://github.com/ded/moshun)
+  * a slick [element animator](https://github.com/madrobby/emile)
   * and a core set of utilities provided by [underscore](http://documentcloud.github.com/underscore)
 
 Examples
