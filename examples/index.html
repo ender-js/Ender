@@ -20,6 +20,7 @@
       }
     </style>
     <script src="../ender.js"></script>
+    <script src="easings.js"></script>
   </head>
   <body>
     <div id="doc">
@@ -31,6 +32,12 @@
       $.fn({
         color: function (c) {
           this.css('color', c);
+          return this;
+        },
+        anim: function (o, after) {
+          var easing = $.isString(o.easing) ? easings[o.easing] : o.easing;
+          o.easing = easing;
+          this.animate(o, after);
           return this;
         }
       });
@@ -44,45 +51,14 @@
           height: '4px',
           backgroundColor: 'green'
         })
-        .animate({
+        .anim({
           right: 384,
           "background-color": '#ff0000',
           opacity: 1,
           width: $('h1').offset()[0].width,
           duration: 1000,
-          easing: bounce
+          easing: 'bounce'
         });
-
-
-      // easeout strong
-      function easeOutStrong(t) {
-        return (t == 1) ? 1 : 1 - Math.pow(2, -10 * t);
-      }
-
-      // easeout
-      function easeOut(t) {
-        return Math.sin(t * HALF_PI);
-      }
-
-      // easein
-      function easeIn(t) {
-        return t * t;
-      }
-
-      // easein strong
-      function easeInStrong(t) {
-        return (t == 0) ? 0 : Math.pow(2, 10 * (t - 1));
-      }
-
-      function bounce(t) {
-        if (t < (1 / 2.75))
-        return 7.5625 * t * t;
-        if (t < (2 / 2.75))
-        return 7.5625 * (t-= (1.5 / 2.75)) * t + 0.75;
-        if (t < (2.5 / 2.75))
-        return 7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375;
-        return 7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375;
-      }
 
       var F = $.klass(function () {
         this.o = '';
