@@ -79,9 +79,9 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = klass;
   } else {
-    var old = klass;
+    var old = context.klass;
     klass.noConflict = function () {
-      context.klass = klass;
+      context.klass = old;
       return this;
     };
     context.klass = klass;
@@ -334,84 +334,57 @@
 
 }(this, document);
 
-!function (context) {
+// emile.js (c) 2009 Thomas Fuchs
+// Licensed under the terms of the MIT license.
 
-  var el = document.createElement('boosh');
-  el.style.cssText = 'transition: all .5s linear; -moz-transition: all .5s linear; -webkit-transition: all .5s linear;';
-  var css3 = !!(el.style.webkitTransitionProperty || el.style.mozTransitionProperty);
+(function(emile, container){
+  var parseEl = document.createElement('div'),
+    props = ('backgroundColor borderBottomColor borderBottomWidth borderLeftColor borderLeftWidth '+
+    'borderRightColor borderRightWidth borderSpacing borderTopColor borderTopWidth bottom color fontSize '+
+    'fontWeight height left letterSpacing lineHeight marginBottom marginLeft marginRight marginTop maxHeight '+
+    'maxWidth minHeight minWidth opacity outlineColor outlineOffset outlineWidth paddingBottom paddingLeft '+
+    'paddingRight paddingTop right textIndent top width wordSpacing zIndex').split(' ');
 
-  function camelize (s) {
-    return s.replace(/-(\w)/g, function(m, m1) {
-      return m1.toUpperCase();
-    });
+  function interpolate(source,target,pos){ return (source+(target-source)*pos).toFixed(3); }
+  function s(str, p, c){ return str.substr(p,c||1); }
+  function color(source,target,pos){
+    var i = 2, j, c, tmp, v = [], r = [];
+    while(j=3,c=arguments[i-1],i--)
+      if(s(c,0)=='r') { c = c.match(/\d+/g); while(j--) v.push(~~c[j]); } else {
+        if(c.length==4) c='#'+s(c,1)+s(c,1)+s(c,2)+s(c,2)+s(c,3)+s(c,3);
+        while(j--) v.push(parseInt(s(c,1+j*2,2), 16)); }
+    while(j--) { tmp = ~~(v[j+3]+(v[j]-v[j+3])*pos); r.push(tmp<0?0:tmp>255?255:tmp); }
+    return 'rgb('+r.join(',')+')';
   }
-
-  function Animate(el, prop, opts) {
-    this.el = el;
-    this.prop = camelize(prop);
-    this.from = opts.from;
-    this.to = opts.to;
-    this.time = opts.time;
-    this.callback = opts.callback;
-    this.animDiff = this.to - this.from;
+  
+  function parse(prop){
+    var p = parseFloat(prop), q = prop.replace(/^[\-\d\.]+/,'');
+    return isNaN(p) ? { v: q, f: color, u: ''} : { v: p, f: interpolate, u: q };
   }
-
-  Animate.prototype._setStyle = function(val) {
-    switch (this.prop) {
-    case 'opacity':
-      this.el.style[this.prop] = val;
-      this.el.style.filter = 'alpha(opacity=' + val * 100 + ')';
-      break;
-
-    default:
-      this.el.style[this.prop] = val + 'px';
-      break;
-    }
-  };
-
-  Animate.prototype._animate = function() {
-    var that = this;
-    this.now = new Date();
-    this.diff = this.now - this.startTime;
-
-    if (this.diff > this.time) {
-      this._setStyle(this.to);
-
-      if (this.callback) {
-        this.callback.call(this);
-      }
-      clearInterval(this.timer);
-      return;
-    }
-
-    this.percentage = (Math.floor((this.diff / this.time) * 100) / 100);
-    this.val = (this.animDiff * this.percentage) + this.from;
-    this._setStyle(this.val);
-  };
-
-  Animate.prototype.start = function() {
-    var that = this;
-    this.startTime = new Date();
-
-    this.timer = setInterval(function() {
-      that._animate.call(that);
-    }, 15);
-  };
-
-  var anim = function (el, prop, opts) {
-    var A = new Animate(el, prop, opts);
-    A.start();
-    return A;
-  };
-
-  var old = context.animate;
-  anim.noConflict = function () {
-    context.animate = old;
-    return this;
-  };
-  context.animate = anim;
-
-}(this);
+  
+  function normalize(style){
+    var css, rules = {}, i = props.length, v;
+    parseEl.innerHTML = '<div style="'+style+'"></div>';
+    css = parseEl.childNodes[0].style;
+    while(i--) if(v = css[props[i]]) rules[props[i]] = parse(v);
+    return rules;
+  }  
+  
+  container[emile] = function(el, style, opts, after){
+    el = typeof el == 'string' ? document.getElementById(el) : el;
+    opts = opts || {};
+    var target = normalize(style), comp = el.currentStyle ? el.currentStyle : getComputedStyle(el, null),
+      prop, current = {}, start = +new Date, dur = opts.duration||200, finish = start+dur, interval,
+      easing = opts.easing || function(pos){ return (-Math.cos(pos*Math.PI)/2) + 0.5; };
+    for(prop in target) current[prop] = parse(comp[prop]);
+    interval = setInterval(function(){
+      var time = +new Date, pos = time>finish ? 1 : (time-start)/dur;
+      for(prop in target)
+        el.style[prop] = target[prop].f(current[prop].v,target[prop].v,easing(pos)) + target[prop].u;
+      if(time>finish) { clearInterval(interval); opts.after && opts.after(); after && setTimeout(after,1); }
+    },10);
+  }
+})('emile', this);
 !function (context) {
   var twoHundo = /^20\d$/,
       xhr = ('XMLHttpRequest' in window) ?
@@ -573,7 +546,7 @@
 
   $script.domReady = domReady;
 
-  var old = $script;
+  var old = win.$script;
   $script.noConflict = function () {
     win.$script = old;
     return this;
@@ -1383,12 +1356,24 @@
   var Q = qwery.noConflict(),
       U = _.noConflict(),
       K = klass.noConflict(),
-      A = animate.noConflict();
+      A = emile;
 
   function aug(o, o2) {
     for (var k in o2) {
       Object.prototype.hasOwnProperty.call(o2, k) && (o[k] = o2[k]);
     }
+  }
+
+  function trim(s) {
+    return s.replace(/(^\s*|\s*$)/g, '');
+  }
+  function camelToDash(s) {
+    if (s.toUpperCase() === s) {
+      return s;
+    }
+    return s.replace(/([a-zA-Z0-9])([A-Z])/g, function(m, m1, m2) {
+      return (m1 + "-" + m2);
+    }).toLowerCase();
   }
 
   var $ = function (s, r) {
@@ -1413,6 +1398,18 @@
     return new RegExp("(^|\\s)" + c + "(\\s|$)");
   }
 
+  var animationProperties = {};
+  U(['borderWidth', 'borderBottomWidth', 'borderLeftWidth', 'borderRightWidth',
+      'borderTopWidth', 'bottom', 'borderRadius', 'fontSize', 'height', 'left', 'letterSpacing',
+      'marginBottom', 'marginLeft', 'marginRight', 'marginTop',
+      'maxHeight', 'maxWidth ', 'minHeight', 'minWidth', 'outlineOffset',
+      'outlineWidth', 'paddingBottom', 'paddingLeft', 'paddingRight',
+      'paddingTop', 'right', 'textIndent', 'top', 'width', 'wordSpacing'])
+    .each(function (prop) {
+      animationProperties[prop] = 1;
+    });
+
+
   var _$ = K(function (s, r) {
     this.elements = Q(s, r);
   })
@@ -1426,9 +1423,27 @@
         return U.map(this.elements, fn, this);
       },
 
-      animate: function (prop, opts) {
+      serialize: function (o, modify) {
+        return U(o).map(function (v, k) {
+          var kv = modify ? modify(k, v) : [k, v];
+          return kv[0] + ':' + kv[1] + ';';
+        }).join('');
+      },
+
+      animate: function (o, after) {
+        var opts = {
+          duration: o.duration,
+          easing: o.easing
+        };
+        delete o.duration;
+        delete o.easing;
+        var serial = this.serialize(o, function (k, v) {
+          return (k in animationProperties) && /\d+$/.test(v) ?
+            [camelToDash(k), v + 'px'] :
+            [k, v];
+        });
         this.each(function (el) {
-          A(el, prop, opts);
+          A(el, serial, opts, after);
         });
         return this;
       },
@@ -1442,14 +1457,14 @@
 
       addClass: function (c) {
         this.each(function (el) {
-          this.hasClass(el, c) || (el.className = U.trim(el.className + ' ' + c));
+          this.hasClass(el, c) || (el.className = trim(el.className + ' ' + c));
         });
         return this;
       },
 
       removeClass: function (c) {
         this.each(function (el) {
-          this.hasClass(el, c) && (el.className = U.trim(el.className.replace(classReg(c), ' ')));
+          this.hasClass(el, c) && (el.className = trim(el.className.replace(classReg(c), ' ')));
         });
         return this;
       },

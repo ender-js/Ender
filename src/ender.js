@@ -3,12 +3,24 @@
   var Q = qwery.noConflict(),
       U = _.noConflict(),
       K = klass.noConflict(),
-      A = animate.noConflict();
+      A = emile;
 
   function aug(o, o2) {
     for (var k in o2) {
       Object.prototype.hasOwnProperty.call(o2, k) && (o[k] = o2[k]);
     }
+  }
+
+  function trim(s) {
+    return s.replace(/(^\s*|\s*$)/g, '');
+  }
+  function camelToDash(s) {
+    if (s.toUpperCase() === s) {
+      return s;
+    }
+    return s.replace(/([a-zA-Z0-9])([A-Z])/g, function(m, m1, m2) {
+      return (m1 + "-" + m2);
+    }).toLowerCase();
   }
 
   var $ = function (s, r) {
@@ -33,6 +45,17 @@
     return new RegExp("(^|\\s)" + c + "(\\s|$)");
   }
 
+  var animationProperties = {};
+  U(['borderWidth', 'borderBottomWidth', 'borderLeftWidth', 'borderRightWidth',
+      'borderTopWidth', 'bottom', 'borderRadius', 'fontSize', 'height', 'left', 'letterSpacing',
+      'marginBottom', 'marginLeft', 'marginRight', 'marginTop',
+      'maxHeight', 'maxWidth ', 'minHeight', 'minWidth', 'outlineOffset',
+      'outlineWidth', 'paddingBottom', 'paddingLeft', 'paddingRight',
+      'paddingTop', 'right', 'textIndent', 'top', 'width', 'wordSpacing'])
+    .each(function (prop) {
+      animationProperties[prop] = 1;
+    });
+
   var _$ = K(function (s, r) {
     this.elements = Q(s, r);
   })
@@ -46,9 +69,27 @@
         return U.map(this.elements, fn, this);
       },
 
-      animate: function (prop, opts) {
+      serialize: function (o, modify) {
+        return U(o).map(function (v, k) {
+          var kv = modify ? modify(k, v) : [k, v];
+          return kv[0] + ':' + kv[1] + ';';
+        }).join('');
+      },
+
+      animate: function (o, after) {
+        var opts = {
+          duration: o.duration,
+          easing: o.easing
+        };
+        delete o.duration;
+        delete o.easing;
+        var serial = this.serialize(o, function (k, v) {
+          return (k in animationProperties) && /\d+$/.test(v) ?
+            [camelToDash(k), v + 'px'] :
+            [k, v];
+        });
         this.each(function (el) {
-          A(el, prop, opts);
+          A(el, serial, opts, after);
         });
         return this;
       },
@@ -62,14 +103,14 @@
 
       addClass: function (c) {
         this.each(function (el) {
-          this.hasClass(el, c) || (el.className = U.trim(el.className + ' ' + c));
+          this.hasClass(el, c) || (el.className = trim(el.className + ' ' + c));
         });
         return this;
       },
 
       removeClass: function (c) {
         this.each(function (el) {
-          this.hasClass(el, c) && (el.className = U.trim(el.className.replace(classReg(c), ' ')));
+          this.hasClass(el, c) && (el.className = trim(el.className.replace(classReg(c), ' ')));
         });
         return this;
       },

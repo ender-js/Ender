@@ -5,7 +5,7 @@ require('../build/smoosh').config({
       "./src/copyright.js",
       "./build/klass/src/klass.js",
       "./build/qwery/src/qwery.js",
-      "./build/moshun/src/moshun.js",
+      "./build/emile/emile.js",
       "./build/reqwest/src/reqwest.js",
       "./build/script/src/script.js",
       "./build/underscore/underscore.js",

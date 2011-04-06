@@ -19,3 +19,6 @@
 [submodule "build/underscore"]
 	path = build/underscore
 	url = git://github.com/documentcloud/underscore.git
+[submodule "build/emile"]
+	path = build/emile
+	url = git://github.com/madrobby/emile.git
