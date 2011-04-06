@@ -20,65 +20,105 @@
       }
     </style>
     <script src="../ender.js"></script>
-    <script src="easings.js"></script>
+    <script type="text/javascript">
+      $.script.domReady(function () {
+
+        $.fn({
+          color: function (c) {
+            this.css('color', c);
+            return this;
+          }
+        });
+
+        $.script('../src/extensions/easings.js', function () {
+          $('#woo').css({
+              position: 'absolute',
+              right: 0,
+              top: '100px',
+              opacity: 0,
+              width: '1px',
+              height: '4px',
+              backgroundColor: 'green'
+            })
+            .anim({
+              right: 384,
+              "background-color": '#ff0000',
+              opacity: 1,
+              width: $('h1').offset()[0].width,
+              duration: 1000,
+              easing: 'bounce'
+            }, function () {
+              $('#woo').animate({
+                "background-color": '#66cd00',
+                duration: 1000
+              });
+            });
+        });
+
+        var F = $.klass(function () {
+          this.o = '';
+        })
+          .methods({
+            get: function () {
+              return this.o
+            },
+            set: function (v) {
+              this.o = v;
+              return this;
+            }
+          });
+
+        $('#doc p').color('grey').html((new F()).set('Where battles are won').get());
+
+        $.script('./fixture.js', function () {
+          console.log('loaded fixture');
+        });
+
+      });
+    </script>
   </head>
   <body>
     <div id="doc">
       <h1>Ender.js examples</h1>
       <p></p>
       <div id="woo"></div>
+      <pre><code>
+$.script('../src/extensions/easings.js', function () {
+  $('#woo').css({
+      position: 'absolute',
+      right: 0,
+      top: '100px',
+      opacity: 0,
+      width: '1px',
+      height: '4px',
+      backgroundColor: 'green'
+    })
+    .anim({
+      right: 384,
+      "background-color": '#ff0000',
+      opacity: 1,
+      width: $('h1').offset()[0].width,
+      duration: 1000,
+      easing: 'bounce'
+    });
+});
+
+var F = $.klass(function () {
+  this.o = '';
+})
+  .methods({
+    get: function () {
+      return this.o
+    },
+    set: function (v) {
+      this.o = v;
+      return this;
+    }
+  });
+
+$('#doc p').color('grey').html((new F()).set('Where battles are won').get());
+
+      </code></pre>
     </div>
-    <script type="text/javascript">
-      $.fn({
-        color: function (c) {
-          this.css('color', c);
-          return this;
-        },
-        anim: function (o, after) {
-          var easing = $.isString(o.easing) ? easings[o.easing] : o.easing;
-          o.easing = easing;
-          this.animate(o, after);
-          return this;
-        }
-      });
-
-      $('#woo').css({
-          position: 'absolute',
-          right: 0,
-          top: '100px',
-          opacity: 0,
-          width: '10px',
-          height: '4px',
-          backgroundColor: 'green'
-        })
-        .anim({
-          right: 384,
-          "background-color": '#ff0000',
-          opacity: 1,
-          width: $('h1').offset()[0].width,
-          duration: 1000,
-          easing: 'bounce'
-        });
-
-      var F = $.klass(function () {
-        this.o = '';
-      })
-        .methods({
-          get: function () {
-            return this.o
-          },
-          set: function (v) {
-            this.o = v;
-            return this;
-          }
-        });
-
-      $('#doc p').color('grey').html((new F()).set('Where battles are won').get());
-
-      $.script('./fixture.js', function () {
-        console.log('loaded fixture');
-      });
-
-    </script>
   </body>
 </html>

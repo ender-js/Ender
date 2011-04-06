@@ -1441,7 +1441,6 @@
             [camelToDash(k), v + 'px'] :
             [k, v];
         });
-        console.log('serial', serial);
         this.each(function (el) {
           A(el, serial, opts, after);
         });

@@ -57,7 +57,7 @@
     });
 
   var _$ = K(function (s, r) {
-    this.elements = Q(s, r);
+    this.elements = U.isElement(s) ? [s] : Q(s, r);
   })
     .methods({
       each: function (fn) {
