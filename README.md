@@ -77,10 +77,14 @@ Examples
 
 <h3>Animation</h3>
 
-    $('p').animate('opacity', {
-      from: 0,
-      to: 1,
-      time: 300
+    $('p').animate({
+      opacity: 1,
+      width: 300,
+      color: '#ff0000',
+      duration: 300,
+      after: function () {
+        console.log('done!');
+      }
     });
 
 <h3>Utility</h3>
