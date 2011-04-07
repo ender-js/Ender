@@ -41,13 +41,13 @@
           })
           .animate({
             right: 384,
-            "background-color": '#ff0000',
+            backgroundColor: '#ff0000',
             opacity: 1,
             width: $('h1').offset()[0].width,
             duration: 1000
           }, function () {
             $('#woo').animate({
-              "background-color": '#66cd00',
+              backgroundColor: '#66cd00',
               duration: 5000
             });
           });
@@ -81,24 +81,24 @@
       <p>&nbsp;</p>
       <div id="woo"></div>
       <pre><code>
-$.script('../src/extensions/easings.js', function () {
-  $('#woo').css({
-      position: 'absolute',
-      right: 0,
-      top: '100px',
-      opacity: 0,
-      width: '1px',
-      height: '4px',
-      backgroundColor: 'green'
-    })
-    .anim({
-      right: 384,
-      "background-color": '#ff0000',
-      opacity: 1,
-      width: $('h1').offset()[0].width,
-      duration: 1000
-    });
-});
+
+$('#woo').css({
+    position: 'absolute',
+    right: 0,
+    top: '100px',
+    opacity: 0,
+    width: '1px',
+    height: '4px',
+    backgroundColor: 'green'
+  })
+  .anim({
+    right: 384,
+    "background-color": '#ff0000',
+    opacity: 1,
+    width: $('h1').offset()[0].width,
+    duration: 1000
+  });
+
 
 var F = $.klass(function () {
   this.o = '';
