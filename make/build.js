@@ -9,7 +9,8 @@ require('../build/smoosh').config({
       "./build/reqwest/src/reqwest.js",
       "./build/script/src/script.js",
       "./build/underscore/underscore.js",
-      "./src/ender.js"
+      "./src/ender.js",
+      "./src/dom.js"
     ]
   },
   "JSHINT_OPTS": {

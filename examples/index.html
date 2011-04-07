@@ -40,17 +40,16 @@
               height: '4px',
               backgroundColor: 'green'
             })
-            .anim({
+            .animate({
               right: 384,
               "background-color": '#ff0000',
               opacity: 1,
               width: $('h1').offset()[0].width,
-              duration: 1000,
-              easing: 'bounce'
+              duration: 1000
             }, function () {
               $('#woo').animate({
                 "background-color": '#66cd00',
-                duration: 1000
+                duration: 5000
               });
             });
         });
@@ -80,7 +79,7 @@
   <body>
     <div id="doc">
       <h1>Ender.js examples</h1>
-      <p></p>
+      <p>&nbsp;</p>
       <div id="woo"></div>
       <pre><code>
 $.script('../src/extensions/easings.js', function () {
@@ -99,7 +98,7 @@ $.script('../src/extensions/easings.js', function () {
       opacity: 1,
       width: $('h1').offset()[0].width,
       duration: 1000,
-      easing: 'bounce'
+      easing: 'easeOut'
     });
 });
 
