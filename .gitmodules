@@ -22,3 +22,6 @@
 [submodule "build/emile"]
 	path = build/emile
 	url = git://github.com/ded/emile.git
+[submodule "build/bonzo"]
+	path = build/bonzo
+	url = git://github.com/ded/bonzo.git
