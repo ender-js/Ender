@@ -1478,7 +1478,7 @@
   }
 
   function trim(s) {
-    return s.replace(/(^\s*|\s*$)/g, '');
+    return (typeof s.trim === "function") ? s.trim() : s.replace(/(^\s*|\s*$)/g, '');
   }
 
   var $ = function (s, r) {
