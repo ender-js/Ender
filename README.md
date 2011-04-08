@@ -6,18 +6,27 @@ Inside Ender you get
   * a powerful [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
   * a dynamic asynchronous [script and dependency loader](https://github.com/ded/script.js)
+  * a bullet-proof [DOM utility](https://github.com/ded/bonzo)
   * a solid [http request connection manager](https://github.com/ded/Reqwest)
   * a slick [element animator](https://github.com/ded/emile)
   * and a core set of utilities provided by [underscore](http://documentcloud.github.com/underscore)
+  * plus an extension API!
 
 Examples
 --------
+
 <h3>DOM queries</h3>
 
-    $('#boosh p').html('hello').css({
+    $('#boosh a[rel~="bookmark"]').each(function (el) {
+      // ...
+    });
+
+<h3>Manipulation</h3>
+
+    $('#boosh p').hide().html('hello').css({
       color: 'red',
-      'text-decoration': 'underline'
-    }).addClass('blamo');
+      'text-decoration': 'none'
+    }).addClass('blamo').after('<span>√</span>').show();
 
 <h3>Extending</h3>
 
