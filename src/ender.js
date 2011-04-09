@@ -6,7 +6,7 @@
     }
   }
 
-  window._$ = function(s, r) {
+  function _$(s, r) {
     this.elements = $._select(s, r);
   };
 
