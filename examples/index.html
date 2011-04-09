@@ -21,58 +21,56 @@
     </style>
     <script src="../ender.js"></script>
     <script type="text/javascript">
-      // $.script.domReady(function () {
-      //
-      //   $.fn({
-      //     color: function (c) {
-      //       this.css('color', c);
-      //       return this;
-      //     }
-      //   });
-      //
-      //   $('#woo').css({
-      //       position: 'absolute',
-      //       right: 0,
-      //       top: '100px',
-      //       opacity: 0,
-      //       width: '1px',
-      //       height: '4px',
-      //       backgroundColor: 'green'
-      //     })
-      //     .animate({
-      //       right: 384,
-      //       backgroundColor: '#ff0000',
-      //       opacity: 1,
-      //       width: $('h1').offset().width,
-      //       duration: 1000
-      //     }, function () {
-      //       $('#woo').animate({
-      //         backgroundColor: '#66cd00',
-      //         duration: 5000
-      //       });
-      //     });
+      $.domReady(function () {
 
+        $.ender({
+          color: function (c) {
+            return this.css('color', c);
+          }
+        }, true);
 
-        // var F = $.klass(function () {
-        //   this.o = '';
-        // })
-        //   .methods({
-        //     get: function () {
-        //       return this.o
-        //     },
-        //     set: function (v) {
-        //       this.o = v;
-        //       return this;
-        //     }
-        //   });
+        $('#woo').css({
+            position: 'absolute',
+            right: 0,
+            top: '100px',
+            opacity: 0,
+            width: '1px',
+            height: '4px',
+            backgroundColor: 'green'
+          })
+          .animate({
+            right: 384,
+            backgroundColor: '#ff0000',
+            opacity: 1,
+            width: $('h1').offset().width,
+            duration: 1000
+          }, function () {
+            $('#woo').animate({
+              backgroundColor: '#66cd00',
+              duration: 5000
+            });
+          });
 
-        // $('#doc p').color('purple').html((new F()).set('Where battles are won').get());
+        var F = $.klass(function () {
+          this.o = '';
+        })
+          .methods({
+            get: function () {
+              return this.o
+            },
+            set: function (v) {
+              this.o = v;
+              return this;
+            }
+          });
 
-        // $.script('./fixture.js', function () {
-        //   console.log('loaded fixture');
-        // });
+        $('#doc p').html((new F()).set('Where battles are won').get()).color('gray')
 
-      // });
+        $.script('./fixture.js', function () {
+          $('p').append(' ✓');
+        });
+
+      });
     </script>
   </head>
   <body>
@@ -91,7 +89,7 @@ $('#woo').css({
     height: '4px',
     backgroundColor: 'green'
   })
-  .anim({
+  .animate({
     right: 384,
     "background-color": '#ff0000',
     opacity: 1,

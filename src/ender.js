@@ -7,7 +7,7 @@
   }
 
   window._$ = function(s, r) {
-    this.elements = $.select(s, r);
+    this.elements = $._select(s, r);
   };
 
   function $(s, r) {
@@ -15,10 +15,10 @@
   }
 
   aug($, {
-    augment: function (o, proto) {
+    ender: function (o, proto) {
       aug(proto ? _$.prototype : $, o);
     },
-    select: function () {
+    _select: function () {
       return [];
     }
   });
