@@ -27,4 +27,4 @@
 	url = git://github.com/ded/bonzo.git
 [submodule "build/bean"]
 	path = build/bean
-	url = git@github.com:fat/bean.git
+	url = git://github.com:fat/bean.git
