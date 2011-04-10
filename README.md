@@ -1,6 +1,6 @@
 Ender.js
 --------
-a small yet powerful JavaScript library composed of application agnostic opensource submodules wrapped in a slick intuitive interface. At only 7k Ender.js can help you build anything from small prototypes to providing a solid base for large-scale rich applications.
+an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only 8k Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
 Inside Ender you get
 
   * a powerful [Class system](https://github.com/ded/klass)
@@ -31,9 +31,9 @@ Examples
 
 <h3>Events</h3>
 
-    $('#content a').bind({
+    $('#content a').listen({
       // dom based
-      'click focus': function (e) {
+      'focus mouseenter': function (e) {
         e.preventDefault();
         e.stopPropagation();
       },
@@ -42,6 +42,10 @@ Examples
       'party time': function (e) {
 
       }
+    });
+
+    $('#content a').click(function (e) {
+
     });
 
     $('#content a').trigger('click party');

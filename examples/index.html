@@ -29,6 +29,11 @@
           }
         }, true);
 
+        $('h1').hover(
+          function () {alert('you entered the h1');},
+          function () {alert('you exited the h1');}
+        );
+
         $('#woo').css({
             position: 'absolute',
             right: 0,
