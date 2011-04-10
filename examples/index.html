@@ -30,8 +30,12 @@
         }, true);
 
         $('h1').hover(
-          function () {alert('you entered the h1');},
-          function () {alert('you exited the h1');}
+          function () {
+            $('h1').append('<span class="chekr">✓</span>');
+          },
+          function () {
+            $('span.chekr').remove()
+          }
         );
 
         $('#woo').css({
