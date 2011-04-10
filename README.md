@@ -230,6 +230,14 @@ Why all this?
 -------------
 Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past.
 
+Building a custom platoon
+------------
+Currently in the works is a command-line interface to building published NPM modules into the Ender.js wrapper. It's next-level future boss. We promise. Check out the [preview video](http://www.vimeo.com/22211892) of this in action. However the short explanation is that you can do this:
+
+    $ ender -b qwery,bonzo,bean,underscore
+
+This creates a customized Ender platoon suited to your liking :) It's currently in alpha stages, so please be gentle.
+
 License
 -------
 Ender.js (the wrapper) is licensed under MIT - copyright 2011 Dustin Diaz & Jacob Thornton
