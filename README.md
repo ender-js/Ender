@@ -5,8 +5,9 @@ Inside Ender you get
 
   * a powerful [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
-  * a dynamic asynchronous [script and dependency loader](https://github.com/ded/script.js)
   * a bullet-proof [DOM utility](https://github.com/ded/bonzo)
+  * a multi-platform [Event provider](https://github.com/fat/bean)
+  * a dynamic asynchronous [script and dependency loader](https://github.com/ded/script.js)
   * a solid [http request connection manager](https://github.com/ded/Reqwest)
   * a slick [element animator](https://github.com/ded/emile)
   * and a core set of utilities provided by [underscore](http://documentcloud.github.com/underscore)
@@ -23,22 +24,28 @@ Examples
 
 <h3>Manipulation</h3>
 
-    $('#boosh p').hide().html('hello').css({
+    $('#boosh p a[rel~="bookmark"]').hide().html('hello').css({
       color: 'red',
       'text-decoration': 'none'
-    }).addClass('blamo').after('<span>√</span>').show();
+    }).addClass('blamo').after('✓').show();
 
-<h3>Extending</h3>
+<h3>Events</h3>
 
-    $.ender({
-      color: function (c) {
-        return this.css({
-          color: c
-        });
+    $('#content a').bind({
+      // dom based
+      'click focus': function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      },
+
+      // dom custom
+      'party time': function (e) {
+
       }
-    }, true);
+    });
 
-    $('#boosh a[rel~="bookmark"]').color('orange');
+    $('#content a').trigger('click party');
+    $('#content a').remove('click party');
 
 <h3>Classes</h3>
 
