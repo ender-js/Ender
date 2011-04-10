@@ -340,7 +340,7 @@ $._select = qwery.noConflict();/*!
 
   function nativeHandler(element, fn, args) {
     return function (event) {
-      event = fixEvent(event || ((this.ownerDocument || this.document || this).parentWindow || window).event);
+      event = fixEvent(event || ((this.ownerDocument || this.document || this).parentWindow || context).event);
       return fn.apply(element, [event].concat(args));
     };
   }
@@ -361,13 +361,15 @@ $._select = qwery.noConflict();/*!
     var custom = customEvents[type];
     fn = custom && custom.condition ? customHandler(element, fn, type, custom.condition) : fn;
     type = custom && custom.base || type;
-    var isNative = window[addEvent] || nativeEvents.indexOf(type) > -1;
-    fn = isNative ? nativeHandler(element, fn, args) : customHandler(element, fn, type, false, args)
+    var isNative = context[addEvent] || nativeEvents.indexOf(type) > -1;
+    fn = isNative ? nativeHandler(element, fn, args) : customHandler(element, fn, type, false, args);
     if (type == 'unload') {
       var org = fn;
-      fn = function () { removeListener(element, type, fn) && org(); };
+      fn = function () {
+        removeListener(element, type, fn) && org();
+      };
     }
-    listener(element, isNative ? type : 'propertychange', fn, true, !isNative && true)
+    listener(element, isNative ? type : 'propertychange', fn, true, !isNative && true);
     handlers[uid] = fn;
     fn._uid = uid;
     return type == 'unload' ? element : (collected[retrieveUid(element)] = element);
@@ -419,7 +421,7 @@ $._select = qwery.noConflict();/*!
     if (isString && /\s/.test(events)) {
       events = events.split(' ');
       var i = events.length - 1;
-      while (remove(element, events[i]), i--);
+      while (remove(element, events[i]) && i--) {}
       return element;
     }
     if (!attached || (isString && !attached[events])) {
@@ -445,9 +447,9 @@ $._select = qwery.noConflict();/*!
       var isNative = nativeEvents.indexOf(type) > -1;
       if (element[addEvent]) {
         evt = document.createEvent(isNative ? "HTMLEvents" : "UIEvents");
-        evt[isNative ? 'initEvent' : 'initUIEvent'](type, true, true, window, 1);
+        evt[isNative ? 'initEvent' : 'initUIEvent'](type, true, true, context, 1);
         element.dispatchEvent(evt);
-      } else if (element[attachEvent]){
+      } else if (element[attachEvent]) {
         isNative ? element.fireEvent('on' + type, document.createEventObject()) : element['_on' + type]++;
       } else {
         var handlers = retrieveEvents(element)[type];
@@ -534,12 +536,12 @@ $._select = qwery.noConflict();/*!
     }
   };
 
- if (window[attachEvent]) {
-    add(window, 'unload', function () {
+  if (context[attachEvent]) {
+    add(context, 'unload', function () {
       for (var k in collected) {
         collected.hasOwnProperty(k) && clean(collected[k]);
       }
-      window.CollectGarbage && CollectGarbage();
+      context.CollectGarbage && CollectGarbage();
     });
   }
 
@@ -555,21 +557,51 @@ $._select = qwery.noConflict();/*!
 
 }(this);!function () {
   var b = bean.noConflict(),
-      integrate = function (type) {
+      integrate = function (method, type, method2) {
+        var args = type ? [type] : [];
         return function () {
           for (var i = 0, l = this.elements.length; i < l; i++) {
-            b[type].apply(this, [this.elements[i]].concat(Array.prototype.slice.call(arguments, 0)));
+            args.unshift(this.elements[i]);
+            b[method].apply(this, args.concat(Array.prototype.slice.call(arguments, 0)));
           }
           return this;
         }
       };
 
-  $.ender({
-    bind: integrate('add'),
-    unbind: integrate('remove'),
+  var add = integrate('add'),
+      remove = integrate('remove');
+
+  var methods = {
+    bind: add,
+    listen: add,
+    delegate: add,
+    unbind: remove,
+    unlisten: remove,
+    undelegate: remove,
     trigger: integrate('fire'),
-    cloneEvents: integrate('clone')
-  }, true);
+    cloneEvents: integrate('clone'),
+    hover: function (enter, leave) {
+      for (var i = 0, l = this.elements.length; i < l; i++) {
+        b.add.call(this, this.elements[i], 'mouseenter', enter);
+        b.add.call(this, this.elements[i], 'mouseleave', leave);
+      }
+      return this;
+    }
+  };
+
+  var shortcuts = [
+    'blur', 'change', 'click', 'dbltclick', 'error', 'focus', 'focusin',
+    'focusout', 'keydown', 'keypress', 'keyup', 'load', 'mousedown',
+    'mouseenter', 'mouseleave', 'mouseout', 'mouseover', 'mouseup',
+    'resize', 'scroll', 'select', 'submit', 'unload'
+  ];
+
+  for (var i = shortcuts.length; i--;) {
+    var shortcut = shortcuts[i];
+    methods[shortcut] = integrate('add', shortcut);
+  }
+
+  $.ender(methods, true);
 }();/*!
   * bonzo.js - copyright @dedfat 2011
   * https://github.com/ded/bonzo
@@ -620,7 +652,7 @@ $._select = qwery.noConflict();/*!
   }
 
   function _bonzo(elements) {
-    this.elements = elements && Object.prototype.hasOwnProperty.call(elements, 'length') ? elements : [elements];
+    this.elements = Object.prototype.hasOwnProperty.call(elements, 'length') ? elements : [elements];
   }
 
   _bonzo.prototype = {

@@ -31,9 +31,9 @@ Examples
 
 <h3>Events</h3>
 
-    $('#content a').bind({
+    $('#content a').listen({
       // dom based
-      'click focus': function (e) {
+      'focus mouseenter': function (e) {
         e.preventDefault();
         e.stopPropagation();
       },
@@ -42,6 +42,10 @@ Examples
       'party time': function (e) {
 
       }
+    });
+
+    $('#content a').click(function (e) {
+
     });
 
     $('#content a').trigger('click party');
