@@ -1,6 +1,6 @@
 Ender.js
 --------
-an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only 8k Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on mobile and desktop applications.
+an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only 8k Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
 Inside Ender you get
 
   * a powerful [Class system](https://github.com/ded/klass)
