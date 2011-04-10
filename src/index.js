@@ -1,19 +1,5 @@
 var fs = require('fs'),
-    smoosh = require('../build/smoosh'),
-    exec = require('child_process').exec;
-
-// the Dragon Army
-var defaultLibs = [
-  './build/qwery/',
-  './build/bonzo/',
-  './build/klass/',
-  './build/reqwest/',
-  './build/emile/',
-  './build/script/'
-  // './build/bean/', #awaiting release
-  // './build/underscore/' #awaiting pull request
-];
-
+    smoosh = require('smoosh');
 
 /*************************** secret build sauce ***************************/
 
@@ -51,29 +37,3 @@ function make(dist) {
     }
   }).build();
 }
-
-
-var terminal = function (args) {
-  var flags;
-  if (args[0][0] == '-') {
-    flags = args[0].replace(/^\-/, '').split('');
-  } else {
-    flags = [args[0]];
-  }
-
-  flags.forEach(function(flag) {
-    switch (flag) {
-      case 'a':
-        console.log(args[1]);
-        // args[1];
-        break;
-      case 'b':
-      case 'build':
-        build(args[1]);
-        break;
-      default:
-        // make(args[0]);
-    }
-  });
-};
-module.exports.terminal = terminal;

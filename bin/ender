@@ -1,2 +1,73 @@
 #!/usr/bin/env node
-require('ender').terminal(process.argv.slice(2));
+var fs = require('fs'),
+    smoosh = require('smoosh');
+    require('colors');
+
+!function () {
+
+  var defaultLibs = JSON.parse(fs.readFileSync('./make/platoon.json', 'utf8')).platoon;
+  var wrapper = [
+    "./src/copyright.js"
+  ];
+
+  var args = process.argv.slice(2),
+      flags,
+      outDir = './';
+
+  if (args[0][0] == '-') {
+    flags = args[0].replace(/^\-/, '').split('');
+  } else {
+    flags = [args[0]];
+  }
+
+  flags.forEach(function(flag) {
+    switch (flag) {
+      case 'b':
+        var out = '';
+        var input = args[1] ? args[1].split(',') : defaultLibs;
+
+        out += fs.readFileSync('./src/ender.js', 'utf8');
+
+        input.forEach(function (lib) {
+          var config = JSON.parse(fs.readFileSync('./build/' + lib + '/package.json', 'utf8'));
+          var main = config.main instanceof Array ? config.main : [config.main];
+          var ender = fs.readFileSync('./build/' + lib + '/' + config.ender, 'utf8');
+          var files = main.map(function (file) {
+            return fs.readFileSync('./build/' + lib + '/' + file, 'utf8');
+          }).join(' ');
+          out += files + ender;
+        });
+
+        console.log(('Building the Dragon Army with '.cyan) + ((input.length).toString().red) + (' modules'.green));
+
+        try {
+          var full = fs.statSync(outDir + 'ender.js');
+          var min = fs.statSync(outDir + 'ender.min.js');
+
+          full.isFile() && fs.unlinkSync(outDir + 'ender.js');
+          min.isFile() && fs.unlinkSync(outDir + 'ender.min.js');
+        } catch (ex) {
+          // wtf node and ur statSync is dumb.
+        }
+        fs.writeFile(outDir + 'ender.js', out, 'utf8', function () {
+          smoosh.config({
+            "quiet": true,
+            "JAVASCRIPT": {
+              "DIST_DIR": outDir,
+              "ender": [
+                './src/copyright.js',
+                outDir + 'ender.js'
+              ]
+            }
+          }).build();
+        });
+        break;
+      case 'o':
+      case 'output':
+        console.log('out args ', args);
+        break;
+      default:
+        // make(args[0]);
+    }
+  });
+}();

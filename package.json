@@ -9,6 +9,9 @@
   "engines": {
     "node": ">= 0.4.0"
   },
+  "dependencies": {
+    "smoosh": ">= 0.1.0"
+  },
   "bin": {
     "ender": "./bin/ender"
   }
