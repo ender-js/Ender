@@ -2,7 +2,18 @@ var fs = require('fs'),
     smoosh = require('../build/smoosh'),
     exec = require('child_process').exec;
 
-var libs = JSON.parse(fs.readFileSync('./make/platoon.json', 'utf8')).platoon;
+// the Dragon Army
+var defaultLibs = [
+  './build/qwery/',
+  './build/bonzo/',
+  './build/klass/',
+  './build/reqwest/',
+  './build/emile/',
+  './build/script/'
+  // './build/bean/', #awaiting release
+  // './build/underscore/' #awaiting pull request
+];
+
 
 /*************************** secret build sauce ***************************/
 
@@ -11,15 +22,15 @@ var build = [
   "./src/ender.js"
 ];
 
-exec('rm -f ./tmp/*');
 var total = 0;
 function done() {
   if (++total == libs.length) {
     make();
   }
 }
+
 libs.forEach(function (lib) {
-  var config = JSON.parse(fs.readFileSync(lib + 'package.json', 'utf8'));
+  var config = require(lib);
   var main = config.main instanceof Array ? config.main : [config.main];
   var ender = fs.readFileSync(lib + config.ender, 'utf8');
   var files = main.map(function (file) {
@@ -32,23 +43,37 @@ libs.forEach(function (lib) {
   fs.writeFile(file, out, 'utf8', done);
 });
 
-function make() {
+function make(dist) {
   smoosh.config({
     "JAVASCRIPT": {
-      "DIST_DIR": "./",
+      "DIST_DIR": (dist || ("./"),
       "ender": build
-    },
-    "JSHINT_OPTS": {
-      "boss": true,
-      "forin": true,
-      "curly": true,
-      "debug": false,
-      "devel": false,
-      "evil": false,
-      "regexp": false,
-      "undef": false,
-      "sub": false,
-      "asi": false
     }
-  }).run().build().analyze();
+  }).build();
 }
+
+
+var terminal = function (args) {
+  var flags;
+  if (args[0][0] == '-') {
+    flags = args[0].replace(/^\-/, '').split('');
+  } else {
+    flags = [args[0]];
+  }
+
+  flags.forEach(function(flag) {
+    switch (flag) {
+      case 'a':
+        console.log(args[1]);
+        // args[1];
+        break;
+      case 'b':
+      case 'build':
+        build(args[1]);
+        break;
+      default:
+        // make(args[0]);
+    }
+  });
+};
+module.exports.terminal = terminal;

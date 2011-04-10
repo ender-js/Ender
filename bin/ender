@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+require('ender').terminal(process.argv.slice(2));

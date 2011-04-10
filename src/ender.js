@@ -8,7 +8,7 @@
 
   function _$(s, r) {
     this.elements = $._select(s, r);
-  };
+  }
 
   function $(s, r) {
     return new _$(s, r);
@@ -28,6 +28,9 @@
     context.$ = old;
     return this;
   };
-  context.$ = $;
+
+  (typeof module !== 'undefined') && module.exports ?
+    (module.exports = $) :
+    (context.$ = $);
 
 }(this);

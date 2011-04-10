@@ -1,0 +1,11 @@
+{
+  "platoon": [
+    "./build/qwery/",
+    "./build/bonzo/",
+    "./build/klass/",
+    "./build/reqwest/",
+    "./build/emile/",
+    "./build/script/",
+    "./build/underscore/"
+  ]
+}

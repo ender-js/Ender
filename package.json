@@ -1,0 +1,15 @@
+{
+  "name": "ender",
+  "description": "next level JavaScript modules",
+  "version": "0.0.1",
+  "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
+  "keywords": ["ender", "modules", "builder", "framework", "packager"],
+  "main": "./src/index.js",
+  "homepage": "https://github.com/ded/Ender.js",
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "bin": {
+    "ender": "./bin/ender"
+  }
+}
