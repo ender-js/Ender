@@ -131,10 +131,14 @@ var fs = require('fs'),
 
         if (!info.ender) {
           console.log((lib + ' does not include an Ender integration. Defaulting to module.exports...').yellow);
-          var modExports = require(lib);
-          for (var k in modExports) {
-            // bah
-          }
+          // var modExports = require(lib);
+          // for (var k in modExports) {
+          //   // bah
+          //   // console.log('mod export ', k);
+          // }
+          // skip this for now...
+          totalLibs--;
+          outputAndSmoosh();
         } else {
           var url = info.repository.url.replace(/^(git:|http:)/, 'https:').replace(/\.git$/, '') + '/raw/master/';
           // https://github.com/ded/klass/raw/master/src/ender.js
