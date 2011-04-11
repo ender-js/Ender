@@ -8,6 +8,9 @@
 
   function _$(s, r) {
     this.elements = $._select(s, r);
+    for (var i = 0, l = this.elements.length; i < l; i++) {
+      this[i] = this.elements[i];
+    }
   }
 
   function $(s, r) {

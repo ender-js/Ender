@@ -15,6 +15,9 @@
 
   function _$(s, r) {
     this.elements = $._select(s, r);
+    for (var i = 0, l = this.elements.length; i < l; i++) {
+      this[i] = this.elements[i];
+    }
   }
 
   function $(s, r) {
@@ -162,7 +165,7 @@
   }
 
   function _qwery(selector) {
-    var r = [], ret = [], i,
+    var r = [], ret = [], i, l,
         tokens = tokenCache.g(selector) || tokenCache.s(selector, selector.split(tokenizr));
     tokens = tokens.slice(0);
     if (!tokens.length) {
@@ -173,13 +176,13 @@
       return r;
     }
     // loop through all descendent tokens
-    for (j = r.length, k = 0; j--;) {
+    for (j = 0, l = r.length, k = 0; j < l; j++) {
       node = r[j];
       p = node;
       // loop through each token
       for (i = tokens.length; i--;) {
-        z:
-        while (p !== html && (p = p.parentNode)) { // loop through parent nodes
+        z: // loop through parent nodes
+        while (p !== html && (p = p.parentNode)) {
           if (found = interpret.apply(p, q(tokens[i]))) {
             break z;
           }
@@ -254,26 +257,26 @@
       if (!root) {
         return [];
       }
-      var i, result = [], collections = [], element;
+      var i, l, result = [], collections = [], element;
       if (m = boilerPlate(selector, root)) {
         return m;
       }
       if (m = selector.match(tagAndOrClass)) {
         items = root.getElementsByTagName(m[1] || '*');
         r = classCache.g(m[2]) || classCache.s(m[2], new RegExp('(^|\\s+)' + m[2] + '(\\s+|$)'));
-        for (i = items.length, j = 0; i--;) {
+        for (i = 0, l = items.length, j = 0; i < l; i++) {
           r.test(items[i].className) && (result[j++] = items[i]);
         }
         return result;
       }
-      for (items = selector.split(','), i = items.length; i--;) {
+      for (i = 0, items = selector.split(','), l = items.length; i < l; i++) {
         collections[i] = _qwery(items[i]);
       }
-      for (i = collections.length; collection = collections[--i];) {
+      for (i = 0, l = collections.length; i < l && (collection = collections[i]); i++) {
         var ret = collection;
         if (root !== doc) {
           ret = [];
-          for (j = collection.length; element = collection[--j];) {
+          for (j = 0, m = collection.length; j < m && (element = collection[j]); j++) {
             // make sure element is a descendent of root
             isAncestor(element, root) && ret.push(element);
           }
@@ -677,6 +680,14 @@ $._select = qwery.noConflict();/*!
         m.push(fn.call(this, this.elements[i]));
       }
       return m;
+    },
+
+    first: function () {
+      return this.elements[0];
+    },
+
+    last: function (){
+      return this.elements[this.elements.length - 1];
     },
 
     html: function (html) {
