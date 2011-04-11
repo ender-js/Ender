@@ -1,9 +1,12 @@
 Ender.js
 --------
 an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only 8k Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
-Inside Ender you get
 
-  * a powerful [Class system](https://github.com/ded/klass)
+Ender's Jeesh
+-------------
+By default, Ender's main Platoon for production battle ([Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)) consists of these 8 powerful core utilities:
+
+  * an expressive [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
   * a bullet-proof [DOM utility](https://github.com/ded/bonzo)
   * a multi-platform [Event provider](https://github.com/fat/bean)
@@ -126,11 +129,11 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
 
 The haps
 --------
-Ender.js pulls together the beauty of well-designed modular software and proves that git submodules can actually work. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want remove a feature out entirely (like for example, the animation utility), you can fork this repo and remove the appropriate submodule.
+Ender.js pulls together the beauty of well-designed modular software and proves that git submodules can actually work. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want remove a feature out entirely (like for example, the animation utility), you can use the Ender command utility and compose only the submodules you need.
 
 Building
 --------
-For those interested in contributing on the core wrapper itself. Here's the process. Assuming you have git already — *install [NodeJS](http://nodejs.org)* — then run the following commands in your workspace:
+For those interested in having a play with Ender core. Here's the process. Assuming you have git already — *install [NodeJS](http://nodejs.org)* — then run the following commands in your workspace:
 
     git clone https://github.com/ded/Ender.js.git
     cd Ender.js
