@@ -13,9 +13,6 @@
 [submodule "build/smoosh"]
 	path = build/smoosh
 	url = git://github.com/fat/smoosh.git
-[submodule "build/moshun"]
-	path = build/moshun
-	url = git://github.com/ded/moshun.git
 [submodule "build/underscore"]
 	path = build/underscore
 	url = git://github.com/ded/underscore.git
@@ -27,4 +24,4 @@
 	url = git://github.com/ded/bonzo.git
 [submodule "build/bean"]
 	path = build/bean
-	url = git://github.com:fat/bean.git
+	url = git://github.com/fat/bean.git
