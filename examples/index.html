@@ -81,6 +81,20 @@
         $.script('./fixture.js', function () {
           $('p').append(' ✓');
         });
+        
+        
+        $('p').bind('click', function () {
+          $(this).css('color', 'red');
+        });
+
+        // go click the p tag - it turns red
+
+        $('p').unbind('click');
+
+        // create a new listener
+        $('p').bind('click', function () { $(this).css('color', 'green'); });
+
+        // go click the p tag - it never turns green
 
       });
     </script>
