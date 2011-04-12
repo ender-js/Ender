@@ -1316,13 +1316,21 @@ bonzo.noConflict();/**
   * License: MIT
   */
 
+/*!
+  * $script.js v1.3
+  * https://github.com/ded/script.js
+  * Copyright: @ded & @fat - Dustin Diaz, Jacob Thornton 2011
+  * Follow our software http://twitter.com/dedfat
+  * License: MIT
+  */
+
 !function(win, doc, timeout) {
   var script = doc.getElementsByTagName("script")[0],
-      list = {}, ids = {}, delay = {}, re = /^i|c/,
-      scripts = {}, s = 'string', f = false, i,
+      list = {}, ids = {}, delay = {}, re = /^i|c/, loaded = 0,
+      scripts = {}, s = 'string', f = false, i, testEl = doc.createElement('a'),
       push = 'push', domContentLoaded = 'DOMContentLoaded', readyState = 'readyState',
       addEventListener = 'addEventListener', onreadystatechange = 'onreadystatechange',
-      every = Array.every || function(ar, fn) {
+      every = function(ar, fn) {
         for (i = 0, j = ar.length; i < j; ++i) {
           if (!fn(ar[i])) {
             return 0;
@@ -1405,14 +1413,32 @@ bonzo.noConflict();/**
     return $script;
   };
 
-  function domReady(fn) {
-    re.test(doc[readyState]) ? fn() : timeout(
-      function() {
-        domReady(fn);
-      },
-      50
-    );
+  function again(fn) {
+    timeout(function() {
+      domReady(fn);
+    }, 50);
   }
+
+  var domReady = testEl.doScroll ?
+    function (fn) {
+      self != top ?
+        !loaded ?
+          doc.onreadystatechange = function() {
+            (loaded && fn()) || /^c/.test(doc[readyState]) && (loaded = 1) && fn();
+          } :
+          fn() :
+        !function () {
+          try {
+            testEl.doScroll('left');
+          } catch (e) {
+            return again(fn);
+          }
+          fn();
+        }();
+    } :
+    function (fn) {
+      re.test(doc[readyState]) ? fn() : again(fn);
+    };
 
   $script.domReady = domReady;
 
