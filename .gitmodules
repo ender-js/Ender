@@ -25,3 +25,6 @@
 [submodule "build/bean"]
 	path = build/bean
 	url = git://github.com/fat/bean.git
+[submodule "build/colors"]
+	path = build/colors
+	url = git://github.com/Marak/colors.js.git

@@ -1,7 +1,7 @@
 var fs = require('fs'),
-    smoosh = require('smoosh'),
+    smoosh = require('../build/smoosh'),
     exec = require('child_process').exec;
-    require('colors');
+    require('../build/colors');
 
 var libs = JSON.parse(fs.readFileSync('./make/platoon.json', 'utf8')).platoon;
 
