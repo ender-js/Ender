@@ -8,7 +8,7 @@ Ender is an open, powerful, next level JavaScript library composed of applicatio
 
 Ender's Jeesh
 -------------
-Ender provides the option to build from any registered NPM package, as well as these 8 powerful core utilities (we call these [Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)):
+Ender provides the option to build from any registered NPM packages as well as these 8 powerful core utilities (we call these [Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)):
 
   * an expressive [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
@@ -131,17 +131,25 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
     var ender = $.noConflict(); // return '$' back to its original owner
     ender('#boosh a.foo').each(fn);
 
+
+<h3>Your Module Here</h3>
+Remember, the Jeesh is here just to get you started!
+
+    $.myMethod(function() {//does stuff});
+
 <div class="hr" id="guide"></div>
 
 How to get started
 ------------------
-Ender.js pulls together the beauty of well-designed modular software and proves that independent modules can actually work together. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want to remove a feature out entirely (like for example, the animation utility or classes), you can use the Ender command utility and compose only the modules you need.
+Ender pulls together the beauty of well-designed modular software in an effort to give you the flexibility and power to build a library which is right for your individual projects needs.
+
+Uniquely, if one part of your library goes bad or unmaintained, it can be replaced with another with minimal to zero changes to your actual application code! Furthermore if you want to remove a feature out entirely (like for example, the animation utility or classes), you can use the Ender command utility and compose only the modules you need.
 
 Building Ender
 --------------
-Building ender is super easy.
+Building ender is *super easy*.
 
-To start, if you haven't already, *install [NodeJS](http://nodejs.org)* as well as *[npm](https://github.com/isaacs/npm). Then to install just run:
+To start, if you haven't already, install [NodeJS](http://nodejs.org) and [NPM](https://github.com/isaacs/npm). Then to install just run:
 
     $ npm install ender
 
@@ -149,9 +157,9 @@ This will install ender as a command line tool. From here, navigate to the direc
 
     $ ender -b scriptjs,qwery,underscore
 
-This should generate both an ender.js file (for dev) as well a an ender.min.js (for prod) file.
+This should generate both an ender.js file (for dev) as well a an ender.min.js (for prod).
 
-Currently, the ender build tool relies on NPM for pulling in the actual code for your library, therefor ender is only as recent as your latest NPM update.
+Ender is only as recent as your latest NPM update.
 
 <div class="hr" id="docs"></div>
 
@@ -187,9 +195,11 @@ An important thing to note in this object is that ender relies on the properties
 
     "main": ["blamo-a.js", "blamo-b.js"]
 
-**ender** -- This special key points to your bridge, which tells Ender how to integrate your package! This is where the magic happen. If you don't provide a bridge with the ender property, or if you're trying to include a package which wasn't intended to work with Ender, no worries! Ender will automatically default to a commonjs module integration and automatically add the exported methods directly to ender as top level methods. More on this below.
+**ender** -- This special key points to your bridge, which tells Ender how to integrate your package! This is where the magic happens. If you don't provide a bridge with the ender property, or if you're trying to include a package which wasn't intended to work with Ender, no worries! Ender will automatically default to a [CommonJS](http://wiki.commonjs.org/wiki/Modules/1.1) module integration and automatically add the exported methods directly to ender as top level methods. More on this below.
 
-If you you're not ready to publish your package, but you're ready to test it's integration with ender, don't worry. Simply create the package.json file, as if you were going to publish it, then navigate into the root of your directory and run:
+<h3>Packaging without publishing</h3>
+
+If you you're not ready to publish your package, but you're ready to test it's integration with ender, don't worry. Simply create the <code>package.json</code> file, as if you were going to publish it, then navigate into the root of your directory and run:
 
     $ npm install
 
@@ -254,7 +264,7 @@ Because in the browser - small, loosely coupled modules are the future, and larg
 
 License
 -------
-Ender.js (the wrapper) is licensed under MIT - *copyright 2011 Dustin Diaz & Jacob Thornton*
+Ender (the wrapper) is licensed under MIT - *copyright 2011 Dustin Diaz & Jacob Thornton*
 
 For the individual modules, see their respective licenses.
 
