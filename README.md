@@ -1,10 +1,14 @@
-Ender.js
---------
-an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only 8k Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
+<div id="intro"></div>
+
+What is this all about?
+-----------------------
+Ender is an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only *8k* Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
+
+    $("p[boosh~=ness]").addClass("clutch").show();
 
 Ender's Jeesh
 -------------
-By default, Ender's main Platoon for production battle ([Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)) consists of these 8 powerful core utilities:
+By default, Ender's build consists of these 8 powerful core utilities (we call this [Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)):
 
   * an expressive [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
@@ -16,8 +20,8 @@ By default, Ender's main Platoon for production battle ([Ender's Jeesh](http://e
   * and a core set of utilities provided by [underscore](http://documentcloud.github.com/underscore)
   * plus an extension API!
 
-Examples
---------
+What does ender look like?
+--------------------------
 
 <h3>DOM queries</h3>
 
@@ -127,23 +131,27 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
     var ender = $.noConflict(); // return '$' back to its original owner
     ender('#boosh a.foo').each(fn);
 
-The haps
+<div class="hr" id="guide"></div>
+
+The Haps
 --------
-Ender.js pulls together the beauty of well-designed modular software and proves that git submodules can actually work. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want remove a feature out entirely (like for example, the animation utility), you can use the Ender command utility and compose only the submodules you need.
+Ender.js pulls together the beauty of well-designed modular software and proves that git submodules can actually work. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want to remove a feature out entirely (like for example, the animation utility), you can use the Ender command utility and compose only the submodules you need.
 
 Building
 --------
 For those interested in having a play with Ender core. Here's the process. Assuming you have git already — *install [NodeJS](http://nodejs.org)* — then run the following commands in your workspace:
 
-    git clone https://github.com/ded/Ender.js.git
-    cd Ender.js
-    git submodule update --init
-    make
+    $ git clone https://github.com/ded/Ender.js.git
+    $ cd Ender.js
+    $ git submodule update --init
+    $ make
 
 Take special note that building with Ender will more than likely require frequently updating your submodules. Thus if you're unsure how this works, it's best to [read up on how submodules work](http://www.kernel.org/pub/software/scm/git/docs/git-submodule.html). However the simple answer is to get used to doing this:
 
-    git pull
-    git submodule update
+    $ git pull
+    $ git submodule update
+
+<div class="hr" id="docs"></div>
 
 Extending Ender
 ---------------
@@ -171,17 +179,13 @@ Have a look at the [Qwery package.json file](https://github.com/ded/qwery/blob/m
 
 Some important keys to note in this object that are required are *name*, *main*, and *ender*
 
-<h4>name</h4>
-This is the file that's created when building ender.
+**name** -- This is the file that's created when building ender.
 
-<h4>main</h4>
-
-This points to your main source code which ultimately gets integrated into Ender. This of course, can also be an array of files
+**main** -- This points to your main source code which ultimately gets integrated into Ender. This can also be an array of files:
 
     "main": ["blamo-a.js", "blamo-b.js"]
 
-<h4>ender</h4>
-This special key points to your bridge which tells Ender how to integrate your package! This is where the magic happens.
+**ender** -- This special key points to your bridge which tells Ender how to integrate your package! This is where the magic happens.
 
 The Bridge
 ----------
@@ -229,26 +233,34 @@ If you're building a Mobile Webkit or Android application, it may be a good idea
       return document.querySelectorAll(selector);
     };
 
+Building a custom platoon
+------------
+Currently in the works is a command-line interface to building published NPM modules into the Ender.js wrapper. It's super boss. We promise. Check out the [preview video](http://www.vimeo.com/22211892) of this in action. However the short explanation is that you can do this:
+
+    $ ender -b qwery,bonzo,bean,underscore
+
+This creates a customized Ender build suited to your liking :) It's currently in alpha stages, so please be gentle.
+
+<div class="hr" id="about"></div>
+
 Why all this?
 -------------
 Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past.
 
-Building a custom platoon
-------------
-Currently in the works is a command-line interface to building published NPM modules into the Ender.js wrapper. It's next-level future boss. We promise. Check out the [preview video](http://www.vimeo.com/22211892) of this in action. However the short explanation is that you can do this:
-
-    $ ender -b qwery,bonzo,bean,underscore
-
-This creates a customized Ender platoon suited to your liking :) It's currently in alpha stages, so please be gentle.
-
 License
 -------
-Ender.js (the wrapper) is licensed under MIT - copyright 2011 Dustin Diaz & Jacob Thornton
+Ender.js (the wrapper) is licensed under MIT - *copyright 2011 Dustin Diaz & Jacob Thornton*
 
 For the individual submodules, see their respective licenses.
 
 Contributors
 ------------
 
-* [Dustin Diaz](https://github.com/ded/ender.js/commits/master?author=ded)
-* [Jacob Thornton](https://github.com/ded/ender.js/commits/master?author=fat)
+* Dustin Diaz
+  [@ded](https://github.com/ded/ender.js/commits/master?author=ded)
+  ![ded](http://a2.twimg.com/profile_images/1115320538/ded.png)
+  <div class="clear"></div>
+* Jacob Thornton
+  [@fat](https://github.com/ded/ender.js/commits/master?author=fat)
+  ![fat](http://a1.twimg.com/profile_images/1213187079/eightbit-e3950b2f-24ee-4b03-9e1f-7e13c4cd9a68.png)
+  <div class="clear"></div>
