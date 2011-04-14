@@ -189,6 +189,14 @@ An important thing to note in this object is that ender relies on the properties
 
 **ender** -- This special key points to your bridge, which tells Ender how to integrate your package! This is where the magic happen. If you don't provide a bridge with the ender property, or if you're trying to include a package which wasn't intended to work with Ender, no worries! Ender will automatically default to a commonjs module integration and automatically add the exported methods directly to ender as top level methods. More on this below.
 
+If you you're not ready to publish your package, but you're ready to test it's integration with ender, don't worry. Simply create the package.json file, as if you were going to publish it, then navigate into the root of your directory and run:
+
+    $ npm install
+
+This will register a local only copy of your package, which ender will use when you try to build it into your library later:
+
+    $ ender -b qwery,bean,myPackage
+
 The Bridge
 ----------
 The bridge is what ender uses to connect modules to the main ender object -- it's what glues together all these otherwise independent packages into your awesome personalized library!
