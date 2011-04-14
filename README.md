@@ -2,13 +2,13 @@
 
 What is this all about?
 -----------------------
-Ender is an open, powerful, next level JavaScript library composed of application agnostic submodules wrapped in a slick intuitive interface. At only *8k* Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
+Ender is an open, powerful, next level JavaScript library composed of application agnostic modules wrapped in a slick intuitive interface. At only *8k* Ender can help you build anything from small prototypes to providing a solid base for large-scale rich applications on desktop and mobile devices.
 
     $("p[boosh~=ness]").addClass("clutch").show();
 
 Ender's Jeesh
 -------------
-By default, Ender's build consists of these 8 powerful core utilities (we call this [Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)):
+Ender provides the option to build from any registered NPM package, as well as these 8 powerful core utilities (we call these [Ender's Jeesh](http://en.wikipedia.org/wiki/List_of_Battle_School_students)):
 
   * an expressive [Class system](https://github.com/ded/klass)
   * a fast light-weight [selector engine](https://github.com/ded/qwery)
@@ -133,33 +133,35 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
 
 <div class="hr" id="guide"></div>
 
-The Haps
---------
-Ender.js pulls together the beauty of well-designed modular software and proves that git submodules can actually work. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want to remove a feature out entirely (like for example, the animation utility), you can use the Ender command utility and compose only the submodules you need.
+How to get started
+------------------
+Ender.js pulls together the beauty of well-designed modular software and proves that independent modules can actually work together. Thus if one part of the system goes bad or unmaintained, it can be replaced with another with minimal to zero changes to the wrapper (Ender). Furthermore if you want to remove a feature out entirely (like for example, the animation utility or classes), you can use the Ender command utility and compose only the modules you need.
 
-Building
---------
-For those interested in having a play with Ender core. Here's the process. Assuming you have git already — *install [NodeJS](http://nodejs.org)* — then run the following commands in your workspace:
+Building Ender
+--------------
+Building ender is super easy.
 
-    $ git clone https://github.com/ded/Ender.js.git
-    $ cd Ender.js
-    $ git submodule update --init
-    $ make
+To start, if you haven't already, *install [NodeJS](http://nodejs.org)* as well as *[npm](https://github.com/isaacs/npm). Then to install just run:
 
-Take special note that building with Ender will more than likely require frequently updating your submodules. Thus if you're unsure how this works, it's best to [read up on how submodules work](http://www.kernel.org/pub/software/scm/git/docs/git-submodule.html). However the simple answer is to get used to doing this:
+    $ npm install ender
 
-    $ git pull
-    $ git submodule update
+This will install ender as a command line tool. From here, navigate to the directly you would like to build into and run something like:
+
+    $ ender -b scriptjs,qwery,underscore
+
+This should generate both an ender.js file (for dev) as well a an ender.min.js (for prod) file.
+
+Currently, the ender build tool relies on NPM for pulling in the actual code for your library, therefor ender is only as recent as your latest NPM update.
 
 <div class="hr" id="docs"></div>
 
 Extending Ender
 ---------------
-Extending Ender is where the true power lies! Ender uses your existing [NPM](http://npmjs.org) *package.json* in your project root allowing you to export your extensions into Ender. There are three interfaces allowing you to hook into each piece appropriately.
+Extending Ender is where the true power lies! Ender leverages your existing [NPM](http://npmjs.org) *package.json* in your project root allowing you to export your extensions into Ender.
 
 <h3>package.json</h3>
 
-If you don't already have a package, create a file called *package.json* in your module root. It should look something like this:
+If you don't already have a package, create a file called *package.json* in your module root. This might also be a good time to register your package with NPM (This way others can use your awesome ender module). A completed package file should look something like this:
 
     {
       "name": "blamo",
@@ -177,7 +179,7 @@ If you don't already have a package, create a file called *package.json* in your
 
 Have a look at the [Qwery package.json file](https://github.com/ded/qwery/blob/master/package.json) to get a better idea of this in practice.
 
-Some important keys to note in this object that are required are *name*, *main*, and *ender*
+An important thing to note in this object is that ender relies on the properties *name*, *main*, and *ender*. Both Name and Main are already required by NPM, however the ender property is (as you might expect) unique to Ender.
 
 **name** -- This is the file that's created when building ender.
 
@@ -185,10 +187,11 @@ Some important keys to note in this object that are required are *name*, *main*,
 
     "main": ["blamo-a.js", "blamo-b.js"]
 
-**ender** -- This special key points to your bridge which tells Ender how to integrate your package! This is where the magic happens.
+**ender** -- This special key points to your bridge, which tells Ender how to integrate your package! This is where the magic happen. If you don't provide a bridge with the ender property, or if you're trying to include a package which wasn't intended to work with Ender, no worries! Ender will automatically default to a commonjs module integration and automatically add the exported methods directly to ender as top level methods. More on this below.
 
 The Bridge
 ----------
+The bridge is what ender uses to connect modules to the main ender object -- it's what glues together all these otherwise independent packages into your awesome personalized library!
 
 <h3>Top level methods</h3>
 
@@ -198,7 +201,7 @@ To create top level methods, like for example <code>$.myUtility(...)</code>, you
       myUtility: myLibFn
     });
 
-To see this in practice, see how [underscore.js extends Ender](https://github.com/ded/underscore/blob/master/ender.js).
+(*note - this is the default integration if no bridge is supplied*)
 
 <h3>The Internal chain</h3>
 
@@ -219,27 +222,21 @@ Within this scope the internal prototype is exposed to the developer with an exi
     $('p').rand();
     </script>
 
-<h3>Query API</h3>
+<h3>Selector Engine API</h3>
 
-By default Ender has a core set of default packages. One, namely [Qwery](https://github.com/ded/qwery/) as the CSS query engine, hooks into the Ender selector interface by setting the privileged <code>_select</code> method. That looks like this:
+Ender also exposes a unique variable called <code>$._select</code>, which allows you to set the Ender selector engine. Setting the selector engine provides ender with the $ method, like this:
+
+    $('#foo .bar')
+
+Setting the selector engine is done like so:
 
     $._select = mySelectorEngine;
 
 You can see it in practice inside [Qwery's ender bridge](https://github.com/ded/qwery/blob/master/src/ender.js)
 
-If you're building a Mobile Webkit or Android application, it may be a good idea to simply remove the selector engine and replace it with this:
+If you're building a Mobile Webkit or Android application, it may be a good idea to simply set it equal to QSA:
 
-    $._select = function (selector) {
-      return document.querySelectorAll(selector);
-    };
-
-Building a custom platoon
-------------
-Currently in the works is a command-line interface to building published NPM modules into the Ender.js wrapper. It's super boss. We promise. Check out the [preview video](http://www.vimeo.com/22211892) of this in action. However the short explanation is that you can do this:
-
-    $ ender -b qwery,bonzo,bean,underscore
-
-This creates a customized Ender build suited to your liking :) It's currently in alpha stages, so please be gentle.
+    $._select = document.querySelectorAll;
 
 <div class="hr" id="about"></div>
 
@@ -251,7 +248,7 @@ License
 -------
 Ender.js (the wrapper) is licensed under MIT - *copyright 2011 Dustin Diaz & Jacob Thornton*
 
-For the individual submodules, see their respective licenses.
+For the individual modules, see their respective licenses.
 
 Contributors
 ------------
