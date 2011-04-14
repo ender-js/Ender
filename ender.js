@@ -820,7 +820,7 @@ $._select = qwery.noConflict();/*!
     },
 
     offset: function () {
-      var el = this.elements[0];
+      var el = this.first();
       var width = el.offsetWidth;
       var height = el.offsetHeight;
       var top = el.offsetTop;
@@ -839,7 +839,7 @@ $._select = qwery.noConflict();/*!
     },
 
     attr: function (k, v) {
-      var el = this.elements[0];
+      var el = this.first();
       return typeof v == 'undefined' ?
         specialAttributes.test(k) ?
           stateAttributes.test(k) && typeof el[k] == 'string' ?
@@ -867,9 +867,39 @@ $._select = qwery.noConflict();/*!
       return this.map(function (el) {
         return el.parentNode.removeChild(el);
       });
+    },
+
+    scrollTop: function (y) {
+      return scroll.call(this, null, y, 'y');
+    },
+
+    scrollLeft: function (x) {
+      return scroll.call(this, x, null, 'x');
     }
 
   };
+
+  function scroll(x, y, type) {
+    var el = this.first();
+    if (x == null && y == null) {
+      return (isBody(el) ? getWindowScroll() : { x: el.scrollLeft, y: el.scrollTop })[type];
+    }
+    if (isBody(el)) {
+      window.scrollTo(x, y);
+    } else {
+      x != null && (el.scrollLeft = x);
+      y != null && (el.scrollTop = y);
+    }
+    return this;
+  }
+
+  function isBody(element) {
+    return element === window || (/^(?:body|html)$/i).test(element.tagName);
+  }
+
+  function getWindowScroll() {
+    return { x: window.pageXOffset || html.scrollLeft, y: window.pageYOffset || html.scrollTop };
+  }
 
   function bonzo(els) {
     return new _bonzo(els);
@@ -1195,7 +1225,7 @@ bonzo.noConflict();/**
   }
 
   function parse(prop) {
-    var p = parseFloat(prop), q = prop.replace(/^[\-\d\.]+/, '');
+    var p = parseFloat(prop), q = prop ? prop.replace(/^[\-\d\.]+/, '') : prop;
     return isNaN(p) ?
       { v: q,
         f: color,
@@ -1328,7 +1358,7 @@ bonzo.noConflict();/**
 
 !function(win, doc, timeout) {
   var script = doc.getElementsByTagName("script")[0],
-      list = {}, ids = {}, delay = {}, re = /^i|c/, loaded = 0, fns = [],
+      list = {}, ids = {}, delay = {}, re = /^i|c/, loaded = 0, fns = [], ol,
       scripts = {}, s = 'string', f = false, i, testEl = doc.createElement('a'),
       push = 'push', domContentLoaded = 'DOMContentLoaded', readyState = 'readyState',
       addEventListener = 'addEventListener', onreadystatechange = 'onreadystatechange',
@@ -1421,20 +1451,20 @@ bonzo.noConflict();/**
     }, 50);
   }
 
-  testEl.doScroll && doc.attachEvent(onreadystatechange, function ol() {
+  testEl.doScroll && doc.attachEvent(onreadystatechange, (ol = function ol() {
     /^c/.test(doc[readyState]) &&
     (loaded = 1) &&
     !doc.detachEvent(onreadystatechange, ol) &&
     each(fns, function (f) {
       f();
     });
-  });
+  }));
 
   var domReady = testEl.doScroll ?
     function (fn) {
       self != top ?
         !loaded ?
-          fns.push(fn) :
+          fns[push](fn) :
           fn() :
         !function () {
           try {
