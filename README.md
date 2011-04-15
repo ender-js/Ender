@@ -133,6 +133,7 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
 
 
 <h3>Your Module Here</h3>
+
 Remember, the Jeesh is here just to get you started!
 
     $.myMethod(function() {//does stuff});
