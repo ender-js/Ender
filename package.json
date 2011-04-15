@@ -1,7 +1,7 @@
 {
   "name": "ender",
   "description": "next level JavaScript modules",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
   "keywords": ["ender", "modules", "builder", "framework", "packager"],
   "main": "./ender.js",
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "colors": ">= 0.3.0",
-    "smoosh": ">= 0.1.0"
+    "smoosh": ">= 0.1.0",
+    "request": ">= 1.9.0"
   },
   "bin": {
     "ender": "./bin/ender"
