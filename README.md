@@ -264,6 +264,14 @@ If you're building a Mobile Webkit or Android application, it may be a good idea
 
     $._select = document.querySelectorAll;
 
+
+<div class="hr" id="download"></div>
+
+Get started with the default build
+-----------------
+If you're looking to test drive Ender with its default modules, have a play with [the compiled source](http://ender-js.s3.amazonaws.com/ender.min.js)
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/hHL2K/embedded/"></iframe>
+
 <div class="hr" id="about"></div>
 
 Why all this?
