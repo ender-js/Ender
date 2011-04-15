@@ -158,9 +158,15 @@ This will install ender as a command line tool. From here, navigate to the direc
 
     $ ender -b scriptjs,qwery,underscore
 
-This should generate both an ender.js file (for dev) as well a an ender.min.js (for prod).
+This should generate both an ender.js file (for dev) as well a an ender.min.js (for prod). For the default Jeesh, run the ender command with the <code>-b</code> option without arguments:
 
-Ender is only as recent as your latest NPM update.
+    $ ender -b
+
+which is synonymous to:
+
+    $ ender -b qwery,bean,bonzo,klass,reqwest,emile,scriptjs,domready,underscore
+
+Remember, Ender is only as recent as your latest NPM update. If you're new to NPM, it's a good idea to read Isaac's [Intro to NPM](http://foohack.com/2010/08/intro-to-npm/)
 
 <div class="hr" id="docs"></div>
 
@@ -170,7 +176,7 @@ Extending Ender is where the true power lies! Ender leverages your existing [NPM
 
 <h3>package.json</h3>
 
-If you don't already have a package, create a file called *package.json* in your module root. This might also be a good time to register your package with NPM (This way others can use your awesome ender module). A completed package file should look something like this:
+If you don't already have a package, create a file called *package.json* in your module root. This might also be a good time to register your package with NPM (This way others can use your awesome ender module (it also guarantees bragging rights))! A completed [package file](http://wiki.commonjs.org/wiki/Packages/1.0) should look something like this:
 
     {
       "name": "blamo",
@@ -232,6 +238,7 @@ Within this scope the internal prototype is exposed to the developer with an exi
 
     <script src="ender.js"></script>
     <script>
+    // an example of creating a utility that returns a random set of elements
     $.ender({
       rand: function () {
         return this.elements[Math.floor(Math.random() * (this.elements.length + 1))];
@@ -243,7 +250,7 @@ Within this scope the internal prototype is exposed to the developer with an exi
 
 <h3>Selector Engine API</h3>
 
-Ender also exposes a unique variable called <code>$._select</code>, which allows you to set the Ender selector engine. Setting the selector engine provides ender with the $ method, like this:
+Ender also exposes a unique privileged variable called <code>$._select</code>, which allows you to set the Ender selector engine. Setting the selector engine provides ender with the $ method, like this:
 
     $('#foo .bar')
 
@@ -261,7 +268,16 @@ If you're building a Mobile Webkit or Android application, it may be a good idea
 
 Why all this?
 -------------
-Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past.
+Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past. As we like to say, *only use what you need, when you need it*.
+
+Also, micro-utilities keep you out of having to rollback entire frameworks due to bugs found in individual parts. Instead you can simply compose the modules you want, at any version, in any combination! For example if there is a bug in klass @ version <code>1.0.6</code>, you can rollback:
+
+    $ npm activate klass@1.0.5
+
+In the same notion, you also get the advantage of being able to upgrade in small portions! For example if there are features you wish to use in a micro-release, you can simply update the module, then rebuild:
+
+    $ npm update klass
+    $ ender -b
 
 License
 -------
