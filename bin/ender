@@ -140,16 +140,17 @@ function output(data, filename) {
 
 function assemble(packages, _isAsync){
   console.log('assembling packages...');
-  return packages.map(function(name){
-    //var location = path.join(path.dirname(require.resolve(name)), 'package.json') //<-- ask guillermo about better way to do this
-    var location = path.join('node_modules', name, 'package.json')
+  var _sync = [], _async = [], _asyncBridges = [];
+
+  packages.forEach(function(name){
+    var location = path.join('node_modules', name, 'package.json') //<-- ask guillermo about better way to do this (require.resolve?)
       , packageJSON = JSON.parse(fs.readFileSync(location, 'utf-8'))
-      , isAsync = /ender|scriptjs/.test(name) ? false : _isAsync
+      , isAsync = /ender|scriptjs/.test(name) || !packageJSON.ender ? false : _isAsync
       , source;
 
     //CONSTRUCT MAIN SOURCE FILE
     if (!packageJSON.main) {
-      return console.log('package json not found');
+      return console.log(name + ' source not found');
     } else if (typeof packageJSON.main == 'string') {
       packageJSON.main = [ packageJSON.main ];
     }
@@ -159,27 +160,36 @@ function assemble(packages, _isAsync){
         return fs.readFileSync(path.join('node_modules', name, p), 'utf-8');
       }).join('\n');
     } else {
-      source = '$.script([' + packageJSON.main.map(function (p) {
+      _async = _async.concat(packageJSON.main.map(function (p) {
         return '"' + path.join('node_modules', name, p) + '"';
-      }).join(',') + '], "' + name + '");\n$.script.ready("' + name + '", function () {\n';
+      }));
     }
 
     //CONSTRUCT BRIDGE
     if (name != 'ender') {
       if (packageJSON.ender) {
-        source += fs.readFileSync(path.join('node_modules', name, packageJSON.ender), 'utf-8');
+        var content = fs.readFileSync(path.join('node_modules', name, packageJSON.ender), 'utf-8');
+        isAsync ? _asyncBridges.push(content) : (source += content);
       } else if (!isAsync) {
         source = commonJSBridge.head + source + commonJSBridge.foot;
       }
     }
 
-    //CLOSE ASYNC LOADER
-    if (isAsync) {
-      source += '\n});';
+    if (!isAsync) {
+      _sync.push(source);
     }
+  });
 
-    return source;
-  }).join('\n\n');
+  var result = _sync.join('\n');
+  if (_isAsync) {
+    result += '\n\n' +
+      '$.require([' + _async.join(',') + '], "ender");\n' +
+      '$.ready("ender", function () { \n' +
+        _asyncBridges.join('\n\n') +
+      '\n});'
+  }
+
+  return result;
 }
 
 /*COMMAND METHODS*/

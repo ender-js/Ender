@@ -184,17 +184,20 @@ The <code>just</code> method is exactly the same as build, except it will remove
 <h3>Async</h3>
 The <code>async</code> method is really *freaking* awesome! Use this to build a custom ender library which loads all it's modules async using script.js!! Wow. To build all you have to do is something like:
 
-    $ ender asyc domready qwery underscore
+    $ ender asyc domready qwery bean
 
     //or
 
-    $ ender -a domready qwery underscore
+    $ ender -a domready qwery bean
 
-Each module is loaded using script.js's "new school" async style of loading, giving each module a proper ready namespace that you can access like this:
+Each module is then loaded using script.js's "new school" async style of loading. You can then hook into ender's ready method, to know when you can start using ender!!
 
-    $.script.ready('qwery', function() {
-      var foo = $('.foo');
+    $.ready('ender', function() {
+      //all ender packages loaded async...
+      $('#container').emit('click');
     });
+
+(*note: a module must have a bridge file to be asynchronously loaded*);
 
 If you are unfamiliar with the script.js api, you can read up more on it [here](https://github.com/ded/script.js).
 
