@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs')
   , path = require('path')
+  , rimraf = require('rimraf')
   , exec = require('child_process').exec
   , uglifyJS = require('uglify-js')
     require('colors');
@@ -28,9 +29,26 @@ var ENDER = {
       ENDER.async.apply(this, arguments);
     },
 
+    '-j': function () {
+      ENDER.just.apply(this, arguments);
+    },
+
+    '-h': function () {
+      ENDER.help.apply(this, arguments);
+    },
+
     async: function (packages) {
       packages.unshift('scriptjs'); //scriptjs is a dependency
       ENDER.build.call(this, packages, true);
+    },
+
+    just: function (packages) {
+      ENDER.build.call(this, packages, false, function () {
+        rimraf('node_modules', function () {
+          if (err) throw err;
+          console.log('node_modules directly successfully cleaned up.'.green)
+        });
+      });
     },
 
     build: function (packages, isAsync) {
@@ -53,6 +71,11 @@ var ENDER = {
         '-------\n' +
         '- build:\n'.yellow +
         '  + accepts multiple npm packages to build into ender library\n' +
+        '  + example: $ ender build domready,qwery,bean\n' +
+        '  + note: alternatively you can specify the -b flag\n' +
+        '\n' +
+        '- just:\n'.yellow +
+        '  + accepts multiple npm packages to build into ender library + cleans up node_modules folder after its finished\n' +
         '  + example: $ ender build domready,qwery,bean\n' +
         '  + note: alternatively you can specify the -b flag\n' +
         '\n' +
