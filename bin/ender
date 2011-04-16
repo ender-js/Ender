@@ -3,7 +3,7 @@ var fs = require('fs')
   , path = require('path')
   , rimraf = require('rimraf')
   , exec = require('child_process').exec
-  , uglifyJS = require('uglify-js')
+  , uglifyJS = require('uglify-js');
     require('colors');
 
 var commonJSBridge = {
@@ -44,14 +44,14 @@ var ENDER = {
 
     just: function (packages) {
       ENDER.build.call(this, packages, false, function () {
-        rimraf('node_modules', function () {
+        rimraf('node_modules', function (err) {
           if (err) throw err;
-          console.log('node_modules directly successfully cleaned up.'.green)
+          console.log('node_modules directly successfully cleaned up.'.green);
         });
       });
     },
 
-    build: function (packages, isAsync) {
+    build: function (packages, isAsync, callback) {
       if (!packages.length) {
         return console.log('error: ender build requires packages.'.yellow);
       }
@@ -62,6 +62,7 @@ var ENDER = {
         var source = assemble(packages, isAsync);
         output(source, 'ender');
         uglify(source, output, 'ender.min');
+        callback && callback();
       });
     },
 
@@ -87,9 +88,9 @@ var ENDER = {
         '------------\n' +
         'If you get stuck please visit ' + 'http://github.com/ender-js/Ender'.yellow + ' and file an issue.\n\n' +
         'You may also want to consider @messaging ' + '@fat'.yellow + ' or ' + '@ded'.yellow + ' on twitter directly\n'
-        )
+        );
     }
-}
+};
 
 /* UTILITY METHODS */
 function unique(arr) {
@@ -155,7 +156,7 @@ function assemble(packages, _isAsync){
 
     if (!isAsync) {
       source = packageJSON.main.map(function(p) {
-        return fs.readFileSync(path.join('node_modules', name, p), 'utf-8')
+        return fs.readFileSync(path.join('node_modules', name, p), 'utf-8');
       }).join('\n');
     } else {
       source = '$.script([' + packageJSON.main.map(function (p) {
@@ -166,7 +167,7 @@ function assemble(packages, _isAsync){
     //CONSTRUCT BRIDGE
     if (name != 'ender') {
       if (packageJSON.ender) {
-        source += fs.readFileSync(path.join('node_modules', name, packageJSON.ender), 'utf-8')
+        source += fs.readFileSync(path.join('node_modules', name, packageJSON.ender), 'utf-8');
       } else if (!isAsync) {
         source = commonJSBridge.head + source + commonJSBridge.foot;
       }
@@ -174,7 +175,7 @@ function assemble(packages, _isAsync){
 
     //CLOSE ASYNC LOADER
     if (isAsync) {
-      source += '\n});'
+      source += '\n});';
     }
 
     return source;
@@ -199,7 +200,7 @@ function npmVersion(callback) {
 
 function npmInstall(packages, callback) {
   npmVersion(function (ver) {
-    var install = parseInt(ver.split('.')[0]) < 1 ? 'npm bundle install ' : 'npm install ';
+    var install = parseFloat(ver.split('.')[0]) < 1 ? 'npm bundle install ' : 'npm install ';
     console.log('installing packages with command "' + install + packages.join(' ') + '"...');
     console.log('this can take a minute...'.yellow);
     exec(install + packages.join(' '), function () {
