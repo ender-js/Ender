@@ -1,224 +1,274 @@
 #!/usr/bin/env node
-var fs = require('fs'),
-    smoosh = require('smoosh'),
-    request = require('request'),
-    exec = require('child_process').exec;
+var fs = require('fs')
+  , path = require('path')
+  , exec = require('child_process').exec;
     require('colors');
 
-!function () {
-
-  var halt = false;
-
-  var defaultLibs = [
-    "qwery",
-    "bean",
-    "bonzo",
-    "klass",
-    "reqwest",
-    "emile",
-    "scriptjs",
-    "underscore",
-    "domready"
+var jeesh = [
+  , "qwery"
+  , "bean"
+  , "bonzo"
+  , "klass"
+  , "reqwest"
+  , "emile"
+  , "scriptjs"
+  , "underscore"
+  , "domready"
   ];
 
-  var copyright = '/*!' +
-    '\n  * Ender.js: next-level JavaScript' +
-    '\n  * copyright Dustin Diaz & Jacob Thornton 2011 (@ded @fat)' +
-    '\n  * https://github.com/ender-js/Ender' +
-    '\n  * License MIT' +
-    '\n  */\n';
+var commonJSWrapper = {
+    head: '!function () { var module = { exports: {} }; '
+  , foot: ' $.ender(module.exports); }();'
+};
 
 
-  var modExportWrapper = {
-    head: '!function () { var module = { exports: {} }; ',
-    foot: ' $.ender(module.exports); }();'
-  };
-  var enderWrapper = '';
-  request({uri: 'https://github.com/ender-js/Ender/raw/master/src/ender.js'},
-    function (error, response, body) {
-      if (!error) {
-        enderWrapper = copyright + body.toString();
-        listInstalled();
-      } else {
-        console.log('unable to fetch the main ender wrapper. aborting!'.red);
-      }
+/*
+ * ender cli types
+ */
 
+var ENDER = {
+
+    build: function (packages) {
+      packages.unshift('ender');
+      npmInstall(packages, function (error, out, stderr) {
+        if (error) return console.log(error);
+        assemble(packages);
+      });
     }
-  );
 
-  var packages;
-  function listInstalled() {
-    exec('npm ls installed', function (error, out, stderr) {
-      if (!error) {
-        var re = /(?:^|\n)([\w\-]+)@[\d\.]+(?:\s)/gi;
-        packages = out.match(re).map(function (p) {
-          return p.replace(/\n|(@.+)/g, '');
-        });
-        processArgs();
-      }
-    });
-  }
+}
 
-  var args = process.argv.slice(2),
-      flags,
-      outDir = './',
-      totalLibs = 0;
+function assemble(packages){
+  var assemblage = [];
+  packages.forEach(function(name){
+    //var location = path.join(path.dirname(require.resolve(name)), 'package.json') //<-- ask guillermo about better way to do this
+    var location = path.join('node_modules', name, 'package.json')
+      , packageJSON = JSON.parse(fs.readFileSync(location, 'utf-8'));
 
-  if (args[0][0] == '-') {
-    flags = args[0].replace(/^\-/, '').split('');
-  } else {
-    flags = [args[0]];
-  }
-
-  function processArgs() {
-    flags.forEach(function(flag) {
-      switch (flag) {
-        case 'b':
-          var input = args[1] ? args[1].split(',') : defaultLibs;
-          totalLibs = input.length;
-          console.log(('Building the Dragon Army with '.cyan) + ((input.length).toString().red) + (' modules'.green));
-
-          input.forEach(function (lib) {
-            var installed = false, i;
-
-            for (i = 0; i < packages.length; i++) {
-              if (packages[i] == lib) {
-                installed = true;
-                console.log('module ' + lib + ' already installed ✓');
-                addToBundle(lib);
-                break;
-              }
-            }
-
-            if (!installed) {
-              console.log(('attempting to install ' + lib + '...').cyan);
-              var cmd = 'npm install ' + lib;
-              var retry = false;
-              function command(input) {
-                if (retry) {
-                  console.log('could not install ' + lib + '. trying sudo');
-                }
-                exec(input, function (error, out) {
-                  if (!error) {
-                    console.log('successful installation of ' + lib);
-                    addToBundle(lib);
-                  } else {
-                    var isNotNpmPackage = !!eval(error).toString().match(/ERR! 404/);
-                    if (isNotNpmPackage) {
-                      console.log(('skipping ' + lib + ' because it is not a published npm package...').red);
-                      totalLibs--;
-                      addToBundle(false);
-                      return;
-                    }
-                    retry = true;
-                    command('sudo ' + cmd);
-                  }
-                });
-              }
-              command(cmd);
-            }
-          });
-
-          break;
-      }
-    });
-  }
-
-  var outputFileBuffer = '';
-  function addToBundle(lib) {
-    if (!lib) {
-      outputAndSmoosh();
+    //CONSTRUCT MAIN SOURCE FILE
+    if (!packageJSON.main) {
       return;
+    } else if (typeof packageJSON.main == 'string') {
+      packageJSON.main = [ packageJSON.main ];
     }
-    exec('npm view ' + lib, function (error, out) {
+    var source = packageJSON.main.map(function(p) {
+      console.log(path.join('node_modules', name, p));
+      return fs.readFileSync(path.join('node_modules', name, p), 'utf-8')
+    }).join('\n');
+    console.log(source);
+  });
+}
 
-      if (!error) {
-        var info = eval('(' + out + ')');
+/*COMMAND METHODS*/
+function getCommand(callback) {
+  var args = process.argv.slice(2)
+    , type = args.shift();
+  callback(type.toLowerCase(), args.join(',').replace(/\s|\,(?=\,)/g,'').split(','));
+}
 
-        var warn = false;
-        if (!info.repository) {
-          console.log(('sorry. ' + lib + ' does not have an associated repository we could find. skipping...').yellow);
-          totalLibs--;
-          outputAndSmoosh();
-          return;
-        }
-        if (!info.repository.url) {
-          console.log(('sorry. ' + lib + ' does not have a corresponding URL that we could lookup. skipping...').yellow);
-          totalLibs--;
-          outputAndSmoosh();
-          return;
-        }
+/*NPM METHODS*/
+function npmVersion(callback) {
+  exec('npm --version', function (error, out, stderr) {
+    if (error) return error;
+    console.log("Building using NPM version " + out.replace(/\r\n/g, ''));
+    callback(out);
+  });
+}
 
-        if (!info.repository.url.match(/github\.com/)) {
-          console.log(('sorry. only github.com repositories are supported at this time. skipping ' + lib + '...').yellow);
-          totalLibs--;
-          outputAndSmoosh();
-          return;
-        }
-
-        var url = info.repository.url.replace(/^(git:|http:)/, 'https:').replace(/\.git$/, '') + '/raw/master/';
-        // https://github.com/ded/klass/raw/master/src/ender.js
-        // console.log(info);
-        var ender = url + info.ender;
-        var main = url + info.main; // assume it's just a string for now (but it can be an array)
-
-
-          request({uri: main}, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-
-              if (!info.ender) {
-                console.log((lib + ' does not include an Ender integration. Defaulting to module.exports...').yellow);
-                outputFileBuffer += modExportWrapper.head;
-                outputFileBuffer += body;
-                outputFileBuffer += modExportWrapper.foot;
-                outputAndSmoosh();
-              } else {
-                outputFileBuffer += body;
-                getEnderFile();
-              }
-
-            } else {
-              console.log('main source for ' + lib + ' was not found at the repository URL'.red);
-            }
-          });
-
-          function getEnderFile() {
-            request({uri: ender}, function (error, response, body) {
-              if (!error && response.statusCode == 200) {
-                outputFileBuffer += body;
-                outputAndSmoosh();
-              } else {
-                console.log('an Ender bridge file was not found at the repository URL'.red);
-              }
-            });
-          }
-
-
-      } else {
-        console.log(('"' + lib + '" doesn\'t appear to be an NPM module').red);
-        console.log(error);
-      }
+function npmInstall(packages, callback) {
+  npmVersion(function (ver) {
+    var install = parseInt(ver.split('.')[0]) < 1 ? 'npm bundle install ' : 'npm install ';
+    console.log('installing packages with command "' + install + packages.join(' ') + '"...');
+    console.log('this can take a min...');
+    exec(install + packages.join(' '), function () {
+      console.log('finished installing local packages!');
+      callback.apply(this, arguments);
     });
-  }
+  });
+}
+
+/* INIT ENDER CLI */
+(function init() {
+  getCommand(function(type, args) {
+    ENDER[type](args);
+  });
+}());
 
 
-  function outputAndSmoosh() {
-    if (--totalLibs > 0) {
-      return;
-    }
-    fs.writeFile(outDir + 'ender.js', enderWrapper + outputFileBuffer, 'utf8', function () {
-      smoosh.config({
-        "quiet": true,
-        "JAVASCRIPT": {
-          "DIST_DIR": outDir,
-          "ender": [
-            outDir + 'ender.js'
-          ]
-        }
-      }).build();
-      console.log('Your platoon has been created ✓'.green);
-    });
-  }
 
 
-}();
+
+
+
+
+
+
+
+
+// getNPMVersion(function (version) {
+//   install(version, callback)
+// });
+
+
+
+  //
+  // var args = process.argv.slice(2),
+  //     flags,
+  //     outDir = './',
+  //     totalLibs = 0;
+  //
+  // if (args[0][0] == '-') {
+  //   flags = args[0].replace(/^\-/, '').split('');
+  // } else {
+  //   flags = [args[0]];
+  // }
+  //
+  // function processArgs() {
+  //   flags.forEach(function(flag) {
+  //     switch (flag) {
+  //       case 'b':
+  //         var input = args[1] ? args[1].split(',') : defaultLibs;
+  //         totalLibs = input.length;
+  //         console.log(('Building the Dragon Army with '.cyan) + ((input.length).toString().red) + (' modules'.green));
+  //
+  //         input.forEach(function (lib) {
+  //           var installed = false, i;
+  //
+  //           for (i = 0; i < packages.length; i++) {
+  //             if (packages[i] == lib) {
+  //               installed = true;
+  //               console.log('module ' + lib + ' already installed ✓');
+  //               addToBundle(lib);
+  //               break;
+  //             }
+  //           }
+  //
+  //           if (!installed) {
+  //             console.log(('attempting to install ' + lib + '...').cyan);
+  //             var cmd = 'npm install ' + lib;
+  //             var retry = false;
+  //             function command(input) {
+  //               if (retry) {
+  //                 console.log('could not install ' + lib + '. trying sudo');
+  //               }
+  //               exec(input, function (error, out) {
+  //                 if (!error) {
+  //                   console.log('successful installation of ' + lib);
+  //                   addToBundle(lib);
+  //                 } else {
+  //                   var isNotNpmPackage = !!eval(error).toString().match(/ERR! 404/);
+  //                   if (isNotNpmPackage) {
+  //                     console.log(('skipping ' + lib + ' because it is not a published npm package...').red);
+  //                     totalLibs--;
+  //                     addToBundle(false);
+  //                     return;
+  //                   }
+  //                   retry = true;
+  //                   command('sudo ' + cmd);
+  //                 }
+  //               });
+  //             }
+  //             command(cmd);
+  //           }
+  //         });
+  //
+  //         break;
+  //     }
+  //   });
+  // }
+  //
+  // var outputFileBuffer = '';
+  // function addToBundle(lib) {
+  //   if (!lib) {
+  //     outputAndSmoosh();
+  //     return;
+  //   }
+  //   exec('npm view ' + lib, function (error, out) {
+  //
+  //     if (!error) {
+  //       var info = eval('(' + out + ')');
+  //
+  //       var warn = false;
+  //       if (!info.repository) {
+  //         console.log(('sorry. ' + lib + ' does not have an associated repository we could find. skipping...').yellow);
+  //         totalLibs--;
+  //         outputAndSmoosh();
+  //         return;
+  //       }
+  //       if (!info.repository.url) {
+  //         console.log(('sorry. ' + lib + ' does not have a corresponding URL that we could lookup. skipping...').yellow);
+  //         totalLibs--;
+  //         outputAndSmoosh();
+  //         return;
+  //       }
+  //
+  //       if (!info.repository.url.match(/github\.com/)) {
+  //         console.log(('sorry. only github.com repositories are supported at this time. skipping ' + lib + '...').yellow);
+  //         totalLibs--;
+  //         outputAndSmoosh();
+  //         return;
+  //       }
+  //
+  //       var url = info.repository.url.replace(/^(git:|http:)/, 'https:').replace(/\.git$/, '') + '/raw/master/';
+  //       // https://github.com/ded/klass/raw/master/src/ender.js
+  //       // console.log(info);
+  //       var ender = url + info.ender;
+  //       var main = url + info.main; // assume it's just a string for now (but it can be an array)
+  //
+  //
+  //         request({uri: main}, function (error, response, body) {
+  //           if (!error && response.statusCode == 200) {
+  //
+  //             if (!info.ender) {
+  //               console.log((lib + ' does not include an Ender integration. Defaulting to module.exports...').yellow);
+  //               outputFileBuffer += modExportWrapper.head;
+  //               outputFileBuffer += body;
+  //               outputFileBuffer += modExportWrapper.foot;
+  //               outputAndSmoosh();
+  //             } else {
+  //               outputFileBuffer += body;
+  //               getEnderFile();
+  //             }
+  //
+  //           } else {
+  //             console.log('main source for ' + lib + ' was not found at the repository URL'.red);
+  //           }
+  //         });
+  //
+  //         function getEnderFile() {
+  //           request({uri: ender}, function (error, response, body) {
+  //             if (!error && response.statusCode == 200) {
+  //               outputFileBuffer += body;
+  //               outputAndSmoosh();
+  //             } else {
+  //               console.log('an Ender bridge file was not found at the repository URL'.red);
+  //             }
+  //           });
+  //         }
+  //
+  //
+  //     } else {
+  //       console.log(('"' + lib + '" doesn\'t appear to be an NPM module').red);
+  //       console.log(error);
+  //     }
+  //   });
+  // }
+  //
+  //
+  // function outputAndSmoosh() {
+  //   if (--totalLibs > 0) {
+  //     return;
+  //   }
+  //   fs.writeFile(outDir + 'ender.js', enderWrapper + outputFileBuffer, 'utf8', function () {
+  //     smoosh.config({
+  //       "quiet": true,
+  //       "JAVASCRIPT": {
+  //         "DIST_DIR": outDir,
+  //         "ender": [
+  //           outDir + 'ender.js'
+  //         ]
+  //       }
+  //     }).build();
+  //     console.log('Your platoon has been created ✓'.green);
+  //   });
+  // }
