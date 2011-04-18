@@ -146,8 +146,8 @@ Ender pulls together the beauty of well-designed modular software in an effort t
 
 Uniquely, if one part of your library goes bad or unmaintained, it can be replaced with another with minimal to zero changes to your actual application code! Furthermore if you want to remove a feature out entirely (like for example, the animation utility or classes), you can use the Ender command utility and compose only the modules you need.
 
-Building Ender
---------------
+Building With Ender
+-------------------
 Building ender is *super easy*.
 
 To start, if you haven't already, install [NodeJS](http://nodejs.org) and [NPM](https://github.com/isaacs/npm). Then to install just run:
@@ -157,6 +157,7 @@ To start, if you haven't already, install [NodeJS](http://nodejs.org) and [NPM](
 This will install Ender as a command line tool. Once Ender is installed you have four methods at your disposal: <code>build</code>, <code>just</code>, <code>async</code>, and <code>help</code>.
 
 <h3>Build</h3>
+
 Build is the standard method for Ender bundling. To use it, simply navigate to the directly you would like to build into and run something like:
 
     $ ender build scriptjs,qwery,underscore
@@ -172,6 +173,7 @@ This should generate both an ender.js file (for dev) as well a an ender.min.js (
 (note: This will also generate a node_modules folder... keeping this, will speed up building in the future if you plan on adding additional packages. However, feel free to remove it if you'd like. See <code>just</code> method for building without this folder.)
 
 <h3>Just</h3>
+
 The <code>just</code> method is exactly the same as build, except it will remove the *node-modules* folder after it has completed building. Use this if you don't plan on rebuilding ender multiple times or are worried about directory sizes. Using <code>just</code>, looks like:
 
     $ ender just scriptjs,qwery,underscore
@@ -182,6 +184,7 @@ The <code>just</code> method is exactly the same as build, except it will remove
 
 
 <h3>Async</h3>
+
 The <code>async</code> method is really *freaking* awesome! Use this to build a custom ender library which loads all it's modules async using script.js!! Wow. To build all you have to do is something like:
 
     $ ender asyc domready qwery bean
@@ -204,10 +207,12 @@ If you are unfamiliar with the script.js api, you can read up more on it [here](
 (*note: There is no need to include script.js when using the async build method -- it will be included by default*)
 
 <h3>help</h3>
+
 <code>Help</code> gives you a simple run through of the available methods. More documentation will likely be added here down the line.
 
 
 <h3>NPM</h3>
+
 If you haven't realized already, ender is leveraging npm to lots of stuff! So, if you're new to NPM, it's a good idea to read Isaac's [Intro to NPM](http://foohack.com/2010/08/intro-to-npm/). Also, remember, ender is only as up to date as your last npm update.
 
 <div class="hr" id="docs"></div>
