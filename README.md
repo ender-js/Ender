@@ -153,6 +153,10 @@ Building ender is *super easy*.
 To start, if you haven't already, install [NodeJS](http://nodejs.org) and [NPM](https://github.com/isaacs/npm). Then to install just run:
 
     $ npm install ender
+    
+    //or if you're using npm 1.0 rc
+    
+    $ nmp install ender -g
 
 This will install Ender as a command line tool. Once Ender is installed you have four methods at your disposal: <code>build</code>, <code>just</code>, <code>async</code>, and <code>help</code>.
 
