@@ -68,7 +68,7 @@ The <code>async</code> method generates a library which asynchronously loads its
 
     $ ender async domready qwery underscore
 
-Each package is then loaded using script.js's "new school" style of loading, which you can later hook into ender's ready method -- this will let you know when you can start using your libary :D
+Each package is then loaded using script.js's "new school" style of loading and given a special 'ender' event which you can later hook into by using Ender's <code>ready</code> method -- check it out below:
 
     $.ready('ender', function() {
       //all ender packages have loaded async...
