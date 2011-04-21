@@ -87,13 +87,15 @@ Info will give you the current status of your Ender built library. Status inform
 
     $ ender info
 
-<h3>Add (+, add)</h3>
+<h3>Add (+, add, set)</h3>
 
 It's not always possible to know which packages you may or may not want when beginning a new project and ender wants to encourage you to be as agile as possible! Build your initial library light and push in more packages whenever you run into the need. To do this, use Ender's <code>add</code> method. Simply run:
 
     $ ender add backbone
 
-The above will append backbone to your existing ender.js and ender.min.js builds.
+The above will append backbone to your existing ender.js and ender.min.js builds. You may also use add to update a package to a particular version:
+
+    $ ender set bean@0.0.3
 
 <h3>Remove (-d, remove)</h3>
 
