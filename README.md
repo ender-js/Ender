@@ -50,7 +50,7 @@ Notice when building you can include as many packages as you like. This will gen
 
 With build, the ender.js files will include all packages inlined for her development pleasure.
 
-*note: A node_modules folder is the folder npm uses for installing packages. Keeping this makes building your ender files faster, but is otherwise optional. If you'd prefer to have this directory cleaned up after your build peep the <code>just</code> method.*
+*note: The node_modules folder is the directory NPM uses for installing packages. Keeping this makes building your ender files faster, but is otherwise optional. If you'd prefer to have this directory cleaned up after your build checkout the <code>just</code> method below.*
 
 <h3>Just (-j, just)</h3>
 
