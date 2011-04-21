@@ -29,15 +29,11 @@ Once you've gotten those, simply run:
 
     $ npm install ender
 
-    //or if you're a boss and you're using the latest npm 1.0 rc, run:
+    //or if you're a boss and you're using the latest npm 1.0 rc:
 
     $ npm install ender -g
 
-This will install Ender as a command line tool. Try running
-
-    $ ender help
-
-That will print you out some command line docs and ensure everything is working fine :D
+This will install Ender as a command line tool. So let's get to it...
 
 BUILD METHODS
 -------------
