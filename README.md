@@ -165,7 +165,7 @@ The bridge is an optional javascript integration file used to connect your code 
 
 
 
-<div id="Library"></div>
+<div id="Integration"></div>
 
 Cohesion
 ---------
