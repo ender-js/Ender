@@ -60,7 +60,7 @@ The <code>just</code> method is exactly the same as build, except it will remove
 
 This will generate only an uncompressed ender.js file and a compressed ender.min.js file.
 
-*note: just will remove the node_modules folder itself, not just the folders used to build ender files... so use at your own risk ;)*
+*note: just will completely remove the node_modules folder itself... think "rm -rf"... so use at your own risk*
 
 <h3>Async (-a, async)</h3>
 
