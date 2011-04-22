@@ -176,7 +176,7 @@ The bridge is an optional javascript integration file used to connect your code 
 *note: The bridge is required for asynchronously loading your package with the <code>async</code> build method.*
 
 
-<div id="Integration"></div>
+<div id="integrate"></div>
 
 Cohesion
 ---------
@@ -228,7 +228,7 @@ This is great news if you're building a Mobile Webkit or Android application, si
       return (root || document).querySelectorAll(selector);
     });
 
-<div id="JEESH"></div>
+<div id="jeesh"></div>
 
 The Jeesh
 ---------
