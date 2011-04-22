@@ -19,7 +19,7 @@ Ponder this... Ender is unique and important in two key ways:
 With Ender, if one part of your library goes bad or unmaintained, it can be replaced with another. Need a specific package version? no big deal. Want to load all your packages asynchronously to cut down on page load? Ender can do that for you too.
 
 
-<div id="build"></div>
+<div class="hr" id="build"></div>
 
 ok, ok, ok... how do i get?
 ---------------------------
@@ -176,7 +176,7 @@ The bridge is an optional javascript integration file used to connect your code 
 *note: The bridge is required for asynchronously loading your package with the <code>async</code> build method.*
 
 
-<div id="integrate"></div>
+<div class="hr" id="integrate"></div>
 
 Cohesion
 ---------
@@ -228,7 +228,7 @@ This is great news if you're building a Mobile Webkit or Android application, si
       return (root || document).querySelectorAll(selector);
     });
 
-<div id="jeesh"></div>
+<div class="hr" id="jeesh"></div>
 
 The Jeesh
 ---------
