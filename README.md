@@ -1,12 +1,12 @@
 <div id="intro"></div>
 
-Welcome to You're "Doom!"
+WELCOME TO YOU'RE "DOOM!"
 -------------------------
 Ender is not a JavaScript library in the traditional sense. So don't rush out and try to replace jQuery or MooTools with Ender... It just wouldn't work.... But! **you can** build a library from Ender which will. And you should. right now.
 
 That's because: *Ender is an open, powerful, micro-to-macro API for composing your own custom JavaScript library; it wraps up application agnostic, independent modules into a slick, intuitive, and familiar interface so you don't have to.*
 
-ok, sure... but why?
+OK, SURE... BUT WHY?
 --------------------
 Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past!
 
@@ -21,8 +21,8 @@ With Ender, if one part of your library goes bad or unmaintained, it can be repl
 
 <div class="hr" id="build"></div>
 
-ok, ok, ok... how do i get?
----------------------------
+BUILDING
+--------
 Before you do anything, you're going to need to install Ender. Ender is built with NodeJS and leverages NPM heavily for all that slick package management. What this means is that to use Ender you're going to first need to have both [NodeJS](http://nodejs.org) and [NPM](https://github.com/isaacs/npm) installed (if you haven't already).
 
 Once you have those, simply run:
@@ -143,7 +143,7 @@ Also, as you might expect, you can also include versions when adding packages to
 
     $ ender add underscore@0.1.0
 
-Building your own packages
+BUILDING YOUR OWN PACKAGES
 --------------------------
 Because Ender relies on NPM for package management -- extending your ender library is as simple as publishing to NPM -- let's check it out.
 
@@ -178,8 +178,8 @@ The bridge is an optional javascript integration file used to connect your code 
 
 <div class="hr" id="integrate"></div>
 
-Cohesion
----------
+INTEGRATING
+-----------
 The front end API provided by [ender-js](http://github.com/ender-js/ender-js) is what glues together and ultimately offers cohesion and a sense of familiarity to the different packages built into your library by Ender. It's simple, elegant, and super flexible. Let's take a look how you can leverage it, if you're interested in packaging your own stuff!
 
 <h3>Top level methods</h3>
@@ -230,7 +230,7 @@ This is great news if you're building a Mobile Webkit or Android application, si
 
 <div class="hr" id="jeesh"></div>
 
-The Jeesh
+THE JEESH
 ---------
 
 The Jeesh is like a booster pack for ender. At only *10k* the Jeesh can help you build anything from small prototypes to providing a solid base for large-scale rich application for desktop and mobile devices. At it's core, it's a collection of packages that we've found particularly useful for major use-case development endeavors -- but we encourage use to <code>add</code> and <code>remove</code> packages to really make it your own. Currently, the Jeesh includes:
@@ -246,7 +246,7 @@ The Jeesh is like a booster pack for ender. At only *10k* the Jeesh can help you
   * Klass - an expressive [Class system](https://github.com/ded/klass)
 
 
-What does this setup look like?
+WHAT DOES THIS SETUP LOOK LIKE?
 -------------------------------
 
 <h3>DOM queries</h3>
@@ -337,25 +337,25 @@ Utility methods provided by [underscore](http://documentcloud.github.com/undersc
     ender('#boosh a.foo').each(fn);
 
 
-Get started with the default build
-----------------------------------
+GETTING STARTED WITH THE JEESH
+------------------------------
 If you're looking to test drive this setup, have a play with [the compiled source](http://ender-js.s3.amazonaws.com/ender.min.js)
 <iframe id="fiddle-example" src="http://jsfiddle.net/yakWA/2/embedded/"></iframe>
 
 
 <div class="hr" id="about"></div>
 
-One last thing
---------------
+ABOUT THIS PROJECT
+------------------
 We would love to hear how you're using ender or why you're not. What you love... what you hate... And we would love all the help we can get! Got a great idea? Open an issue, submit a pull request, or [message us on twitter](http://twitter.com/intent/tweet?text=@fat%20@ded%20-%20I'm%20using%20ender.%20Check%20it%20out%20at%20http://)!
 
-License
+LICENSE
 -------
 Ender is licensed under MIT - *copyright 2011 Dustin Diaz & Jacob Thornton*
 
 For the individual modules, see their respective licenses.
 
-Contributors
+CONTRIBUTORS
 ------------
 
 * Dustin Diaz
