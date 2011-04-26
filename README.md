@@ -38,7 +38,7 @@ This will install Ender as a CLI (command line) tool. So let's get to it...
 BUILD METHODS
 -------------
 
-Ender provides a whole slew of methods for building, updating, and sliming down your libraries. Let's take a look...
+Ender provides a whole slew of methods for building, updating, and slimming down your libraries. Let's take a look...
 
 <h3>Build (<code>-b, build</code>)</h3>
 
@@ -202,7 +202,7 @@ Within the scope of your extension methods, the internal prototype will be expos
 
     $.ender({
       rand: function () {
-        return this.elements[Math.floor(Math.random() * (this.elements.length + 1))];
+        return this.elements[Math.floor(Math.random() * this.elements.length)];
       }
     }, true);
 
