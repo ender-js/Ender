@@ -239,7 +239,7 @@ The Jeesh is like a starter pack for ender. At only *10k* the Jeesh can help you
   * Qwery - a fast light-weight [selector engine](https://github.com/ded/qwery)
   * Bonzo - a bullet-proof [DOM utility](https://github.com/ded/bonzo)
   * Bean - a multi-platform [Event provider](https://github.com/fat/bean)
-  * domReady - a cross-browser [domReady](github.com/ded/domready)
+  * domReady - a cross-browser [domReady](https://github.com/ded/domready)
   * Émile - a slick [element animator](https://github.com/ded/emile)
   * Underscore - a core set of [utilities](http://documentcloud.github.com/underscore)
   * Reqwest - a solid [http request connection manager](https://github.com/ded/Reqwest)
