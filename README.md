@@ -233,7 +233,7 @@ This is great news if you're building a Mobile Webkit or Android application, si
 THE JEESH
 ---------
 
-The Jeesh is like a booster pack for ender. At only *10k* the Jeesh can help you build anything from small prototypes to providing a solid base for large-scale rich application for desktop and mobile devices. At it's core, it's a collection of packages that we've found particularly useful for major use-case development endeavors -- but we encourage use to <code>add</code> and <code>remove</code> packages to really make it your own. Currently, the Jeesh includes:
+The Jeesh is like a starter pack for ender. At only *10k* the Jeesh can help you build anything from small prototypes to providing a solid base for large-scale rich application for desktop and mobile devices. At it's core, it's a collection of packages that we've found particularly useful for major use-case development endeavors -- but we encourage use to <code>add</code> and <code>remove</code> packages to really make it your own. Currently, the Jeesh includes:
 
   * ScriptJS - a dynamic asynchronous [script and dependency loader](https://github.com/ded/script.js)
   * Qwery - a fast light-weight [selector engine](https://github.com/ded/qwery)
