@@ -1,7 +1,7 @@
 {
   "name": "ender",
   "description": "next level JavaScript modules",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
   "keywords": ["ender", "modules", "builder", "framework", "packager"],
   "main": "./index.js",
@@ -14,6 +14,10 @@
     "uglify-js": ">= 0.0.1",
     "gzip": ">= 0.1.0",
     "rimraf": ">= 1.0.1"
+  },
+  "directories": {
+    "lib": "./lib",
+    "bin": "./bin"
   },
   "bin": {
     "ender": "./bin/ender"
