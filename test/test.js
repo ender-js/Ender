@@ -4,6 +4,7 @@ var spec = require('sink-test')
   , ender = require('../lib/ender')
   , O_O = require('./O_O')
   , path = require('path')
+  , sys = require('sys')
   , fs = require('fs');
 
 sink('ENDER - BUILD', function (test, ok, before, after) {
@@ -205,4 +206,128 @@ sink('ENDER - SET', function (test, ok, before, after) {
   });
 });
 
+ sink('ENDER - INFO', function (test, ok, before, after) {
+  var NPM;
+
+  before(function () {
+    NPM = require('../lib/ender.npm');
+    O_O(NPM, 'desc').andCallFake(function (k, fn) {
+      fn(k);
+    });
+  });
+
+  after(function () {
+    O_O.removeAll();
+  });
+
+  test('dependency display 1', 2, function () {
+    var i = 0;
+
+    O_O(NPM, 'log').andCallFake(function (str) {
+      i++;
+      if (i === 1)      ok ('├── foo' == str, '├── foo was output');
+      else if (i === 2) ok ('└── bar' == str, '└── bar was output');
+    });
+
+    var tree = {
+      foo: 0,
+      bar: 0
+    }
+
+    NPM.prettyPrintDependencies(tree);
+
+  });
+
+  test('dependency display 2', 4, function () {
+    var i = 0
+      , tree = {
+          foo: 0,
+          bar: {
+            baz: 0,
+            bang: 0
+          }
+        }
+
+    O_O(NPM, 'log').andCallFake(function (str) {
+      i++;
+      if (i === 1)      ok ('├── foo' == str, str + ' was output');
+      else if (i === 2) ok ('└─┬ bar' == str, str + ' was output');
+      else if (i === 3) ok ('  ├── baz' == str, str + ' was output');
+      else if (i === 4) ok ('  └── bang' == str, str + ' was output');
+    });
+
+    NPM.prettyPrintDependencies(tree);
+
+  });
+
+  test('dependency display 3', 5, function () {
+    var i = 0
+      , tree = {
+          foo: 0,
+          bar: {
+            baz: 0,
+            bang: 0
+          },
+          fat: 0
+        }
+
+    O_O(NPM, 'log').andCallFake(function (str) {
+      i++;
+      if (i === 1)      ok ('├── foo' == str, '├── foo was output');
+      else if (i === 2) ok ('├─┬ bar' == str, '├─┬ bar was output');
+      else if (i === 3) ok ('| ├── baz' == str, '| ├── baz was output');
+      else if (i === 4) ok ('| └── bang' == str, '| └── bang was output');
+      else if (i === 5) ok ('└── fat' == str, '└── fat was output');
+    });
+
+    NPM.prettyPrintDependencies(tree);
+
+  });
+
+  test('dependency display 4', 8, function () {
+    var i = 0
+      , tree = {
+          foo: 0,
+          bar: {
+            baz: {
+              blip: 0
+            },
+            bang: {
+              ded: 0,
+              killface: 0
+            }
+          },
+          fat: 0
+        }
+
+    O_O(NPM, 'log').andCallFake(function (str) {
+      i++;
+      if (i === 1)      ok ('├── foo' == str, str + ' was output');
+      else if (i === 2) ok ('├─┬ bar' == str, str + ' was output');
+      else if (i === 3) ok ('| ├─┬ baz' == str, str + ' was output');
+      else if (i === 4) ok ('| | └── blip' == str, str + ' was output');
+      else if (i === 5) ok ('| └─┬ bang' == str, str + ' was output');
+      else if (i === 6) ok ('|   ├── ded' == str, str + ' was output');
+      else if (i === 7) ok ('|   └── killface' == str, str + ' was output');
+      else if (i === 8) ok ('└── fat' == str, str + ' was output');
+    });
+
+    NPM.prettyPrintDependencies(tree);
+
+  });
+
+});
+
 spec.start();
+
+
+
+
+
+
+
+
+
+
+
+
