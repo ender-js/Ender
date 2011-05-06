@@ -7,6 +7,51 @@ var spec = require('sink-test')
   , sys = require('sys')
   , fs = require('fs');
 
+
+sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
+
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+  });
+
+  test('exec: ender build jeesh', 5, function () {
+    var cmd = 'ender build jeesh';
+    ender.exec(cmd, null, function () {
+      path.exists('./ender.js', function (exists) {
+        ok(exists, 'ender.js was created');
+      });
+      path.exists('./ender.min.js', function (exists) {
+        ok(exists, 'ender.min.js was created');
+      });
+      fs.readFile('./ender.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading ender.js');
+        ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
+        ok(/domReady =/.test(data), 'domready was built into ender');
+        ok(/bonzo =/.test(data), 'bonzo was built into ender');
+      });
+    });
+  });
+
+  test('exec: ender build backbone underscore', 5, function () {
+    var cmd = 'ender build backbone underscore';
+    ender.exec(cmd, null, function () {
+      path.exists('./ender.js', function (exists) {
+        ok(exists, 'ender.js was created');
+      });
+      path.exists('./ender.min.js', function (exists) {
+        ok(exists, 'ender.min.js was created');
+      });
+      fs.readFile('./ender.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading ender.js');
+        ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
+        ok(data.match(/http:\/\/documentcloud.github.com\/backbone/g).length == 1, 'backbone was built into ender');
+        ok(data.match(/http:\/\/documentcloud.github.com\/underscore/g).length == 1, 'undersore was built into ender');
+      });
+    });
+  });
+
+});
+
 sink('ENDER - BUILD', function (test, ok, before, after) {
 
   after(function () {
@@ -46,83 +91,6 @@ sink('ENDER - BUILD', function (test, ok, before, after) {
 
 });
 
-sink('ENDER - JUST', function (test, ok, before, after) {
-
-  after(function () {
-    O_O.removeAll(); //clear all spies after each test
-  });
-
-  test('exec: ender just domready', 5, function () {
-    var cmd = 'ender just domready';
-    ender.exec(cmd, null, function () {
-      path.exists('./ender.js', function (exists) {
-        ok(exists, 'ender.js was created');
-      });
-      path.exists('./ender.min.js', function (exists) {
-        ok(exists, 'ender.min.js was created');
-      });
-      path.exists('./node_modules', function (exists) {
-        ok(!exists, 'node_modules dir was removed');
-      });
-      fs.readFile('./ender.js', 'utf-8', function (err, data) {
-        if (err) ok(false, 'error reading ender.js');
-        ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(/domReady =/.test(data), 'domready was built into ender');
-      });
-    });
-  });
-
-  test('exec: ender -j domready', 2, function () {
-    O_O(ender, 'just').andCallFake(function (packages) {
-      ok(true, 'just was called');
-      ok(packages.length == 1 && packages[0] == 'domready', 'correct packages passed');
-    });
-    ender.exec('ender -j domready');
-  });
-
-});
-
-
-sink('ENDER - ASYNC', function (test, ok, before, after) {
-
-  after(function () {
-    O_O.removeAll(); //clear all spies after each test
-  });
-
-  test('exec: ender async domready', 7, function () {
-    var cmd = 'ender async domready';
-    ender.exec(cmd, null, function () {
-      path.exists('./ender.js', function (exists) {
-        ok(exists, 'ender.js was created');
-      });
-      path.exists('./ender.min.js', function (exists) {
-        ok(exists, 'ender.min.js was created');
-      });
-      path.exists('./node_modules/domready', function (exists) {
-        ok(exists, 'domready was installed');
-      });
-      path.exists('./node_modules/ender-js', function (exists) {
-        ok(exists, 'ender-js was installed');
-      });
-      fs.readFile('./ender.js', 'utf-8', function (err, data) {
-        if (err) ok(false, 'error reading ender.js');
-        ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(/\$\.require/i.test(data), 'async require was built into ender');
-        ok(/\$\.ready/i.test(data), 'async ready was built into ender');
-      });
-    });
-  });
-
-  test('exec: ender -a foo bar baz', 2, function () {
-    O_O(ender, 'async').andCallFake(function (packages) {
-      ok(true, 'async was called');
-      ok(packages.length == 3 && packages[0] == 'foo' && packages[1] == 'bar' && packages[2] == 'baz', 'correct packages passed');
-    });
-    ender.exec('ender -a foo bar baz');
-  });
-
-});
-
 
 sink('ENDER - ADD', function (test, ok, before, after) {
 
@@ -143,7 +111,7 @@ sink('ENDER - ADD', function (test, ok, before, after) {
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
-        ok(new RegExp('ender async domready qwery').test(data), 'includes correct build command in comment');
+        ok(new RegExp('ender build domready qwery').test(data), 'includes correct build command in comment');
       });
     });
   });
@@ -166,7 +134,7 @@ sink('ENDER - REMOVE', function (test, ok, before, after) {
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
-        ok(new RegExp('ender async domready').test(data), 'includes correct build command in comment');
+        ok(new RegExp('ender build domready').test(data), 'includes correct build command in comment');
       });
     });
   });
@@ -211,8 +179,8 @@ sink('ENDER - SET', function (test, ok, before, after) {
 
   before(function () {
     NPM = require('../lib/ender.npm');
-    O_O(NPM, 'desc').andCallFake(function (k, fn) {
-      fn(k);
+    O_O(NPM, 'desc').andCallFake(function (k, o, fn) {
+      fn(k, '');
     });
   });
 
@@ -225,8 +193,8 @@ sink('ENDER - SET', function (test, ok, before, after) {
 
     O_O(NPM, 'log').andCallFake(function (str) {
       i++;
-      if (i === 1)      ok ('├── foo' == str, '├── foo was output');
-      else if (i === 2) ok ('└── bar' == str, '└── bar was output');
+      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str);
+      else if (i === 2) ok ('└── ' + 'bar'.yellow == str, str);
     });
 
     var tree = {
@@ -250,10 +218,10 @@ sink('ENDER - SET', function (test, ok, before, after) {
 
     O_O(NPM, 'log').andCallFake(function (str) {
       i++;
-      if (i === 1)      ok ('├── foo' == str, str + ' was output');
-      else if (i === 2) ok ('└─┬ bar' == str, str + ' was output');
-      else if (i === 3) ok ('  ├── baz' == str, str + ' was output');
-      else if (i === 4) ok ('  └── bang' == str, str + ' was output');
+      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str + ' was output');
+      else if (i === 2) ok ('└─┬ ' + 'bar'.yellow == str, str + ' was output');
+      else if (i === 3) ok ('  ├── ' + 'baz'.yellow == str, str + ' was output');
+      else if (i === 4) ok ('  └── ' + 'bang'.yellow == str, str + ' was output');
     });
 
     NPM.prettyPrintDependencies(tree);
@@ -273,11 +241,11 @@ sink('ENDER - SET', function (test, ok, before, after) {
 
     O_O(NPM, 'log').andCallFake(function (str) {
       i++;
-      if (i === 1)      ok ('├── foo' == str, '├── foo was output');
-      else if (i === 2) ok ('├─┬ bar' == str, '├─┬ bar was output');
-      else if (i === 3) ok ('| ├── baz' == str, '| ├── baz was output');
-      else if (i === 4) ok ('| └── bang' == str, '| └── bang was output');
-      else if (i === 5) ok ('└── fat' == str, '└── fat was output');
+      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, '├── foo was output');
+      else if (i === 2) ok ('├─┬ ' + 'bar'.yellow == str, '├─┬ bar was output');
+      else if (i === 3) ok ('| ├── ' + 'baz'.yellow == str, '| ├── baz was output');
+      else if (i === 4) ok ('| └── ' + 'bang'.yellow == str, '| └── bang was output');
+      else if (i === 5) ok ('└── ' + 'fat'.yellow == str, '└── fat was output');
     });
 
     NPM.prettyPrintDependencies(tree);
@@ -302,14 +270,14 @@ sink('ENDER - SET', function (test, ok, before, after) {
 
     O_O(NPM, 'log').andCallFake(function (str) {
       i++;
-      if (i === 1)      ok ('├── foo' == str, str + ' was output');
-      else if (i === 2) ok ('├─┬ bar' == str, str + ' was output');
-      else if (i === 3) ok ('| ├─┬ baz' == str, str + ' was output');
-      else if (i === 4) ok ('| | └── blip' == str, str + ' was output');
-      else if (i === 5) ok ('| └─┬ bang' == str, str + ' was output');
-      else if (i === 6) ok ('|   ├── ded' == str, str + ' was output');
-      else if (i === 7) ok ('|   └── killface' == str, str + ' was output');
-      else if (i === 8) ok ('└── fat' == str, str + ' was output');
+      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str + ' was output');
+      else if (i === 2) ok ('├─┬ ' + 'bar'.yellow == str, str + ' was output');
+      else if (i === 3) ok ('| ├─┬ ' + 'baz'.yellow == str, str + ' was output');
+      else if (i === 4) ok ('| | └── ' + 'blip'.yellow == str, str + ' was output');
+      else if (i === 5) ok ('| └─┬ ' + 'bang'.yellow == str, str + ' was output');
+      else if (i === 6) ok ('|   ├── ' + 'ded'.yellow == str, str + ' was output');
+      else if (i === 7) ok ('|   └── ' + 'killface'.yellow == str, str + ' was output');
+      else if (i === 8) ok ('└── ' + 'fat'.yellow == str, str + ' was output');
     });
 
     NPM.prettyPrintDependencies(tree);
@@ -319,15 +287,3 @@ sink('ENDER - SET', function (test, ok, before, after) {
 });
 
 spec.start();
-
-
-
-
-
-
-
-
-
-
-
-
