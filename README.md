@@ -1,7 +1,7 @@
 WELCOME TO YOU'RE "DOOM!"*
 --------------------------
 
-![Ender](http://cl.ly/6asw/Screen_shot_2011-05-09_at_11.31.42_AM.png)
+![Ender](http://f.cl.ly/items/1W0P3I3D3m3U0e1j2h1c/Screen%20shot%202011-05-09%20at%2011.31.42%20AM.png)
 
 Ender is not a JavaScript library in the traditional sense. So don't rush out and try to replace jQuery or MooTools with Ender... It just wouldn't work.... But! **you can** build a library from Ender which will. And you should. right now.
 
