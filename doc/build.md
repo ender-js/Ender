@@ -21,7 +21,13 @@ As the name suggests, <code>build</code> is responsible for building your librar
 
     $ ender build scriptjs backbone
 
-When building you can include as many packages as you like. This will generate three things of interest to you:
+When building you can include as many packages as you like. You can specify packages by name if they are published to npm or provide a relative path like this:
+
+    $ ender build ../../jeesh
+
+*note: Just remember the path specified needs a package.json!*
+
+This will generate three things of interest to you:
 
   - an uncompressed ender.js file,
   - a compressed ender.min.js
