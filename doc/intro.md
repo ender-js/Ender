@@ -1,8 +1,7 @@
+<div id="intro"></div>
+
 WELCOME TO YOU'RE "DOOM!"*
 --------------------------
-
-![Ender](http://cl.ly/6asw/Screen_shot_2011-05-09_at_11.31.42_AM.png)
-
 Ender is not a JavaScript library in the traditional sense. So don't rush out and try to replace jQuery or MooTools with Ender... It just wouldn't work.... But! **you can** build a library from Ender which will. And you should. right now.
 
 That's because: *Ender is an open, powerful, micro-to-macro API for composing your own custom JavaScript library; it wraps up application agnostic, independent modules into a slick, intuitive, and familiar interface so you don't have to.*
@@ -18,7 +17,3 @@ Ponder this... Ender is unique and important in two key ways:
 2) Ender offers a way to bring together the awesome work happening in small frameworks and libraries that otherwise do only one thing, and allows you to mix, match, and customize your own library suited to your individual needs without all the extra cruft that comes with larger libraries.
 
 With Ender, if one part of your library goes bad or unmaintained, it can be replaced with another. Need a specific package version? no big deal. Does your microlib have dependencies? Let us handle that for you too!
-
-P.S.
----
-that's correct, [you're doom!](http://blog.urbanbohemian.com/2009/04/08/5201/)
