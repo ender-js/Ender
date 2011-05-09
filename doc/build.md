@@ -72,11 +72,18 @@ The <code>refresh</code> method will refresh your library with the latest stable
 
     $ ender refresh
 
+<h3>Complie</h3>
+
+Allows you to compile your application along-side your ender installation using the Google Closure Compiler.
+
+    $ ender compile header.js footer.js app.js
+
 <h3>Help (help)</h3>
 
 <code>help</code>, as you might expect, gives you a simple run through of the available methods.
 
     $ ender help
+
 
 VERSIONS
 --------
