@@ -21,6 +21,20 @@ Ponder this... Ender is unique and important in two key ways:
 
 With Ender, if one part of your library goes bad or unmaintained, it can be replaced with another. Need a specific package version? no big deal. Does your microlib have dependencies? Let us handle that for you too!
 
+
+GET STARTED NOW
+---------------
+
+Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm). Then:
+
+    npm install ender -g
+
+then go to the directory you'd like to build a library in and run:
+
+    ender -b some-microlib another-lib [etc...]
+
+boosh. you have a library!
+
 P.S.
 ---
 that's correct, [you're doom!](http://blog.urbanbohemian.com/2009/04/08/5201/)
