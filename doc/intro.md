@@ -1,6 +1,7 @@
+
 <div id="intro"></div>
 
-WELCOME TO YOU'RE "DOOM!"*
+WELCOME TO YOU'RE "DOOM!"
 --------------------------
 Ender is not a JavaScript library in the traditional sense. So don't rush out and try to replace jQuery or MooTools with Ender... It just wouldn't work.... But! **you can** build a library from Ender which will. And you should. right now.
 
