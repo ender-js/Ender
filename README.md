@@ -32,6 +32,10 @@ then go to the directory you'd like to build a library in and run:
 
 boosh. you have a library!
 
+HELP & SUPPORT
+----------
+For development questions, issues, bugs, ideas, suggestions -- join the Ender community and send us your thoughts at [enderjs.com](http://enderjs.com)
+
 P.S.
 ---
 that's correct, [you're doom!](http://blog.urbanbohemian.com/2009/04/08/5201/)
