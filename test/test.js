@@ -16,7 +16,7 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
 
   test('exec: ender build jeesh', 5, function () {
     var cmd = 'ender build jeesh';
-    ender.exec(cmd, null, function () {
+    ender.exec(cmd, function () {
       path.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
@@ -34,7 +34,7 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
 
   test('exec: ender build backbone underscore', 5, function () {
     var cmd = 'ender build backbone underscore';
-    ender.exec(cmd, null, function () {
+    ender.exec(cmd, function () {
       path.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
@@ -60,7 +60,7 @@ sink('ENDER - BUILD', function (test, ok, before, after) {
 
   test('exec: ender build domready', 6, function () {
     var cmd = 'ender build domready';
-    ender.exec(cmd, null, function () {
+    ender.exec(cmd, function () {
       path.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
@@ -99,7 +99,7 @@ sink('ENDER - ADD', function (test, ok, before, after) {
   });
 
   test('exec: ender add qwery', 4, function () {
-    ender.exec('ender add qwery', null, function () {
+    ender.exec('ender add qwery', function () {
       path.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
@@ -125,7 +125,7 @@ sink('ENDER - REMOVE', function (test, ok, before, after) {
   });
 
   test('exec: ender remove qwery', 3, function () {
-    ender.exec('ender remove qwery', null, function () {
+    ender.exec('ender remove qwery', function () {
       path.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
@@ -147,7 +147,7 @@ sink('ENDER - SET', function (test, ok, before, after) {
   });
 
   test('exec: ender set qwery@1.1.0', 6, function () {
-    ender.exec('ender build qwery@1.1.1', null, function () {
+    ender.exec('ender build qwery@1.1.1', function () {
       path.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
@@ -169,6 +169,50 @@ sink('ENDER - SET', function (test, ok, before, after) {
           if (err) ok(false, 'error reading ender.js');
           ok(new RegExp('qwery@1.1.0').test(data), 'includes correct version in comment');
         });
+      });
+    });
+  });
+});
+
+sink('ENDER - OUTPUT', function (test, ok, before, after) {
+
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+  });
+
+  test('exec: ender build bean --noop', 3, function () {
+    ender.exec('ender build bean --noop', function () {
+      path.exists('./ender.js', function (exists) {
+        ok(exists, 'ender.js was created');
+      });
+      path.exists('./ender.min.js', function (exists) {
+        ok(exists, 'ender.min.js was created');
+      });
+      fs.readFile('./ender.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading ender.js');
+        ok(!new RegExp('function ender').test(data), 'does not include ender-js');
+      });
+    });
+  });
+});
+
+sink('ENDER - NOOP', function (test, ok, before, after) {
+
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+  });
+
+  test('exec: ender build bean --noop', 3, function () {
+    ender.exec('ender build bean --noop', function () {
+      path.exists('./ender.js', function (exists) {
+        ok(exists, 'ender.js was created');
+      });
+      path.exists('./ender.min.js', function (exists) {
+        ok(exists, 'ender.min.js was created');
+      });
+      fs.readFile('./ender.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading ender.js');
+        ok(!new RegExp('function ender').test(data), 'does not include ender-js');
       });
     });
   });
