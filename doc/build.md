@@ -38,6 +38,22 @@ With <code>build</code>, the ender.js files will include all packages inlined fo
 
 *note: The node_modules folder is the directory NPM uses for installing packages and what ender uses for managing your microlibs.*
 
+Build also has two super useful options (when you're gettin' all fancy)!
+
+**noop** (<code>--noop, --no, -x</code>) -- this builds files without the ender-js client api
+
+    $ ender build backbone --noop
+
+**output** (<code> --output, --out, -o</code>) -- this will build your files to a specified path.
+
+    $ ender build qwery backbone -o ../path/to/dir/myLibrary
+
+the above Ender command would create a myLibrary.js and myLibrary.min.js file in the dir directory.
+
+*note: You can specify multiple options at once like this:*
+
+    $ ender build backbone --noop -o ../path/to/dir/myLibrary
+
 <h3>Info (<code>-i, info, list, ls</code>)</h3>
 
 <code>info</code> will give you the current status of your built Ender library. This information includes
@@ -50,15 +66,27 @@ To run info, change directories into your ender installation and type:
 
     $ ender info
 
+By default ender info will look for a local ender.js or ender.min.js file. However, if you are in a different dir, or if you have outputed your ender library to a different file name you must use the --use option!
+
+**use** (<code>--use, -u</code>) -- tell ender which file to operate on
+
+    $ ender info --use ../../workspace/fat/fats-library
+
 <h3>Add (<code>+, add, set</code>)</h3>
 
 It's not always possible to know which packages you may or may not want when beginning a new project and ender wants to encourage you to be as agile as possible! Build your initial library light and push in more packages whenever you run into the need. To do this, use Ender's <code>add</code> method. Run:
 
     $ ender add backbone
 
-The above will append backbone to your existing ender.js and ender.min.js builds. You may also use <code>add</code> to update (or rollback) a package to a particular version:
+The above will append backbone to your existing ender builds. You may also use <code>set</code> to update (or rollback) a package to a particular version:
 
     $ ender set bean@0.0.3
+
+By default <code>add</code> will operate on the local ender.js and ender.min.js files. However, if you would like to specify a different location or an output of a different name just use the <code>use</code> flag.
+
+**use** (<code>--use, -u</code>) -- tell ender which file to operate on
+
+    $ ender add underscore --use ./ender/library
 
 <h3>Remove (<code>-d, remove</code>)</h3>
 
@@ -66,11 +94,23 @@ Removing packages is sometimes even more important than pushing them on! To remo
 
     $ ender remove backbone
 
+By default <code>remove</code> will operate on the local ender.js and ender.min.js files. However, if you would like to specify a different location or an output of a different name just use the <code>use</code> flag.
+
+**use** (<code>--use, -u</code>) -- tell ender which file to operate on
+
+    $ ender remove underscore --use ./ender/library
+
 <h3>Refresh (<code>., refresh</code>)</h3>
 
 The <code>refresh</code> method will refresh your library with the latest stable builds from your activated packages. Just run:
 
     $ ender refresh
+
+By default <code>refresh</code> will operate on the local ender.js and ender.min.js files. However, if you would like to specify a different location or an output of a different name just use the <code>use</code> flag.
+
+**use** (<code>--use, -u</code>) -- tell ender which file to operate on
+
+    $ ender refresh --use ./ender/library
 
 <h3>Complie</h3>
 
