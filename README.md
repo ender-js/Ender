@@ -22,15 +22,14 @@ Ponder this... Ender is unique and important in two key ways:
 GET STARTED NOW
 ---------------
 
-Install [NodeJS](http://nodejs.org) ( >= v0.4.0) and install [NPM](https://github.com/isaacs/npm) ( >= v1.0.0). Then install ender globally with the command:
+Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm). Then install ender globally with the command:
 
-    npm install ender -g
+    $ npm install ender -g
 
-then go to the directory you'd like to build a library in and run:
+Once that has installed, to get a list of all the cool things you can do, just run this command in your terminal:
 
-    ender -b some-microlib another-lib [etc...]
+    $ ender
 
-boosh. you have a library!
 
 HELP & SUPPORT
 ----------
