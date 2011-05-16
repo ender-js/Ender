@@ -54,6 +54,13 @@ the above Ender command would create a myLibrary.js and myLibrary.min.js file in
 
     $ ender build backbone --noop -o ../path/to/dir/myLibrary
 
+
+<h3>Search (<code>search</code>)</h3>
+
+<code>search</code> looks up keywords against NPM's registry and surfaces the most relevant packages. It provides results for known ender compatible packages and also generic npm matches (which may or may not be ender compatible).
+
+    $ ender search underscore
+
 <h3>Info (<code>-i, info, list, ls</code>)</h3>
 
 <code>info</code> will give you the current status of your built Ender library. This information includes
