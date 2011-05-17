@@ -119,7 +119,7 @@ By default <code>refresh</code> will operate on the local ender.js and ender.min
 
     $ ender refresh --use ./ender/library
 
-<h3>Complie</h3>
+<h3>Compile</h3>
 
 Allows you to compile your application along-side your ender installation using the Google Closure Compiler.
 
