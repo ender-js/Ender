@@ -22,5 +22,6 @@
   },
   "bin": {
     "ender": "./bin/ender"
-  }
+  },
+  "preferGlobal": true
 }
