@@ -24,17 +24,21 @@ GET STARTED NOW
 
 Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm). Then install ender globally with the command:
 
-    $ npm install ender -g
+    $ npm install ender
 
 Once that has installed, to get a list of all the cool things you can do, just run this command in your terminal:
 
     $ ender
 
+LEARN
+-----
+
+See how this stuff works and watch some [introduction videos](http://enderjs.com/learn)
 
 HELP & SUPPORT
 ----------
 For development questions, issues, bugs, ideas, suggestions -- join the Ender community and send us your thoughts at [enderjs.com](http://enderjs.com)
 
-P.S.
+*P.S.
 ---
 that's correct, [you're doom!](http://blog.urbanbohemian.com/2009/04/08/5201/)
