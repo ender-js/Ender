@@ -1,9 +1,9 @@
-WELCOME TO YOU'RE "DOOM!"*
+ENDER
 --------------------------
 
 Ender is not a JavaScript library in the traditional sense. So don't rush out and try to replace jQuery or MooTools with Ender... It just wouldn't work.... But! **you can** build a library from Ender which will. And you should. right now.
 
-That's because: *Ender is an open, powerful, micro-to-macro API for composing your own custom JavaScript library; it wraps up application agnostic, independent modules into a slick, intuitive, and familiar interface so you don't have to.*
+That's because: *Ender is an open-module micro-to-macro framework for composing your own custom JavaScript library; it wraps up application-independent modules into a familiar interface so you don't have to.*
 
 Check it out:
 
@@ -13,7 +13,7 @@ OK, SURE... BUT WHY?
 --------------------
 Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past!
 
-Ponder this... Ender is unique and important in two key ways:
+Ender is unique and important in two key ways:
 
 1) Ender provides front end developers with a true package management system and the powerful command line tools necessary to back it up... making your library maintenance tasks simple, painless, and fast.
 
@@ -24,7 +24,7 @@ GET STARTED NOW
 
 Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm). Then install ender globally with the command:
 
-    $ npm install ender
+    $ [sudo] npm install ender
 
 Once that has installed, to get a list of all the cool things you can do, just run this command in your terminal:
 
@@ -38,7 +38,3 @@ See how this stuff works and watch some [introduction videos](http://enderjs.com
 HELP & SUPPORT
 ----------
 For development questions, issues, bugs, ideas, suggestions -- join the Ender community and send us your thoughts at [enderjs.com](http://enderjs.com)
-
-*P.S.
----
-that's correct, [you're doom!](http://blog.urbanbohemian.com/2009/04/08/5201/)
