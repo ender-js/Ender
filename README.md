@@ -22,7 +22,13 @@ Ender is unique and important in two key ways:
 GET STARTED NOW
 ---------------
 
-Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm). Then install ender globally with the command:
+Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm).
+
+Then install ender globally with the command (Latest NPM):
+
+    $ [sudo] npm install ender -g
+
+or (NPM version < 1):
 
     $ [sudo] npm install ender
 
