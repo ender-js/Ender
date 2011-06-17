@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+//adapted from node-jitsu's very excellent project require-analyzer
+//https://github.com/nodejitsu/require-analyzer
+
+var Module = require('module').Module
+  , __load = Module._load
+  , path = require('path')
+  , packages = {};
+
+//
+// Monkey punch `Module._load()` to observe the names
+// of packages as they are loaded.
+//
+Module._load = function (name, parent) {
+  console.log('__!name::' + name);
+  console.log('__!path::' + (/^[./]/.test(name) ? Module._resolveFilename(name, parent)[1] : name));
+  return __load.apply(Module, arguments);
+}
+
+try {
+  process.nextTick(function () {
+    process.exit(0);
+  });
+
+  if (process.argv[3] === 'null') {
+    Module._load(process.argv[2], null, true)
+  } else {
+    //simulate module loading with correct paths from content
+    module = new Module(process.argv[2]);
+    module.paths = Module._nodeModulePaths(path.dirname(module.filename));
+    module._compile(process.argv[3], process.argv[2]);
+  }
+}
+catch (ex) {
+  //
+  // Log errors and attempt to log as many packages as we can.
+  //
+  var eStr = '' + (ex
+    ? (ex.stack ? ex.stack : ex)
+    : 'falsey error: ' + ex)
+
+  eStr.split('\n').forEach(function (line) {
+    console.error('__!err::' + line);
+  });
+}
