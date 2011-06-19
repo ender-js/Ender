@@ -9,9 +9,12 @@ Check it out:
 
 ![Ender](http://f.cl.ly/items/1W0P3I3D3m3U0e1j2h1c/Screen%20shot%202011-05-09%20at%2011.31.42%20AM.png)
 
+
 OK, SURE... BUT WHY?
 --------------------
 Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past!
+
+For folks in the knows, you can jump straight to the [list of modules](https://github.com/ender-js/Ender/wiki/Ender-package-list)
 
 Ender is unique and important in two key ways:
 
