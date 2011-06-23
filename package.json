@@ -1,7 +1,7 @@
 {
   "name": "ender",
   "description": "next level JavaScript modules",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
   "keywords": ["ender", "modules", "builder", "framework", "packager"],
   "main": "./index.js",
