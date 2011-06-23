@@ -1,7 +1,7 @@
 {
   "name": "ender",
   "description": "next level JavaScript modules",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
   "keywords": ["ender", "modules", "builder", "framework", "packager"],
   "main": "./index.js",
@@ -10,7 +10,7 @@
     "node": ">= 0.4.0"
   },
   "dependencies": {
-    "npm": ">= 1.0.6",
+    "npm": ">= 1.0.0",
     "colors": ">= 0.3.0",
     "uglify-js": ">= 0.0.1",
     "gzip": ">= 0.1.0",
