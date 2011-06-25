@@ -22,14 +22,7 @@ try {
     process.exit(0);
   });
 
-  if (process.argv[3] === 'null') {
-    Module._load(process.argv[2], null, true)
-  } else {
-    //simulate module loading with correct paths from content
-    module = new Module(process.argv[2]);
-    module.paths = Module._nodeModulePaths(path.dirname(module.filename));
-    module._compile(process.argv[3], process.argv[2]);
-  }
+  Module._load(process.argv[2], null, true)
 }
 catch (ex) {
   //
