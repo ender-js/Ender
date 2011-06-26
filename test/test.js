@@ -7,6 +7,11 @@ var spec = require('sink-test')
   , sys = require('sys')
   , fs = require('fs');
 
+// don't allow timeouts!
+sink.timeout = false;
+
+//only output sink log statements
+spec.setLogKey('$__sink::');
 
 sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
 
@@ -26,7 +31,7 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(/domReady =/.test(data), 'domready was built into ender');
+        ok(/bean =/.test(data), 'bean was built into ender');
         ok(/bonzo =/.test(data), 'bonzo was built into ender');
       });
     });
@@ -76,7 +81,7 @@ sink('ENDER - BUILD', function (test, ok, before, after) {
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(/domReady =/.test(data), 'domready was built into ender');
+        ok(/context\[\'domReady\'\]/.test(data), 'domready was built into ender');
       });
     });
   });
@@ -158,7 +163,7 @@ sink('ENDER - SET', function (test, ok, before, after) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp('qwery@1.1.1').test(data), 'includes correct version in comment');
       });
-      ender.exec('ender set qwery@1.1.0', null, function () {
+      ender.exec('ender set qwery@1.1.0', function () {
         path.exists('./ender.js', function (exists) {
           ok(exists, 'ender.js was created');
         });
@@ -180,17 +185,19 @@ sink('ENDER - OUTPUT', function (test, ok, before, after) {
     O_O.removeAll(); //clear all spies after each test
   });
 
-  test('exec: ender build bean --noop', 3, function () {
-    ender.exec('ender build bean --noop', function () {
-      path.exists('./ender.js', function (exists) {
-        ok(exists, 'ender.js was created');
-      });
-      path.exists('./ender.min.js', function (exists) {
-        ok(exists, 'ender.min.js was created');
-      });
-      fs.readFile('./ender.js', 'utf-8', function (err, data) {
-        if (err) ok(false, 'error reading ender.js');
-        ok(!new RegExp('function ender').test(data), 'does not include ender-js');
+  test('exec: ender build bean --output ./js/bean', 3, function () {
+    fs.mkdir('./js', 0777, function () { //make js dir (swallow error if exists)
+      ender.exec('ender build bean -o ./js/bean', function () {
+        path.exists('./js/bean.js', function (exists) {
+          ok(exists, 'ender.js was created');
+        });
+        path.exists('./js/bean.min.js', function (exists) {
+          ok(exists, 'ender.min.js was created');
+        });
+        fs.readFile('./js/bean.js', 'utf-8', function (err, data) {
+          if (err) ok(false, 'error reading ender.js');
+          ok(new RegExp('--output ./js/bean').test(data), 'does not include ender-js');
+        });
       });
     });
   });

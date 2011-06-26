@@ -4,7 +4,7 @@
   "version": "0.4.4",
   "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
   "keywords": ["ender", "modules", "builder", "framework", "packager"],
-  "main": "./index.js",
+  "main": "./lib/ender.js",
   "homepage": "https://github.com/ender-js/ender",
   "engines": {
     "node": ">= 0.4.0"
@@ -15,6 +15,9 @@
     "uglify-js": ">= 0.0.1",
     "gzip": ">= 0.1.0",
     "rimraf": ">= 1.0.1"
+  },
+  "devDependencies": {
+    "sink-test": "*"
   },
   "directories": {
     "lib": "./lib",
