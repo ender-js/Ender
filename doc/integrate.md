@@ -50,3 +50,36 @@ This is great news if you're building a Mobile Webkit or Android application, si
     $._select = function (selector, root) {
       return (root || document).querySelectorAll(selector);
     });
+
+<h3>CommonJS like Module system</h3>
+
+Ender also exposes a module API which is based on CommonJS Modules spec v1.1.1. There are two methods it exposes to do this.
+
+The first method is require. Require takes a string which corresponds to a package name and returns a package object. For example:
+
+    var _ = require('underscore'); //return the underscore object
+
+To register a package use the provide method. The provide method looks like this:
+
+    provide("myPackage", myPackageObj);
+
+These methods are particularly useful when working with microlibs which are already CommonJS compliant (like underscore, backbone, etc.).
+
+When building with Ender, all packages with CommonJS exports will automatically be made available via the require method. It's important to note here that because of this, these modules will not be accessible directly in the global scope -- this of course is great news!
+
+So, if you were to run the following build command <code>ender build backbone</code>, you could then access both backbone and underscore from your lib like this:
+
+    var backbone = require('backbone')
+      , _ = require('underscore');
+
+    backbone.Models(...)
+    _.each(...)
+
+Ender's module support is also great when you run into libs who are competing for method names on the $ namespace. For example, if microlib "foo" and microlib "bar" both expose a method <code>baz</code> -- you could use require to gain access to the method being overridden -- as well as set which method you would prefer to be on ender's internal chain... for example:
+
+    $.baz() //executes bar's method baz
+
+    $.ender({baz: require('foo').baz}); // sets $.baz to be foo's method baz
+    $.ender({baz: require('bar').baz}); // changes $.baz back to bar's method baz
+
+    require('foo').baz() //foo's baz is still accessible at any time.
