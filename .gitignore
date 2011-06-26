@@ -2,3 +2,5 @@ node_modules/
 test/ender.js
 test/ender.min.js
 test/node_modules/
+test/js/bean.js
+test/js/bean.min.js
