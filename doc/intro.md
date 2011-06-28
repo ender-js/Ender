@@ -18,3 +18,5 @@ Ponder this... Ender is unique and important in two key ways:
 2) Ender offers a way to bring together the awesome work happening in small frameworks and libraries that otherwise do only one thing, and allows you to mix, match, and customize your own library suited to your individual needs without all the extra cruft that comes with larger libraries.
 
 With Ender, if one part of your library goes bad or unmaintained, it can be replaced with another. Need a specific package version? no big deal. Does your microlib have dependencies? Let us handle that for you too!
+
+<div id="docs"></div>
