@@ -79,7 +79,7 @@ By default ender info will look for a local ender.js or ender.min.js file. Howev
 
     $ ender info --use ../../workspace/fat/fats-library
 
-<h3>Add (<code>+, add, set</code>)</h3>
+<h3>Add (<code>add, set</code>)</h3>
 
 It's not always possible to know which packages you may or may not want when beginning a new project and ender wants to encourage you to be as agile as possible! Build your initial library light and push in more packages whenever you run into the need. To do this, use Ender's <code>add</code> method. Run:
 
@@ -107,7 +107,7 @@ By default <code>remove</code> will operate on the local ender.js and ender.min.
 
     $ ender remove underscore --use ./ender/library
 
-<h3>Refresh (<code>., refresh</code>)</h3>
+<h3>Refresh (<code> refresh</code>)</h3>
 
 The <code>refresh</code> method will refresh your library with the latest stable builds from your activated packages. Just run:
 
