@@ -53,19 +53,19 @@ This is great news if you're building a Mobile Webkit or Android application, si
 
 <h3>CommonJS like Module system</h3>
 
-Ender also exposes a module API which is based on CommonJS Modules spec v1.1.1. There are two methods it exposes to do this.
+Ender also exposes a module API which is based on [CommonJS Modules spec v1.1](http://wiki.commonjs.org/wiki/Modules/1.1). There are two methods it exposes to do this.
 
-The first method is require. Require takes a string which corresponds to a package name and returns a package object. For example:
+The first method is <code>require</code>. Require takes a string which corresponds to a package name and returns a package object. If no registered package object is found, require will try looking in the global scope (on the window object). Using the require method looks like this:
 
     var _ = require('underscore'); //return the underscore object
 
-To register a package use the provide method. The provide method looks like this:
+The second method is <code>provide</code>. Provide is used internally by ender to register a package (this happens automatically when building with Ender). However, you are free to use the provide method in your own code if you would like to register an object from outside the Ender built file. The provide method looks like this:
 
     provide("myPackage", myPackageObj);
 
 These methods are particularly useful when working with microlibs which are already CommonJS compliant (like underscore, backbone, etc.).
 
-When building with Ender, all packages with CommonJS exports will automatically be made available via the require method. It's important to note here that because of this, these modules will not be accessible directly in the global scope -- this of course is great news!
+Again, when building with Ender, all packages with CommonJS exports will automatically be made available via the require method. It's important to note here that because of this, these modules will not be accessible directly in the global scope -- *this of course is great news!*
 
 So, if you were to run the following build command <code>ender build backbone</code>, you could then access both backbone and underscore from your lib like this:
 
@@ -75,7 +75,7 @@ So, if you were to run the following build command <code>ender build backbone</c
     backbone.Models(...)
     _.each(...)
 
-Ender's module support is also great when you run into libs who are competing for method names on the $ namespace. For example, if microlib "foo" and microlib "bar" both expose a method <code>baz</code> -- you could use require to gain access to the method being overridden -- as well as set which method you would prefer to be on ender's internal chain... for example:
+Ender's module support is also great when you run into libs which are competing for method names on the $ namespace. For example, if microlib "foo" and microlib "bar" both expose a method <code>baz</code> -- you could use require to gain access to the method being overridden -- as well as set which method you would prefer to be on ender's internal chain... for example:
 
     $.baz() //executes bar's method baz
 
