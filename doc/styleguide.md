@@ -1,5 +1,5 @@
 # JavaScript Style Coding Conventions for Ender
-Borrowed heavliy from Alexi: https://raw.github.com/cloudhead/styleguide/master/JavaScript.md
+Borrowed heavily from Alexis: https://raw.github.com/cloudhead/styleguide/master/JavaScript.md
 
 
 ## Identifiers
