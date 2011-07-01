@@ -346,3 +346,8 @@ so that's where they belong.
   function callback () { ... } //installs packages
 
 ```
+
+## SMALL LITTLE NITS
+
+- **RULE**: No spaces around brackets: ['foo', 'bar', 'baz']
+- **RULE**: Single quotes > double quotes
