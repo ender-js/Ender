@@ -10,8 +10,8 @@ Borrowed heavily from Alexis: https://raw.github.com/cloudhead/styleguide/master
   // GOOD
 
   var User = function (name, age) {
-      this.name = name
-      this.age = age
+    this.name = name
+    this.age = age
   }
   var user = new User('bob', 32)
 
@@ -22,8 +22,8 @@ Borrowed heavily from Alexis: https://raw.github.com/cloudhead/styleguide/master
   // BAD
 
   var user = function (name, age) {
-      this.name = name
-      this.age = age
+    this.name = name
+    this.age = age
   }
   var u = new user('bob', 32)
 
@@ -58,12 +58,12 @@ so that's where they belong.
   // GOOD
 
   function (a, b) {
-      var k
+    var k
 
-      if (a == b) {
-          k = true
-      }
-      ...
+    if (a == b) {
+      k = true
+    }
+    ...
   }
 
 ```
@@ -113,7 +113,7 @@ so that's where they belong.
   // GOOD
 
   if (a) {
-      return true
+    return true
   }
 
 ```
@@ -121,7 +121,7 @@ so that's where they belong.
   // BAD
 
   if(a) {
-      return true
+    return true
   }
 
 ```
