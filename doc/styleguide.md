@@ -351,3 +351,4 @@ so that's where they belong.
 
 - **RULE**: No spaces around brackets: ['foo', 'bar', 'baz']
 - **RULE**: Single quotes > double quotes
+- **RULE**: there should be a space seperating // and comment text
