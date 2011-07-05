@@ -4,13 +4,12 @@ var spec = require('sink-test')
   , ender = require('../lib/ender')
   , O_O = require('./O_O')
   , path = require('path')
-  , sys = require('sys')
   , fs = require('fs');
 
 // don't allow timeouts!
 sink.timeout = false;
 
-//only output sink log statements
+// only output sink log statements
 spec.setLogKey('$__sink::');
 
 sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
@@ -86,12 +85,12 @@ sink('ENDER - BUILD', function (test, ok, before, after) {
     });
   });
 
-  test('exec: ender -b domready', 2, function () {
+  test('exec: ender build domready', 2, function () {
     O_O(ender, 'build').andCallFake(function (packages) {
       ok(true, 'build was called');
       ok(packages.length == 1 && packages[0] == 'domready', 'correct packages passed');
     });
-    ender.exec('ender -b domready');
+    ender.exec('ender build domready');
   });
 
 });
@@ -242,7 +241,8 @@ sink('ENDER - NOOP', function (test, ok, before, after) {
   test('dependency display 1', 2, function () {
     var i = 0;
 
-    O_O(NPM, 'log').andCallFake(function (str) {
+    O_O(console, 'log').andCallFake(function (str) {
+      if (/\$\_\_sink\:\:/.test(str)) return;
       i++;
       if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str);
       else if (i === 2) ok ('└── ' + 'bar'.yellow == str, str);
@@ -253,87 +253,90 @@ sink('ENDER - NOOP', function (test, ok, before, after) {
       bar: 0
     }
 
-    NPM.prettyPrintDependencies(tree);
+    NPM.recurseOverDependencies(tree);
 
   });
 
   test('dependency display 2', 4, function () {
-    var i = 0
-      , tree = {
-          foo: 0,
-          bar: {
-            baz: 0,
-            bang: 0
-          }
-        }
-
-    O_O(NPM, 'log').andCallFake(function (str) {
-      i++;
-      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str + ' was output');
-      else if (i === 2) ok ('└─┬ ' + 'bar'.yellow == str, str + ' was output');
-      else if (i === 3) ok ('  ├── ' + 'baz'.yellow == str, str + ' was output');
-      else if (i === 4) ok ('  └── ' + 'bang'.yellow == str, str + ' was output');
-    });
-
-    NPM.prettyPrintDependencies(tree);
-
-  });
-
-  test('dependency display 3', 5, function () {
-    var i = 0
-      , tree = {
-          foo: 0,
-          bar: {
-            baz: 0,
-            bang: 0
-          },
-          fat: 0
-        }
-
-    O_O(NPM, 'log').andCallFake(function (str) {
-      i++;
-      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, '├── foo was output');
-      else if (i === 2) ok ('├─┬ ' + 'bar'.yellow == str, '├─┬ bar was output');
-      else if (i === 3) ok ('| ├── ' + 'baz'.yellow == str, '| ├── baz was output');
-      else if (i === 4) ok ('| └── ' + 'bang'.yellow == str, '| └── bang was output');
-      else if (i === 5) ok ('└── ' + 'fat'.yellow == str, '└── fat was output');
-    });
-
-    NPM.prettyPrintDependencies(tree);
-
-  });
-
-  test('dependency display 4', 8, function () {
-    var i = 0
-      , tree = {
-          foo: 0,
-          bar: {
-            baz: {
-              blip: 0
-            },
-            bang: {
-              ded: 0,
-              killface: 0
+      var i = 0
+        , tree = {
+            foo: 0,
+            bar: {
+              baz: 0,
+              bang: 0
             }
-          },
-          fat: 0
-        }
+          }
 
-    O_O(NPM, 'log').andCallFake(function (str) {
-      i++;
-      if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str + ' was output');
-      else if (i === 2) ok ('├─┬ ' + 'bar'.yellow == str, str + ' was output');
-      else if (i === 3) ok ('| ├─┬ ' + 'baz'.yellow == str, str + ' was output');
-      else if (i === 4) ok ('| | └── ' + 'blip'.yellow == str, str + ' was output');
-      else if (i === 5) ok ('| └─┬ ' + 'bang'.yellow == str, str + ' was output');
-      else if (i === 6) ok ('|   ├── ' + 'ded'.yellow == str, str + ' was output');
-      else if (i === 7) ok ('|   └── ' + 'killface'.yellow == str, str + ' was output');
-      else if (i === 8) ok ('└── ' + 'fat'.yellow == str, str + ' was output');
+      O_O(console, 'log').andCallFake(function (str) {
+        if (/\$\_\_sink\:\:/.test(str)) return;
+        i++;
+        if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str + ' was output');
+        else if (i === 2) ok ('└─┬ ' + 'bar'.yellow == str, str + ' was output');
+        else if (i === 3) ok ('  ├── ' + 'baz'.yellow == str, str + ' was output');
+        else if (i === 4) ok ('  └── ' + 'bang'.yellow == str, str + ' was output');
+      });
+
+      NPM.recurseOverDependencies(tree);
+
     });
 
-    NPM.prettyPrintDependencies(tree);
+    test('dependency display 3', 5, function () {
+      var i = 0
+        , tree = {
+            foo: 0,
+            bar: {
+              baz: 0,
+              bang: 0
+            },
+            fat: 0
+          }
 
-  });
+      O_O(console, 'log').andCallFake(function (str) {
+        if (/\$\_\_sink\:\:/.test(str)) return;
+        i++;
+        if (i === 1)      ok ('├── ' + 'foo'.yellow == str, '├── foo was output');
+        else if (i === 2) ok ('├─┬ ' + 'bar'.yellow == str, '├─┬ bar was output');
+        else if (i === 3) ok ('| ├── ' + 'baz'.yellow == str, '| ├── baz was output');
+        else if (i === 4) ok ('| └── ' + 'bang'.yellow == str, '| └── bang was output');
+        else if (i === 5) ok ('└── ' + 'fat'.yellow == str, '└── fat was output');
+      });
+
+      NPM.recurseOverDependencies(tree);
+
+    });
+
+    test('dependency display 4', 8, function () {
+      var i = 0
+        , tree = {
+            foo: 0,
+            bar: {
+              baz: {
+                blip: 0
+              },
+              bang: {
+                ded: 0,
+                killface: 0
+              }
+            },
+            fat: 0
+          }
+
+      O_O(console, 'log').andCallFake(function (str) {
+        if (/\$\_\_sink\:\:/.test(str)) return;
+        i++;
+        if (i === 1)      ok ('├── ' + 'foo'.yellow == str, str + ' was output');
+        else if (i === 2) ok ('├─┬ ' + 'bar'.yellow == str, str + ' was output');
+        else if (i === 3) ok ('| ├─┬ ' + 'baz'.yellow == str, str + ' was output');
+        else if (i === 4) ok ('| | └── ' + 'blip'.yellow == str, str + ' was output');
+        else if (i === 5) ok ('| └─┬ ' + 'bang'.yellow == str, str + ' was output');
+        else if (i === 6) ok ('|   ├── ' + 'ded'.yellow == str, str + ' was output');
+        else if (i === 7) ok ('|   └── ' + 'killface'.yellow == str, str + ' was output');
+        else if (i === 8) ok ('└── ' + 'fat'.yellow == str, str + ' was output');
+      });
+
+      NPM.recurseOverDependencies(tree);
+
+    });
 
 });
 
