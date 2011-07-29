@@ -229,9 +229,6 @@ sink('ENDER - NOOP', function (test, ok, before, after) {
 
   before(function () {
     NPM = require('../lib/ender.npm');
-    O_O(NPM, 'desc').andCallFake(function (k, o, fn) {
-      fn(k, '');
-    });
   });
 
   after(function () {
