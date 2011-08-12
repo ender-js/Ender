@@ -1,49 +1,22 @@
-ENDER
---------------------------
+#ENDER
 
-Ender is not a JavaScript library in the traditional sense. So don't rush out and try to replace jQuery or MooTools with Ender... It just wouldn't work.... But! **you can** build a library from Ender which will. And you should. right now.
+*Ender is a full featured package manager for your browser.*<br/>
+It allows you to search, install, manage, and compile front-end javascript packages and their dependencies for the web. We like to think of it as [NPM](https://github.com/isaacs/npm)'s little sister.
 
-That's because: *Ender is an open-module micro-to-macro framework for composing your own custom JavaScript library; it wraps up application-independent modules into a familiar interface so you don't have to.*
+*Ender is not a JavaScript library*.<br/>
+It's not a jQuery replacement. It's not even a static asset. It's a tool for making the consumption of front-end javascript packages dead simple and incredibly powerful.
 
+
+## WHY?
+
+In the browser - **small, loosely coupled modules are the future and large, tightly-bound monolithic libraries are the past!**
+
+Ender capitalizes on this by offering a unique way to bring together the exciting work happening in javascript packages and allows you to mix, match, and customize your own build, suited to your individual needs, without all the extra cruft that comes with larger libraries.
+
+With Ender, if one library goes bad or unmaintained, it can be replaced with another. Need a specific package version? No problem! Does your package have dependencies? Let us handle that for you too!
 Check it out:
 
 ![Ender](http://f.cl.ly/items/1W0P3I3D3m3U0e1j2h1c/Screen%20shot%202011-05-09%20at%2011.31.42%20AM.png)
 
-
-OK, SURE... BUT WHY?
---------------------
-Because in the browser - small, loosely coupled modules are the future, and large, tightly-bound monolithic libraries are the past!
-
-For folks in the knows, you can jump straight to the [list of modules](https://github.com/ender-js/Ender/wiki/Ender-package-list)
-
-Ender is unique and important in two key ways:
-
-1) Ender provides front end developers with a true package management system and the powerful command line tools necessary to back it up... making your library maintenance tasks simple, painless, and fast.
-
-2) Ender offers a way to bring together the awesome work happening in small frameworks and libraries that otherwise do only one thing, and allows you to mix, match, and customize your own library suited to your individual needs without all the extra cruft that comes with larger libraries.
-
-GET STARTED NOW
----------------
-
-Install [NodeJS](http://nodejs.org) and install [NPM](https://github.com/isaacs/npm).
-
-Then install ender globally with the command (Latest NPM):
-
-    $ [sudo] npm install ender -g
-
-or (NPM version < 1):
-
-    $ [sudo] npm install ender
-
-Once that has installed, to get a list of all the cool things you can do, just run this command in your terminal:
-
-    $ ender
-
-LEARN
------
-
-See how this stuff works and watch some [introduction videos](http://enderjs.com/learn)
-
-HELP & SUPPORT
-----------
-For development questions, issues, bugs, ideas, suggestions -- join the Ender community and send us your thoughts at [enderjs.com](http://enderjs.com)
+## MORE INFO
+For more information checkout http://ender.no.de
