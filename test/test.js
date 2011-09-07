@@ -54,6 +54,23 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
     });
   });
 
+  test('exec: ender build ender-json', 4, function () {
+    var cmd = 'ender build ender-json';
+    ender.exec(cmd, function () {
+      path.exists('./ender.js', function (exists) {
+        ok(exists, 'ender.js was created');
+      });
+      path.exists('./ender.min.js', function (exists) {
+        ok(exists, 'ender.min.js was created');
+      });
+      fs.readFile('./ender.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading ender.js');
+        ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
+        ok(data.match(/Ender-JS[\s\S]*http:\/\/www\.JSON\.org\/json2\.js/g), 'ender-js was included before ender-json');
+      });
+    });
+  });
+
 });
 
 sink('ENDER - BUILD', function (test, ok, before, after) {
