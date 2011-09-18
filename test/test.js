@@ -66,7 +66,7 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(data.match(/Ender-JS[\s\S]*http:\/\/www\.JSON\.org\/json2\.js/g), 'ender-js was included before ender-json');
+        ok(data.match(/Ender:[\s\S]*http:\/\/www\.JSON\.org\/json2\.js/g), 'ender-js was included before ender-json');
       });
     });
   });
@@ -97,7 +97,7 @@ sink('ENDER - BUILD', function (test, ok, before, after) {
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(/context\[\'domReady\'\]/.test(data), 'domready was built into ender');
+        ok(/'domReady/.test(data), 'domready was built into ender');
       });
     });
   });
