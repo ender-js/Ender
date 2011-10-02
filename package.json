@@ -1,30 +1,33 @@
 {
-  "name": "ender",
-  "description": "next level JavaScript modules",
-  "version": "0.7.1",
-  "authors": ["Dustin Diaz <@ded>", "Jacob Thornton <@fat>"],
-  "keywords": ["ender", "modules", "builder", "framework", "packager"],
-  "main": "./lib/ender.js",
-  "homepage": "https://github.com/ender-js/ender",
-  "engines": {
-    "node": ">= 0.4.0"
-  },
-  "dependencies": {
-    "npm": ">= 1.0.0",
-    "colors": ">= 0.3.0",
-    "uglify-js": ">= 0.0.1",
-    "gzip": ">= 0.1.0",
-    "async": ">= 0.1.9"
-  },
-  "devDependencies": {
-    "sink-test": "*"
-  },
-  "directories": {
-    "lib": "./lib",
-    "bin": "./bin"
-  },
-  "bin": {
-    "ender": "./bin/ender"
-  },
-  "preferGlobal": true
+    "name": "ender"
+  , "description": "next level JavaScript modules"
+  , "version": "0.7.2"
+  , "authors": [
+      "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
+    , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
+  ]
+  , "keywords": ["ender", "modules", "builder", "framework", "packager"]
+  , "main": "./lib/ender.js"
+  , "homepage": "https://github.com/ender-js/ender"
+  , "engines": {
+      "node": ">= 0.4.0"
+    }
+  , "dependencies": {
+      "npm": ">= 1.0.0"
+    , "colors": ">= 0.3.0"
+    , "uglify-js": ">= 0.0.1"
+    , "gzip": ">= 0.1.0"
+    , "async": ">= 0.1.9"
+    }
+  , "devDependencies": {
+      "sink-test": "*"
+    }
+  , "directories": {
+      "lib": "./lib"
+    , "bin": "./bin"
+    }
+  , "bin": {
+      "ender": "./bin/ender"
+    }
+  , "preferGlobal": true
 }
