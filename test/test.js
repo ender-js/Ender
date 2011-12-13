@@ -354,7 +354,136 @@ sink('ENDER - NOOP', function (test, ok, before, after) {
       NPM.recurseOverDependencies(tree);
 
     });
-
 });
+
+sink('ENDER - ORDERING & DEPENDENCY MANAGEMENT', function (test, ok, before, after) {
+
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+  });
+
+  // the main purpose of this is to check ordering of modules & dependencies
+  // with a secondary purpose to confirm that the build command in the context
+  // stays correct through a build/add/remove/refresh cycle
+  test('exec: ender build sel bonzo && ender add qwery && ender remove qwery && ender refresh'
+    , 4 * 2 +   // verify files
+      4 * 1 +   // build command check
+      4     +   // checks for qwery
+      4 * 5     // basic index checks
+    , function () {
+
+    var cmd = 'ender build sel bonzo'
+      , indexes
+      , findIndexes = function (data) {
+          // look in the file for the modules, the first 3 should always exist
+          indexes = {
+              'es5': data.indexOf('provide("es5-basic", module.exports);')
+            , 'sel': data.indexOf('provide("sel", module.exports);')
+            , 'bonzo': data.indexOf('provide("bonzo", module.exports);')
+            , 'underscore': data.indexOf('provide("underscore", module.exports);')
+            , 'backbone': data.indexOf('provide("backbone", module.exports);')
+          }
+        }
+      , verifyBasicIndexes = function () {
+          // checking es4-basic, sel & bonzo get included after every exec
+          ok(indexes.es5 > 0, 'es5-basic was built into ender')
+          ok(indexes.sel > 0, 'sel was built into ender')
+          ok(indexes.bonzo > 0, 'bonzo was built into ender')
+          ok(indexes.es5 < indexes.sel, 'es5-basic was included before sel')
+          ok(indexes.sel < indexes.bonzo, 'sel was included before bonzo')
+        }
+      , verifyBasicBuild = function (cmd, data) {
+          // run after every exec, check the build command and very basic modules are included
+          ok(new RegExp(cmd).test(data), 'includes correct build command in comment')
+          findIndexes(data)
+          verifyBasicIndexes()
+        }
+      , verifyFiles = function () {
+          // verify that the files are there after each exec
+          path.exists('./ender.js', function (exists) {
+            ok(exists, 'ender.js was created')
+          })
+          path.exists('./ender.min.js', function (exists) {
+            ok(exists, 'ender.min.js was created')
+          })
+        }
+
+        //-----------------
+        // EXEC 1: ender build sel bonzo
+        // - should include es5-basic as a dependency before sel, then bonzo
+        //-----------------
+      , execBuild = function() {
+          ender.exec(cmd, function () {
+            verifyFiles()
+            fs.readFile('./ender.js', 'utf-8', function (err, data) {
+              if (err) ok(false, 'error reading ender.js')
+              verifyBasicBuild(cmd, data)
+
+              execAdd()
+            })
+          })
+        }
+
+        //-----------------
+        // EXEC 2: ender add backbone
+        // - should leave es5-basic, sel & bonzo and then add underscore
+        //   before backbone at the end
+        //-----------------
+      , execAdd = function() {
+          ender.exec('ender add backbone', function () {
+            verifyFiles()
+
+            fs.readFile('./ender.js', 'utf-8', function (err, data) {
+              if (err) ok(false, 'error reading ender.js')
+              verifyBasicBuild(cmd + ' backbone', data)
+              // were did underscore & backbone added?
+              ok(indexes.underscore > 0, 'underscore was built into ender')
+              ok(indexes.backbone > 0, 'backbone was built into ender')
+              ok(indexes.bonzo < indexes.underscore, 'underscore was included after bonzo')
+              ok(indexes.underscore < indexes.backbone, 'backbone was included after underscore')
+
+              execRemove()
+            })
+          })
+        }
+
+        //-----------------
+        // EXEC 3: ender add backbone
+        // - should remove both underscore and backbone and leave us where
+        //   we began
+        //-----------------
+      , execRemove = function() {
+          ender.exec('ender remove underscore', function () {
+            verifyFiles()
+
+            fs.readFile('./ender.js', 'utf-8', function (err, data) {
+              if (err) ok(false, 'error reading ender.js')
+              verifyBasicBuild(cmd, data)
+
+              execRefresh()
+            })
+          })
+        }
+
+        //-----------------
+        // EXEC 4: ender refresh
+        // - should give us exactly the same output as in exec 1 & 3
+        //-----------------
+      , execRefresh = function () {
+          ender.exec('ender refresh', function () {
+            verifyFiles()
+
+            fs.readFile('./ender.js', 'utf-8', function (err, data) {
+              if (err) ok(false, 'error reading ender.js')
+              verifyBasicBuild(cmd, data)
+            })
+          })
+        }
+
+     // run
+     execBuild()
+  })
+
+})
 
 spec.start();
