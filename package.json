@@ -30,4 +30,7 @@
       "ender": "./bin/ender"
     }
   , "preferGlobal": true
+  , "scripts": {
+    "test": "make test"
+  }
 }
