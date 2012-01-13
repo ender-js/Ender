@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "next level JavaScript modules"
-  , "version": "0.8.2"
+  , "version": "0.8.3"
   , "authors": [
       "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
     , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
