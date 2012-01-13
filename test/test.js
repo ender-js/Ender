@@ -30,8 +30,8 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(/bean =/.test(data), 'bean was built into ender');
-        ok(/bonzo =/.test(data), 'bonzo was built into ender');
+        ok(/bean/.test(data), 'bean was built into ender');
+        ok(/bonzo/.test(data), 'bonzo was built into ender');
       });
     });
   });
