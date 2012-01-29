@@ -1,9 +1,8 @@
-require('./common')
 var buster = require('buster')
   , assert = buster.assert
   , fs = require('fs')
   , path = require('path')
-  , util = require('../lib/util')
+  , util = require('../../lib/util')
 
   , verifyWritable = function (name, dir, done) {
       path.exists(dir, function (exists) {

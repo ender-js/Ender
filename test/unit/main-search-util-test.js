@@ -1,7 +1,6 @@
-require('./common')
 var buster = require('buster')
   , assert = buster.assert
-  , searchUtil = require('../lib/main-search-util')
+  , searchUtil = require('../../lib/main-search-util')
 
 buster.testCase('Search Util', {
     'test escapeRegExp plain strings': function () {

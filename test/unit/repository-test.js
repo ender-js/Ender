@@ -1,9 +1,8 @@
-require('./common')
 var buster = require('buster')
   , assert = buster.assert
   , fs = require('fs')
-  , repository = require('../lib/repository')
-  , util = require('../lib/util')
+  , repository = require('../../lib/repository')
+  , util = require('../../lib/util')
 
   , executeSetupPackupTempDirTest = function (execute, verify, done) {
       fs.readdir(util.tmpDir, function (err, files) {

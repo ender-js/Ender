@@ -1,7 +1,6 @@
-require('./common')
 var buster = require('buster')
   , assert = buster.assert
-  , argsParse = require('../lib/args-parse')
+  , argsParse = require('../../lib/args-parse')
   , buildargs = function (s) {
       return [ 'node', '/some/path/to/bin' ].concat(s.split(' '))
     }

@@ -1,11 +1,10 @@
-require('./common')
 var buster = require('buster')
   , assert = buster.assert
-  , search = require('../lib/main-search')
+  , search = require('../../lib/main-search')
 
 buster.testCase('Search', {
     'test exec() calls setup(), search() and packup() on repository': function () {
-      var repository = require('../lib/repository')
+      var repository = require('../../lib/repository')
         , mock = this.mock(repository)
         , terms = 'terms argument'
 
