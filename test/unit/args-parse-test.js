@@ -5,7 +5,7 @@ var buster = require('buster')
       return [ 'node', '/some/path/to/bin' ].concat(s.split(' '))
     }
 
-buster.testCase('args Parser', {
+buster.testCase('Args Parser', {
 
     'test parse() exists': function () {
       assert.isFunction(argsParse.parse)
