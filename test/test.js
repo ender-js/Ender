@@ -48,7 +48,7 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
         if (err) ok(false, 'error reading ender.js');
         ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
-        ok(data.match(/http:\/\/documentcloud.github.com\/backbone/g).length == 1, 'backbone was built into ender');
+        ok(data.match(/http:\/\/backbonejs.org/g).length == 1, 'backbone was built into ender');
         ok(data.match(/http:\/\/documentcloud.github.com\/underscore/g).length == 1, 'undersore was built into ender');
       });
     });
