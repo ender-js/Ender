@@ -1,6 +1,6 @@
 {
     "name": "ender"
-  , "description": "next level JavaScript modules"
+  , "description": "Open Module JavaScript Framework"
   , "version": "0.8.4"
   , "authors": [
       "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
@@ -30,4 +30,7 @@
       "ender": "./bin/ender"
     }
   , "preferGlobal": true
+  , "scripts": {
+      "test": "make test"
+    }
 }
