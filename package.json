@@ -1,7 +1,7 @@
 {
     "name": "ender"
-  , "description": "next level JavaScript modules"
-  , "version": "0.8.4"
+  , "description": "Open Module JavaScript Framework"
+  , "version": "0.8.5"
   , "authors": [
       "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
     , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
@@ -30,4 +30,7 @@
       "ender": "./bin/ender"
     }
   , "preferGlobal": true
+  , "scripts": {
+      "test": "make test"
+    }
 }
