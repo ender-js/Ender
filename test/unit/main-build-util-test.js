@@ -4,72 +4,103 @@ var buster = require('buster')
 
 buster.testCase('Build Util', {
     'packageList': {
-        'test no args': function () {
-            var args = {}
-              , packages = buildUtil.packageList(args)
+        'setUp': function () {
+          this.testPackageList = function (args, expected) {
+            var packages = buildUtil.packageList(args)
+            assert.equals(packages, expected)
+          }
+        }
 
-            assert.equals(packages, [ 'ender-js', '.' ])
+      , 'test no args': function () {
+            this.testPackageList({}, [ 'ender-js', '.' ])
           }
 
       , 'test 1 package': function () {
-          var args = { remaining: [ 'apkg' ] }
-            , packages = buildUtil.packageList(args)
-
-          assert.equals(packages, [ 'ender-js', 'apkg' ])
+          this.testPackageList({ remaining: [ 'apkg' ] }, [ 'ender-js', 'apkg' ])
         }
 
       , 'test multiple packages': function () {
-          var args = { remaining: [ 'apkg', 'pkg2', 'pkg3', '.', '..' ] }
-            , packages = buildUtil.packageList(args)
-
-          assert.equals(packages, [ 'ender-js', 'apkg', 'pkg2', 'pkg3', '.', '..' ])
+          this.testPackageList(
+              { remaining: [ 'apkg', 'pkg2', 'pkg3', '.', '..' ] }
+            , [ 'ender-js', 'apkg', 'pkg2', 'pkg3', '.', '..' ]
+          )
         }
 
       , 'test duplicate packages': function () {
-          var args = { remaining: [ 'apkg', 'pkg2', 'apkg' ] }
-            , packages = buildUtil.packageList(args)
+          this.testPackageList(
+              { remaining: [ 'apkg', 'pkg2', 'apkg' ] }
+            , [ 'ender-js', 'apkg', 'pkg2' ]
+          )
+        }
 
-          assert.equals(packages, [ 'ender-js', 'apkg', 'pkg2' ])
+      , 'test noop no args': function () {
+          this.testPackageList({ options: { noop: true } }, [ '.' ])
+        }
+
+      , 'test noop and packages': function () {
+          this.testPackageList(
+              { remaining: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { noop: true } }
+            , [ 'foo', 'bar', '.', '../../bang' ]
+          )
+        }
+
+      , 'test sans no args': function () {
+          this.testPackageList({ options: { sans: true } }, [ '.' ])
+        }
+
+      , 'test sans and packages': function () {
+          this.testPackageList(
+              { remaining: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true } }
+            , [ 'foo', 'bar', '.', '../../bang' ]
+          )
+        }
+
+      , 'test noop and sans and packages': function () {
+          this.testPackageList(
+              { remaining: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true, noop: true } }
+            , [ 'foo', 'bar', '.', '../../bang' ]
+          )
         }
     }
 
   , 'uniquePackages': {
-        'test no packages': function () {
-          var packages = []
-            , uniques = buildUtil.uniquePackages(packages)
+        'setUp': function () {
+          this.testUniquePackages = function (packages, expected) {
+            var uniques = buildUtil.uniquePackages(packages)
+            assert.equals(uniques, expected)
+          }
+        }
 
-          assert.equals(uniques, [])
+      , 'test no packages': function () {
+          this.testUniquePackages([], [])
         }
 
       , 'test single package': function () {
-          var packages = [ 'apkg' ]
-            , uniques = buildUtil.uniquePackages(packages)
-
-          assert.equals(uniques, [ 'apkg' ])
+          this.testUniquePackages([ 'apkg' ], [ 'apkg' ])
         }
 
       , 'test multiple unique package': function () {
-          var packages = [ 'apkg', 'foo', 'bar' ]
-            , uniques = buildUtil.uniquePackages(packages)
-
-          assert.equals(uniques, [ 'apkg', 'foo', 'bar' ])
+          this.testUniquePackages(
+              [ 'apkg', 'foo', 'bar' ]
+            , [ 'apkg', 'foo', 'bar' ]
+          )
         }
 
       , 'test multiple packages with dupes': function () {
-          var packages = [ 'apkg', 'foo', 'apkg', 'bar', 'bar' ]
-            , uniques = buildUtil.uniquePackages(packages)
-
-          assert.equals(uniques, [ 'apkg', 'foo', 'bar' ])
+          this.testUniquePackages(
+              [ 'apkg', 'foo', 'apkg', 'bar', 'bar' ]
+            , [ 'apkg', 'foo', 'bar' ]
+          )
         }
 
       , 'test multiple packages with dupes and versions': function () {
           // There is a question here about versioning, perhaps if there is an unversioned
           // and a versioned of the same package then include the versioned one? How about
           // when 2 different versions of the same package are specified
-          var packages = [ 'apkg', 'foo', 'apkg@0.1', 'bar', 'bar', 'bar@2.0.0', 'yo@0.0.1' ]
-            , uniques = buildUtil.uniquePackages(packages)
-
-          assert.equals(uniques, [ 'apkg', 'foo', 'bar', 'yo@0.0.1' ])
+          this.testUniquePackages(
+              [ 'apkg', 'foo', 'apkg@0.1', 'bar', 'bar', 'bar@2.0.0', 'yo@0.0.1' ]
+            , [ 'apkg', 'foo', 'bar', 'yo@0.0.1' ]
+          )
         }
     }
 })
