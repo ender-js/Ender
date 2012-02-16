@@ -165,5 +165,43 @@ buster.testCase('Repository (NPM interface)', {
         }
     }
 
+  , 'install()': {
+        setUp: function () {
+          // see note for search() setUp
+          this.npm = require('npm')
+          this.npmCommandsOriginal = this.npm.commands
+          this.npm.commands = this.npmCommands = {
+              install: function () {}
+          }
+        }
+      , tearDown: function () {
+          this.npm.commands = this.npmCommandsOriginal
+        }
+
+      , 'test install() throws RepositorySetupError if setup() has not been called': function () {
+          assert.exception(repository.install, 'RepositorySetupError')
+        }
+
+      , 'test install() calls npm.commands.install()': function (done) {
+          var npm = require('npm')
+            , npmMock = this.mock(npm)
+            , npmCommandsMock = this.mock(npm.commands)
+            , packages = [ 'packages', 'argument' ]
+            , finish = function () {
+                repository.packup()
+                done()
+              }
+
+          npmMock.expects('load').once().callsArg(1)
+          npmCommandsMock.expects('install').once().withArgs(packages, finish).callsArg(1)
+
+          repository.setup(function () {
+            repository.install(packages, finish)
+          })
+
+          assert(true) // required, buster issue #62
+        }
+    }
+
 })
 

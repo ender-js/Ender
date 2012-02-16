@@ -28,33 +28,64 @@ var buster = require('buster')
     }
 
 buster.testCase('Util', {
-    'test util.tmp is a writeable directory': function (done) {
-      assert.isString(util.tmpDir)
-      verifyWritable('temp', util.tmpDir, done)
+    'directories': {
+        'test util.tmp is a writeable directory': function (done) {
+          assert.isString(util.tmpDir)
+          verifyWritable('temp', util.tmpDir, done)
+        }
+
+      , 'test util.home is a writeable directory': function (done) {
+          assert.isString(util.homeDir)
+          verifyWritable('home', util.homeDir, done)
+        }
     }
 
-  , 'test util.home is a writeable directory': function (done) {
-      assert.isString(util.homeDir)
-      verifyWritable('home', util.homeDir, done)
+  , 'extend': {
+        'test basic extend()': function () {
+          var src = { 'one': 1, 'two': 2 }
+            , dst = { 'two': 2.2, 'three': 3 }
+
+            , actual = util.extend(src, dst)
+
+          assert.same(actual, dst) // the return is just a convenience
+
+          assert.equals(Object.keys(actual).length, 3)
+          assert.equals(actual.one, src.one)
+          assert.equals(actual.two, 2.2) // didn't overwrite existing property
+          assert.equals(actual.three, 3)
+
+          // left src untouched?
+          assert.equals(Object.keys(src).length, 2)
+          assert.equals(src.one, 1)
+          assert.equals(src.two, 2)
+        }
     }
 
-  , 'test basic extend()': function () {
-      var src = { 'one': 1, 'two': 2 }
-        , dst = { 'two': 2.2, 'three': 3 }
+  , 'mkdir': {
+        'test mkdir nonexistant': function (done) {
+          var dir = '/tmp/' + Math.random() + '.' + process.pid + '.test'
+          util.mkdir(dir, function (err) {
+            refute(err, 'no error from mkdir()')
+            path.exists(dir + '/', function (exists) {
+              assert(exists, 'directory exists')
+              fs.rmdir(dir, done)
+            })
+          })
+        }
 
-        , actual = util.extend(src, dst)
-
-      assert.same(actual, dst) // the return is just a convenience
-
-      assert.equals(Object.keys(actual).length, 3)
-      assert.equals(actual.one, src.one)
-      assert.equals(actual.two, 2.2) // didn't overwrite existing property
-      assert.equals(actual.three, 3)
-
-      // left src untouched?
-      assert.equals(Object.keys(src).length, 2)
-      assert.equals(src.one, 1)
-      assert.equals(src.two, 2)
+      , 'test mkdir already exists': function (done) {
+          var dir = '/tmp/' + Math.random() + '.' + process.pid + '.test'
+          fs.mkdir(dir, function (err) {
+            refute(err, 'no error from fs.mkdir()')
+            util.mkdir(dir, function (err) {
+              refute(err, 'no error from mkdir()')
+              path.exists(dir + '/', function (exists) {
+                assert(exists, 'directory exists')
+                fs.rmdir(dir, done)
+              })
+            })
+          })
+        }
     }
 
 })

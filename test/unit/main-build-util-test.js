@@ -2,7 +2,7 @@ var buster = require('buster')
   , assert = buster.assert
   , buildUtil = require('../../lib/main-build-util')
 
-buster.testCase('Build Util', {
+buster.testCase('Build util', {
     'packageList': {
         'setUp': function () {
           this.testPackageList = function (args, expected) {

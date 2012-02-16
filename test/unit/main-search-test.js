@@ -18,7 +18,7 @@ testCase('Search', {
       assert.isFunction(searchExpectation.args[0][1]) // internal 'handle()' method
     }
 
-  , 'test main-search-util interaction': function () {
+  , 'test main-search-util interaction': function (done) {
       var mockRepository = this.mock(repository)
       var mockSearchUtil = this.mock(searchUtil)
       var out = require('../../lib/main-search-output').create(1)
@@ -42,7 +42,7 @@ testCase('Search', {
       var resultsEx = outMock.expects('searchResults').once()
 
       // execute
-      search.exec({ remaining: [ 'hoohaa' ] }, out)
+      search.exec({ remaining: [ 'hoohaa' ] }, out, done)
 
       var results = resultsEx.args[0][0]
       // verify searchResults data

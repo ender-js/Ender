@@ -2,7 +2,7 @@ var buster = require('buster')
   , assert = buster.assert
   , searchUtil = require('../../lib/main-search-util')
 
-buster.testCase('Search Util', {
+buster.testCase('Search util', {
     'test escapeRegExp plain strings': function () {
       assert.equals(searchUtil.escapeRegExp(''), '')
       assert.equals(searchUtil.escapeRegExp('vanilla'), 'vanilla')
