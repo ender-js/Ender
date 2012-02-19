@@ -1,0 +1,36 @@
+{
+    "name": "ender"
+  , "description": "Open Module JavaScript Framework"
+  , "version": "0.9.0"
+  , "authors": [
+        "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
+      , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
+      , "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
+    ]
+  , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
+  , "main": "./lib/ender.js"
+  , "homepage": "https://ender.no.de"
+  , "engines": {
+        "node": ">= 0.6.0"
+    }
+  , "dependencies": {
+        "colors": ">= 0.3.0"
+      , "uglify-js": ">= 0.0.1"
+      , "gzip": ">= 0.1.0"
+      , "async": ">= 0.1.9"
+      , "nopt": "*"
+    }
+  , "directories": {
+        "lib": "./lib"
+      , "bin": "./bin"
+    }
+  , "devDependencies": {
+    }
+  , "bin": {
+        "ender": "./bin/ender"
+    }
+  , "preferGlobal": true
+  , "scripts": {
+        "test": "buster-test"
+    }
+}

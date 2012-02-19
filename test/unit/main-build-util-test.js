@@ -1,6 +1,8 @@
 var buster = require('buster')
+  , path = require('path')
   , assert = buster.assert
   , buildUtil = require('../../lib/main-build-util')
+  , packageUtil = require('../../lib/package-util')
 
 buster.testCase('Build util', {
     'packageList': {
@@ -101,6 +103,200 @@ buster.testCase('Build util', {
               [ 'apkg', 'foo', 'apkg@0.1', 'bar', 'bar', 'bar@2.0.0', 'yo@0.0.1' ]
             , [ 'apkg', 'foo', 'bar', 'yo@0.0.1' ]
           )
+        }
+    }
+
+  , 'constructDependencyTree': {
+        'setUp': function () {
+          this.runTest = function (packages, jsons, directories, expectedTree, done) {
+            var packageUtilMock = this.mock(packageUtil)
+              , setupExpectations = function (root, packages) {
+                  Object.keys(packages).forEach(function (p, i) {
+                    if (jsons[p] != 'missing') {
+                      packageUtilMock.expects('findAndReadPackageJSON').once().withArgs(root, p).callsArgWith(2, null, jsons[p])
+                      packageUtilMock.expects('getDependenciesFromDirectory').once().withArgs(root, p).callsArgWith(2, null, directories[p])
+                      setupExpectations(path.join(root, p, 'node_modules'), packages[p])
+                    } else {
+                      // dir & package.json missing
+                      packageUtilMock.expects('findAndReadPackageJSON').once().withArgs(root, p).callsArgWith(2, { code: 'ENOENT' })
+                      packageUtilMock.expects('getDependenciesFromDirectory').once().withArgs(root, p).callsArgWith(2, { code: 'ENOENT' })
+                    }
+                  })
+                }
+
+            setupExpectations('.', packages)
+            buildUtil.constructDependencyTree('.', Object.keys(packages), function (err, tree) {
+              assert.equals(tree, expectedTree)
+              done()
+            })
+          }
+        }
+
+      , 'test no dependencies': function (done) {
+          var packages = {
+                  'pkg1': {}
+                , 'some/path/to/pkg2': {}
+              }
+            , jsons = {
+                  'pkg1': { name: 'pkg1' }
+                , 'some/path/to/pkg2': { name: 'pkg2name' } // name is different to dir, dirname shouldn't matter
+              }
+            , directories = {
+                  'pkg1': []
+                , 'some/path/to/pkg2': []
+              }
+            , expectedTree = {
+                  'pkg1': {
+                      packageJSON: jsons['pkg1']
+                    , dependencies: {}
+                  }
+                , 'some/path/to/pkg2': {
+                      packageJSON: jsons['some/path/to/pkg2']
+                    , dependencies: {}
+                  }
+              }
+          this.runTest(packages, jsons, directories, expectedTree, done)
+        }
+
+      , 'test complex dependencies': function (done) {
+          var packages = {
+                  'pkg1': {
+                      'foo': { 'bar': {} }
+                    , 'woohoo': {}
+                  }
+                , 'some/path/to/pkg2': {
+                      'wee': {
+                          'hee': {
+                              'yo': {}
+                          }
+                      }
+                    , 'foo': { 'bar': {} }
+                  }
+              }
+            , jsons = {
+                  'pkg1': {
+                      name: 'pkg1'
+                    , dependencies: [ 'foo', 'woohoo' ]
+                  }
+                , 'foo': {
+                      name: 'foo'
+                    , dependencies: [ 'bar' ]
+                  }
+                , 'bar': { name: 'bar' }
+                , 'woohoo': { name: 'woohoo' }
+                , 'some/path/to/pkg2': {
+                      name: 'pkg2name'
+                    , dependencies: [ 'wee', 'foo' ]
+                  }
+                , 'wee': {
+                      name: 'wee'
+                    , dependencies: [ 'hee' ]
+                  }
+                , 'hee': {
+                      name: 'hee'
+                    , dependencies: [ 'yo' ]
+                  }
+                , 'yo': { name: 'yo' }
+              }
+            , directories = {
+                  'pkg': [ 'foo', 'woohoo' ]
+                , 'some/path/to/pkg2': [ 'wee', 'foo' ]
+                , 'foo': [ 'bar' ]
+                , 'bar': []
+                , 'woohoo': []
+                , 'wee': [ 'hee' ]
+                , 'hee': [ 'yo' ]
+                , 'yo': []
+              }
+            , expectedTree = {
+                  'pkg1': {
+                      packageJSON: jsons['pkg1']
+                    , dependencies: {
+                          'foo': {
+                              packageJSON: jsons['foo']
+                            , dependencies: {
+                                  'bar': {
+                                      packageJSON: jsons['bar']
+                                    , dependencies: {}
+                                  }
+                              }
+                          }
+                        , 'woohoo': {
+                              packageJSON: jsons['woohoo']
+                            , dependencies: {}
+                          }
+                      }
+                  }
+                , 'some/path/to/pkg2': {
+                      packageJSON: jsons['some/path/to/pkg2']
+                    , dependencies: {
+                          'wee': {
+                              packageJSON: jsons['wee']
+                            , dependencies: {
+                                  'hee': {
+                                      packageJSON: jsons['hee']
+                                    , dependencies: {
+                                          'yo': {
+                                              packageJSON: jsons['yo']
+                                            , dependencies: {}
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                        , 'foo': {
+                              packageJSON: jsons['foo']
+                            , dependencies: {
+                                  'bar': {
+                                      packageJSON: jsons['bar']
+                                    , dependencies: {}
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          this.runTest(packages, jsons, directories, expectedTree, done)
+        }
+
+      , 'test dependencies with missing directories': function (done) {
+          var packages = {
+                  'pkg1': {
+                      'foo': { 'bar': {} }
+                    , 'woohoo': {}
+                  }
+              }
+            , jsons = {
+                  'pkg1': {
+                      name: 'pkg1'
+                    , dependencies: [ 'foo', 'woohoo' ]
+                  }
+                , 'foo': {
+                      name: 'foo'
+                    , dependencies: [ 'bar' ]
+                  }
+                , 'bar': 'missing'
+                , 'woohoo': 'missing'
+              }
+            , directories = {
+                  'pkg': [ 'foo' ]
+                , 'foo': []
+              }
+            , expectedTree = {
+                  'pkg1': {
+                      packageJSON: jsons['pkg1']
+                    , dependencies: {
+                          'foo': {
+                              packageJSON: jsons['foo']
+                            , dependencies: {
+                                  'bar': 'missing'
+                              }
+                          }
+                        , 'woohoo': 'missing'
+                      }
+                  }
+              }
+          this.runTest(packages, jsons, directories, expectedTree, done)
         }
     }
 })
