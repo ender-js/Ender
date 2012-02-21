@@ -299,4 +299,109 @@ buster.testCase('Build util', {
           this.runTest(packages, jsons, directories, expectedTree, done)
         }
     }
+
+  , 'flattenAndOrderDependencies': {
+        'test no dependencies': function () {
+          var originalTree = {
+                  'pkg1': { dependencies: {} }
+                , 'some/path/to/pkg2': { dependencies: {} }
+              }
+            , spy = this.spy()
+
+          buildUtil.forEachOrderedDependency(originalTree, spy)
+
+          assert.equals(spy.callCount, 2)
+          assert.equals(spy.getCall(0).args[0], 'pkg1')
+          assert.equals(spy.getCall(0).args[1], originalTree['pkg1'])
+          assert.equals(spy.getCall(1).args[0], 'some/path/to/pkg2')
+          assert.equals(spy.getCall(1).args[1], originalTree['some/path/to/pkg2'])
+        }
+
+      , 'test simple dependencies': function () {
+          var originalTree = {
+                  'apkg-2': {
+                      dependencies: {
+                          'mypkg-1': { dependencies: {} }
+                      }
+                  }
+                , 'somepkg-5': {
+                      dependencies: {
+                          'foo-4': {
+                              dependencies: {
+                                'bar-3': { dependencies: {} }
+                              }
+                          }
+                      }
+                  }
+                , 'apkg-7': {
+                      dependencies: {
+                          'mypkg-6': { dependencies: {} }
+                      }
+                  }
+              }
+            , spy = this.spy()
+
+          buildUtil.forEachOrderedDependency(originalTree, spy)
+
+          assert.equals(spy.args.length, 7)
+
+          spy.args.forEach(function (c, i) {
+            assert.equals(c[2], i)
+            refute.isNull(c[1])
+            refute.isNull(c[1].dependencies)
+            assert.match(c[0], new RegExp('-' + ++i + '$'))
+          })
+        }
+
+      , 'test duplicate dependencies': function () {
+          var originalTree = {
+                  'apkg-6': {
+                      dependencies: {
+                          'mypkg-5': {
+                              dependencies: {
+                                  'apkg-2': {
+                                      dependencies: {
+                                          'mypkg-1': { dependencies: {} }
+                                      }
+                                  }
+                                , 'apkg-4': {
+                                      dependencies: {
+                                          'mypkg-3': { dependencies: {} }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+                , 'somepkg-9': {
+                      dependencies: {
+                          'foo-8': {
+                              dependencies: {
+                                'bar-7': { dependencies: {} }
+                              }
+                          }
+                        , 'mypkg-3': { dependencies: {} }
+                      }
+                  }
+                , 'apkg-2': {
+                      dependencies: {
+                          'mypkg-1': { dependencies: {} }
+                      }
+                  }
+                , 'lastpkg-10': { dependencies: {} }
+              }
+            , spy = this.spy()
+
+          buildUtil.forEachOrderedDependency(originalTree, spy)
+
+          assert.equals(spy.args.length, 10)
+
+          spy.args.forEach(function (c, i) {
+            assert.equals(c[2], i)
+            refute.isNull(c[1])
+            refute.isNull(c[1].dependencies)
+            assert.match(c[0], new RegExp('-' + ++i + '$'))
+          })
+        }
+    }
 })
