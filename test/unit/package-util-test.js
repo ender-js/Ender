@@ -133,6 +133,32 @@ testCase('Package util', {
         }
     }
 
+  , 'getPackageRoot': {
+        'test standard module name': function () {
+          assert.equals(packageUtil.getPackageRoot('.', 'amodule'), path.resolve('node_modules/amodule'))
+        }
+
+      , 'test module with "." in name': function () {
+          assert.equals(packageUtil.getPackageRoot('.', 'amodule.js'), path.resolve('node_modules/amodule.js'))
+        }
+
+      , 'test versioned module': function () {
+          assert.equals(packageUtil.getPackageRoot('.', 'amodule@0.1.200'), path.resolve('node_modules/amodule'))
+        }
+
+      , 'test "./" module': function () {
+          assert.equals(packageUtil.getPackageRoot('this shouldn\'t matter', './'), path.resolve('.'))
+        }
+
+      , 'test relative path, no ".", module': function () {
+          assert.equals(packageUtil.getPackageRoot('foobar', 'some/path/without/dots'), path.resolve('some/path/without/dots'))
+        }
+
+      , 'test relative path with "." module': function () {
+          assert.equals(packageUtil.getPackageRoot('what??', 'some/path/../path/with/dots'), path.resolve('some/path/with/dots'))
+        }
+    }
+
   , 'getDependenciesFromJSON': {
         'test missing dependencies': function () {
           assert.equals(packageUtil.getDependenciesFromJSON({}), [])
