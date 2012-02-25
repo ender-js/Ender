@@ -12,14 +12,12 @@ buster.testCase('Main program', {
     }
 
   , 'test main calls argsParse to parse arguments': function () {
-      var argsParse = require('../../lib/args-parse')
+      var argsParseMock = this.mock(require('../../lib/args-parse'))
         //, search = require('../../lib/main-search')
         , expectedArgs = [ 'foo', 'bar', 'search' ]
-
-      argsParseMock = this.mock(argsParse)
       //searchMock = this.mock(search)
 
-      argsParseMock.expects('parse').once().withArgs(expectedArgs).returns(null) 
+      argsParseMock.expects('parse').once().withArgs(expectedArgs).returns(null)
       //searchMock.expects('exec').once()
 
       main.exec(expectedArgs)
@@ -27,14 +25,12 @@ buster.testCase('Main program', {
     }
 
   , 'test main loads main module as specified by args-parse': function () {
-      var argsParse = require('../../lib/args-parse')
-        , search = require('../../lib/main-search')
+      var argsParseMock = this.mock(require('../../lib/args-parse'))
+        , searchMock = this.mock(require('../../lib/main-search'))
         , expectedArgs = [ 'foo', 'bar', 'search' ]
 
-      argsParseMock = this.mock(argsParse)
-      searchMock = this.mock(search)
 
-      argsParseMock.expects('parse').once().withArgs(expectedArgs).returns({ main: 'search' }) 
+      argsParseMock.expects('parse').once().withArgs(expectedArgs).returns({ main: 'search' })
       searchMock.expects('exec').once()
 
       main.exec(expectedArgs)

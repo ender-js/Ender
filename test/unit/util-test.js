@@ -10,7 +10,7 @@ var buster = require('buster')
           assert.fail(name + ' directory doesn\'t exist:: ' + dir)
           done()
         } else {
-          var tmpFile = dir + '/ender_test.' + (+new Date)
+          var tmpFile = dir + '/ender_test.' + (+new Date())
           fs.writeFile(tmpFile, 'Test data', function (err) {
             if (err) {
               assert.fail('couldn\'t write to ' + name + ' file: ' + tmpFile)

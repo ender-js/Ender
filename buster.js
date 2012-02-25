@@ -2,11 +2,11 @@ var config = module.exports
 
 config['unit'] = {
     environment: 'node'
-  , tests: [ 'unit/*-test.js' ]
-  , libs: [ './common.js' ]
+  , tests: [ 'test/unit/*-test.js' ]
+  , libs: [ 'test/common.js' ]
 }
 
 config['integration'] = {
     environment: 'node'
-  , tests: [ 'integration/*-test.js' ]
+  , tests: [ 'test/integration/*-test.js' ]
 }

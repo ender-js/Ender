@@ -6,39 +6,37 @@ var testCase = require('buster').testCase
   , setupReadPackageJSON = function (testPath, data, callback) {
       var mock = this.mock(fs)
         , resolvedPath = path.resolve(testPath, 'package.json')
-      mock.expects('readFile').once().withArgs(resolvedPath, 'utf-8').callsArgWith(2, null, JSON.stringify(data))
+      mock.expects('readFile')
+        .once()
+        .withArgs(resolvedPath, 'utf-8')
+        .callsArgWith(2, null, JSON.stringify(data))
     }
 
 testCase('Package util', {
-    'test readPackageJSON': function (done) {
-      var expected = { 'some': 'data' }
-        , testPath = 'some/path/here'
-      setupReadPackageJSON.call(this, testPath, expected)
-      packageUtil.readPackageJSON(testPath, function (err, actual) {
-        refute(err)
-        assert.equals(actual, expected)
-        done()
-      })
-    }
-
-  , 'findRootPackageName': {
+    'findRootPackageName': {
         'test no root package': function (done) {
-          packageUtil.findRootPackageName([ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/' ], function (err, rootPackageName) {
-            refute(err)
-            refute(rootPackageName)
-            done()
-          })
+          packageUtil.findRootPackageName(
+              [ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/' ]
+            , function (err, rootPackageName) {
+                refute(err)
+                refute(rootPackageName)
+                done()
+              }
+          )
         }
 
       , 'test "." root package': function (done) {
           var data = { name: 'a root package' }
 
           setupReadPackageJSON.call(this, '.', data)
-          packageUtil.findRootPackageName([ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '.', '../', '/' ], function (err, rootPackageName) {
-            refute(err)
-            assert.equals(rootPackageName, data.name)
-            done()
-          })
+          packageUtil.findRootPackageName(
+              [ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '.', '../', '/' ]
+            , function (err, rootPackageName) {
+                refute(err)
+                assert.equals(rootPackageName, data.name)
+                done()
+              }
+          )
         }
 
       , 'test relative path root package': function (done) {
@@ -46,31 +44,37 @@ testCase('Package util', {
             , testPath = 'some/path/../..'
 
           setupReadPackageJSON.call(this, '.', data)
-          packageUtil.findRootPackageName([ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/', testPath ], function (err, rootPackageName) {
-            refute(err)
-            assert.equals(rootPackageName, data.name)
-            done()
-          })
+          packageUtil.findRootPackageName(
+              [ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/', testPath ]
+            , function (err, rootPackageName) {
+                refute(err)
+                assert.equals(rootPackageName, data.name)
+                done()
+              }
+          )
         }
 
       , 'test package name with same name as cwd': function (done) {
           var data = { name: 'foobar to youbar!' }
             , testPath = path.basename(path.resolve())
 
-          packageUtil.findRootPackageName([ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/', testPath ], function (err, rootPackageName) {
-            refute(err)
-            refute(rootPackageName)
-            done()
-          })
+          packageUtil.findRootPackageName(
+              [ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/', testPath ]
+            , function (err, rootPackageName) {
+                refute(err)
+                refute(rootPackageName)
+                done()
+              }
+          )
         }
     }
 
-  , 'findAndReadPackageJSON': {
+  , 'readPackageJSON': {
         'test standard module read': function (done) {
           var expected = { some: 'package', json: 'data' }
 
           setupReadPackageJSON.call(this, 'node_modules/amodule/', expected)
-          packageUtil.findAndReadPackageJSON('.', 'amodule', function (err, actual) {
+          packageUtil.readPackageJSON([], 'amodule', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
             done()
@@ -81,7 +85,7 @@ testCase('Package util', {
           var expected = { some: 'package', json: 'data' }
 
           setupReadPackageJSON.call(this, 'node_modules/amodule.js/', expected)
-          packageUtil.findAndReadPackageJSON('.', 'amodule.js', function (err, actual) {
+          packageUtil.readPackageJSON([], 'amodule.js', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
             done()
@@ -92,18 +96,47 @@ testCase('Package util', {
           var expected = { some: 'package', json: 'data' }
 
           setupReadPackageJSON.call(this, 'node_modules/amodule/', expected)
-          packageUtil.findAndReadPackageJSON('.', 'amodule@0.1.200', function (err, actual) {
+          packageUtil.readPackageJSON([], 'amodule@0.1.200', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
             done()
           })
         }
 
+      , 'test module with parent read': function (done) {
+          var expected = { some: 'package', json: 'data' }
+
+          setupReadPackageJSON.call(this, 'node_modules/aparent/node_modules/amodule/', expected)
+          packageUtil.readPackageJSON([ 'aparent' ], 'amodule', function (err, actual) {
+            refute(err)
+            assert.equals(actual, expected)
+            done()
+          })
+        }
+
+      , 'test module with multiple parents read': function (done) {
+          var expected = { some: 'package', json: 'data' }
+
+          setupReadPackageJSON.call(
+              this
+            , 'node_modules/aparent1/node_modules/aparent2/node_modules/aparent3/node_modules/amodule/'
+            , expected
+          )
+          packageUtil.readPackageJSON(
+              [ 'aparent1', 'aparent2', 'aparent3' ]
+            , 'amodule', function (err, actual) {
+                refute(err)
+                assert.equals(actual, expected)
+                done()
+              }
+          )
+        }
+
       , 'test "./" module read': function (done) {
           var expected = { some: 'package', json: 'data' }
 
           setupReadPackageJSON.call(this, '.', expected)
-          packageUtil.findAndReadPackageJSON('this shouldn\'t matter', './', function (err, actual) {
+          packageUtil.readPackageJSON([ 'this shouldn\'t matter' ], './', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
             done()
@@ -114,7 +147,7 @@ testCase('Package util', {
           var expected = { some: 'package', json: 'data' }
 
           setupReadPackageJSON.call(this, 'some/path/without/dots', expected)
-          packageUtil.findAndReadPackageJSON('foobar', 'some/path/without/dots', function (err, actual) {
+          packageUtil.readPackageJSON([ 'foobar' ], 'some/path/without/dots', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
             done()
@@ -125,7 +158,7 @@ testCase('Package util', {
           var expected = { some: 'package', json: 'data' }
 
           setupReadPackageJSON.call(this, 'some/path/without/dots', expected)
-          packageUtil.findAndReadPackageJSON('what???', './some/path/../path/without/dots', function (err, actual) {
+          packageUtil.readPackageJSON([ 'what???' ], './some/path/../path/without/dots', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
             done()
@@ -135,27 +168,27 @@ testCase('Package util', {
 
   , 'getPackageRoot': {
         'test standard module name': function () {
-          assert.equals(packageUtil.getPackageRoot('.', 'amodule'), path.resolve('node_modules/amodule'))
+          assert.equals(packageUtil.getPackageRoot([], 'amodule'), path.resolve('node_modules/amodule'))
         }
 
       , 'test module with "." in name': function () {
-          assert.equals(packageUtil.getPackageRoot('.', 'amodule.js'), path.resolve('node_modules/amodule.js'))
+          assert.equals(packageUtil.getPackageRoot([], 'amodule.js'), path.resolve('node_modules/amodule.js'))
         }
 
       , 'test versioned module': function () {
-          assert.equals(packageUtil.getPackageRoot('.', 'amodule@0.1.200'), path.resolve('node_modules/amodule'))
+          assert.equals(packageUtil.getPackageRoot([], 'amodule@0.1.200'), path.resolve('node_modules/amodule'))
         }
 
       , 'test "./" module': function () {
-          assert.equals(packageUtil.getPackageRoot('this shouldn\'t matter', './'), path.resolve('.'))
+          assert.equals(packageUtil.getPackageRoot(['this shouldn\'t matter'], './'), path.resolve('.'))
         }
 
       , 'test relative path, no ".", module': function () {
-          assert.equals(packageUtil.getPackageRoot('foobar', 'some/path/without/dots'), path.resolve('some/path/without/dots'))
+          assert.equals(packageUtil.getPackageRoot(['foobar'], 'some/path/without/dots'), path.resolve('some/path/without/dots'))
         }
 
       , 'test relative path with "." module': function () {
-          assert.equals(packageUtil.getPackageRoot('what??', 'some/path/../path/with/dots'), path.resolve('some/path/with/dots'))
+          assert.equals(packageUtil.getPackageRoot(['what??'], 'some/path/../path/with/dots'), path.resolve('some/path/with/dots'))
         }
     }
 
@@ -189,11 +222,13 @@ testCase('Package util', {
         'test no node_modules directory': function (done) {
           var pathMock = this.mock(path)
             , packageName = 'apackage'
-            , rootDir = 'some/dir'
+            , parents = []
 
-          pathMock.expects('exists').withArgs(path.resolve('some/dir/apackage/node_modules')).callsArgWith(1, false)
+          pathMock.expects('exists')
+            .withArgs(path.resolve('node_modules/apackage/node_modules'))
+            .callsArgWith(1, false)
 
-          packageUtil.getDependenciesFromDirectory(rootDir, packageName, function (err, dependencies) {
+          packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
             refute(err)
             assert.equals(dependencies, [])
             done()
@@ -204,14 +239,14 @@ testCase('Package util', {
           var fsMock = this.mock(fs)
             , pathMock = this.mock(path)
             , packageName = 'apackage'
-            , rootDir = 'some/dir'
-            , resolvedDir = path.resolve('some/dir/apackage/node_modules')
+            , parents = []
+            , resolvedDir = path.resolve('node_modules/apackage/node_modules')
 
           pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
 
           fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [])
 
-          packageUtil.getDependenciesFromDirectory(rootDir, packageName, function (err, dependencies) {
+          packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
             refute(err)
             assert.equals(dependencies, [])
             done()
@@ -222,14 +257,34 @@ testCase('Package util', {
           var fsMock = this.mock(fs)
             , pathMock = this.mock(path)
             , packageName = 'apackage'
-            , rootDir = 'some/dir'
-            , resolvedDir = path.resolve('some/dir/apackage/node_modules')
+            , parents = []
+            , resolvedDir = path.resolve('node_modules/apackage/node_modules')
 
           pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
 
           fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [ 'a', 'list', 'of', 'files' ])
 
-          packageUtil.getDependenciesFromDirectory(rootDir, packageName, function (err, dependencies) {
+          packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
+            refute(err)
+            assert.equals(dependencies, [ 'a', 'list', 'of', 'files' ])
+            done()
+          })
+        }
+
+      , 'test non-empty node_modules directory, deep nesting': function (done) {
+          var fsMock = this.mock(fs)
+            , pathMock = this.mock(path)
+            , packageName = 'apackage'
+            , parents = [ 'parent1', 'parent2', 'parent3' ]
+            , resolvedDir = path.resolve(
+                'node_modules/parent1/node_modules/parent2/node_modules/parent3/node_modules/apackage/node_modules'
+              )
+
+          pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
+
+          fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [ 'a', 'list', 'of', 'files' ])
+
+          packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
             refute(err)
             assert.equals(dependencies, [ 'a', 'list', 'of', 'files' ])
             done()
