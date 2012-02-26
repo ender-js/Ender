@@ -19,6 +19,7 @@
       , "gzip": ">= 0.1.0"
       , "async": ">= 0.1.9"
       , "nopt": "*"
+      , "handlebars": "*"
     }
   , "directories": {
         "lib": "./lib"

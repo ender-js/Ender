@@ -1,0 +1,13 @@
+!function () {
+
+  var module = { exports: {} }, exports = module.exports;
+{{#if mainSource}}
+{{mainSource}}
+{{/if}}
+  provide("{{packageName}}", module.exports);
+{{#if enderBridge}}
+{{enderBridge}}
+{{else}}
+  $.ender(module.exports);
+{{/if}}
+}();

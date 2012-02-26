@@ -3,116 +3,342 @@ var testCase = require('buster').testCase
   , path = require('path')
   , sourcePackage = require('../../lib/source-package')
 
+  , templateFile = __dirname + '/../../resources/source-package.handlebars'
+  , templateFileContents
+
 testCase('Source package', {
-    'setUp': function () {
+    'setUp': function (done) {
       this.runAsStringTest =
-          function (expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult, done) {
+          function (options, done) {
+        // options: expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult
 
         var fsMock = this.mock(fs)
 
-        expectedFileReads.forEach(function (file, index) {
+        options.expectedFileReads.forEach(function (file, index) {
           var exp = fsMock.expects('readFile')
             .withArgs(
                 path.resolve(file)
               , 'utf-8'
             )
-          if (!readDelays)
-            exp.callsArgWith(2, null, fileContents[index])
+          if (!options.readDelays)
+            exp.callsArgWith(2, null, options.fileContents[index])
           else {
             setTimeout(function () {
-              exp.args[0][2].call(null, null, fileContents[index])
-            }, readDelays[index])
+              exp.args[0][2].call(null, null, options.fileContents[index])
+            }, options.readDelays[index])
           }
         })
 
-        sourcePackage.create(parents, pkg, json).asString(function (err, actual) {
+        if (typeof templateFileContents == 'string') {
+          fsMock.expects('readFile').withArgs(path.resolve(templateFile), 'utf-8').callsArgWith(2, null, templateFileContents)
+          templateFileContents = -1
+        }
+
+        sourcePackage.create(options.parents || [], options.pkg, options.json).asString(function (err, actual) {
           refute(err)
-          assert.equals(actual, expectedResult)
+          assert.equals(actual, options.expectedResult)
           done()
         })
       }
+
+      this.buildExpectedResult = function (options) {
+        // don't be too clever here so we can be clever in the code we're testing.
+        // source indenting should be done by the caller, not here.
+        var src = ''
+        src += '!function () {\n\n  var module = { exports: {} }, exports = module.exports;\n\n'
+        if (options.main)
+          src += options.main + '\n\n'
+        src += '  provide("' + options.name + '", module.exports);\n\n'
+        if (options.ender)
+          src += options.ender + '\n\n'
+        else
+          src += '  $.ender(module.exports);\n\n'
+        src += '}();\n'
+        return src
+      }
+
+      if (!templateFileContents) {
+        // unfortunately we have to mock this out as we're mocking out the whole `fs`
+        fs.readFile(templateFile, 'utf8', function (err, data) {
+          if (err)
+            throw err
+
+          templateFileContents = data
+          done()
+        })
+      } else
+        done()
     }
 
-  , 'test (single) main-only toString without .js extension': function (done) {
-      this.runAsStringTest(
-          [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/mainsrc.js' ] // files
-        , [ 'mainsrc contents' ] // contents
-        , null // delays
-        , [ 'parent1', 'parent2' ] // parents
-        , 'apkg' // package
-        , { main: 'lib/mainsrc' } // package.json
-        , 'mainsrc contents' // expected result
-        ,  done
-      )
+    // test our internal methods, declared in setUp
+  , 'internal tests': {
+        'buildExpectedResult': {
+            'test main with no ender': function () {
+              assert.equals(this.buildExpectedResult({
+                      name: 'foobar'
+                    , main:
+                          '  this is a test\n\n'
+                        + '  1\n'
+                        + '  2\n'
+                        + '  3\n'
+                  })
+                ,   '!function () {\n\n'
+                  + '  var module = { exports: {} }, exports = module.exports;\n\n'
+                  + '  this is a test\n\n'
+                  + '  1\n'
+                  + '  2\n'
+                  + '  3\n\n\n'
+                  + '  provide("foobar", module.exports);\n\n'
+                  + '  $.ender(module.exports);\n\n'
+                  + '}();\n'
+              )
+            }
+
+          , 'test ender with no main': function () {
+              assert.equals(this.buildExpectedResult({
+                      name: 'foobar'
+                    , ender:
+                          '  this is a test\n\n'
+                        + '  1\n'
+                        + '  2\n'
+                        + '  3\n'
+                  })
+                ,   '!function () {\n\n'
+                  + '  var module = { exports: {} }, exports = module.exports;\n\n'
+                  + '  provide("foobar", module.exports);\n\n'
+                  + '  this is a test\n\n'
+                  + '  1\n'
+                  + '  2\n'
+                  + '  3\n\n\n'
+                  + '}();\n'
+              )
+            }
+
+          , 'test main and ender': function () {
+              assert.equals(this.buildExpectedResult({
+                      name: 'foobar'
+                    , main:
+                          '  main\n\n'
+                        + '  source\n'
+                        + '  here\n'
+                    , ender:
+                          '  this is a test\n\n'
+                        + '  1\n'
+                        + '  2\n'
+                        + '  3\n'
+                  })
+                ,   '!function () {\n\n'
+                  + '  var module = { exports: {} }, exports = module.exports;\n\n'
+                  + '  main\n\n'
+                  + '  source\n'
+                  + '  here\n\n\n'
+                  + '  provide("foobar", module.exports);\n\n'
+                  + '  this is a test\n\n'
+                  + '  1\n'
+                  + '  2\n'
+                  + '  3\n\n\n'
+                  + '}();\n'
+              )
+            }
+        }
     }
 
-  , 'test (single) main-only toString with .js extension': function (done) {
-      this.runAsStringTest(
-          [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/mainsrc.js' ] // files
-        , [ 'mainsrc.js contents' ] // contents
-        , null // delays
-        , [ 'parent1', 'parent2' ] // parents
-        , 'apkg' // package
-        , { main: 'lib/mainsrc.js' } // package.json
-        , 'mainsrc.js contents' // expected result
-        ,  done
-      )
+  , 'main-only': {
+        'test (single) main-only asString without .js extension': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/mainsrc.js' ]
+              , fileContents: [ 'mainsrc contents' ]
+              , parents: [ 'parent1', 'parent2' ]
+              , pkg: 'apkg'
+              , json: { name: 'apkg-name', main: 'lib/mainsrc' }
+              , expectedResult: this.buildExpectedResult({ name: 'apkg-name', main: '  mainsrc contents' })
+            },  done)
+        }
+
+      , 'test (single) main-only asString with .js extension': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/mainsrc.js' ]
+              , fileContents: [ 'mainsrc.js contents' ]
+              , parents: [ 'parent1', 'parent2' ]
+              , pkg: 'apkg'
+              , json: { name: 'apkg-name', main: 'lib/mainsrc.js' }
+              , expectedResult: this.buildExpectedResult({ name: 'apkg-name', main: '  mainsrc.js contents' })
+            },  done)
+        }
+
+      , 'test (multiple) main-only asString (mixed extensions)': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [
+                    'node_modules/mypkg/lib/mainsrc.js'
+                  , 'node_modules/mypkg/lib/foo/bar.js'
+                  , 'node_modules/mypkg/lib/foo/bar/baz.js'
+                ]
+              , fileContents: [
+                    'mainsrc.js contents'
+                  , 'BAR!'
+                  , 'BAZ!'
+                ]
+              , pkg: 'mypkg'
+              , json: {
+                    name: 'mypkg-name'
+                  , main: [
+                        'lib/mainsrc.js'
+                      , 'lib/foo/bar'
+                      , 'lib/foo/bar/baz'
+                    ]
+                }
+              , expectedResult: this.buildExpectedResult({ name: 'mypkg-name', main: '  mainsrc.js contents\n\n  BAR!\n\n  BAZ!' })
+            },  done)
+        }
+
+      , 'test (multiple) main-only asString (mixed extensions) with out-of-order read returns': function (done) {
+          // test that even though we read the source files in parallel that they get stitched together
+          // in the right order in the end. Delay the callbacks from the reads to emulate out-of-order
+          // filesystem reads
+          this.runAsStringTest({
+                expectedFileReads: [
+                    'node_modules/mypkg/lib/mainsrc.js'
+                  , 'node_modules/mypkg/lib/foo/bar.js'
+                  , 'node_modules/mypkg/lib/foo/bar/baz.js'
+                ]
+              , fileContents: [
+                    'mainsrc.js contents'
+                  , 'BAR!'
+                  , 'BAZ!'
+                ]
+              , readDelays: [ 50, 25, 0 ]
+              , pkg: 'mypkg'
+              , json: {
+                    name: 'mypkg-name'
+                  , main: [
+                        'lib/mainsrc.js'
+                      , 'lib/foo/bar'
+                      , 'lib/foo/bar/baz'
+                    ]
+                }
+              , expectedResult: this.buildExpectedResult({ name: 'mypkg-name', main: '  mainsrc.js contents\n\n  BAR!\n\n  BAZ!' })
+            },  done)
+        }
     }
 
-  , 'test (multiple) main-only toString (mixed extensions)': function (done) {
-      this.runAsStringTest(
-          [
-              'node_modules/mypkg/lib/mainsrc.js'
-            , 'node_modules/mypkg/lib/foo/bar.js'
-            , 'node_modules/mypkg/lib/foo/bar/baz.js'
-          ] // files
-        , [
-              'mainsrc.js contents'
-            , 'BAR!'
-            , 'BAZ!'
-          ] // contents
-        , null // delays
-        , [] // parents
-        , 'mypkg' // package
-        , {
-              main: [
-                  'lib/mainsrc.js'
-                , 'lib/foo/bar'
-                , 'lib/foo/bar/baz'
+  , 'ender-only': {
+        'test (single) ender-only asString without .js extension': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/endersrc.js' ]
+              , fileContents: [ 'endersrc contents' ]
+              , parents: [ 'parent1', 'parent2' ]
+              , pkg: 'apkg'
+              , json: { name: 'apkg-name', ender: 'lib/endersrc' }
+              , expectedResult: this.buildExpectedResult({ name: 'apkg-name', ender: '  endersrc contents' })
+            },  done)
+        }
+
+      , 'test (single) ender-only asString with .js extension': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/endersrc.js' ]
+              , fileContents: [ 'endersrc.js contents' ]
+              , parents: [ 'parent1', 'parent2' ]
+              , pkg: 'apkg'
+              , json: { name: 'apkg-name', ender: 'lib/endersrc.js' }
+              , expectedResult: this.buildExpectedResult({ name: 'apkg-name', ender: '  endersrc.js contents' })
+            },  done)
+        }
+
+      , 'test (multiple) ender-only asString (mixed extensions)': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [
+                    'node_modules/mypkg/lib/endersrc.js'
+                  , 'node_modules/mypkg/lib/foo/bar.js'
+                  , 'node_modules/mypkg/lib/foo/bar/baz.js'
+                ]
+              , fileContents: [
+                    'endersrc.js contents'
+                  , 'BAR!'
+                  , 'BAZ!'
+                ]
+              , pkg: 'mypkg'
+              , json: {
+                    name: 'mypkg-name'
+                  , ender: [
+                        'lib/endersrc.js'
+                      , 'lib/foo/bar'
+                      , 'lib/foo/bar/baz'
+                    ]
+                }
+              , expectedResult: this.buildExpectedResult({ name: 'mypkg-name', ender: '  endersrc.js contents\n\n  BAR!\n\n  BAZ!' })
+            },  done)
+        }
+
+      , 'test (multiple) ender-only asString (mixed extensions) with out-of-order read returns': function (done) {
+          // test that even though we read the source files in parallel that they get stitched together
+          // in the right order in the end. Delay the callbacks from the reads to emulate out-of-order
+          // filesystem reads
+          this.runAsStringTest({
+                expectedFileReads: [
+                    'node_modules/mypkg/lib/endersrc.js'
+                  , 'node_modules/mypkg/lib/foo/bar.js'
+                  , 'node_modules/mypkg/lib/foo/bar/baz.js'
+                ]
+              , fileContents: [
+                    'endersrc.js contents'
+                  , 'BAR!'
+                  , 'BAZ!'
+                ]
+              , readDelays: [ 50, 25, 0 ]
+              , pkg: 'mypkg'
+              , json: {
+                    name: 'mypkg-name'
+                  , ender: [
+                        'lib/endersrc.js'
+                      , 'lib/foo/bar'
+                      , 'lib/foo/bar/baz'
+                    ]
+                }
+              , expectedResult: this.buildExpectedResult({ name: 'mypkg-name', ender: '  endersrc.js contents\n\n  BAR!\n\n  BAZ!' })
+            },  done)
+        }
+    }
+
+    , 'test (multiple) main and ender asString (mixed extensions) with out-of-order read returns': function (done) {
+        // crazytown!
+        this.runAsStringTest({
+              expectedFileReads: [
+                  'node_modules/mypkg/lib/mainsrc.js'
+                , 'node_modules/mypkg/lib/foo/bar.js'
+                , 'node_modules/mypkg/lib/foo/bar/baz.js'
+                , 'node_modules/mypkg/ender/endersrc.js'
+                , 'node_modules/mypkg/ender/foo/bar.js'
+                , 'node_modules/mypkg/ender/foo/bar/baz.js'
               ]
-          } // package.json
-        , 'mainsrc.js contents\n\nBAR!\n\nBAZ!' // expected result
-        ,  done
-      )
-    }
-
-  , 'test (multiple) main-only toString (mixed extensions) with out-of-order read returns': function (done) {
-      // test that even though we read the source files in parallel that they get stitched together
-      // in the right order in the end. Delay the callbacks from the reads to emulate out-of-order
-      // filesystem reads
-      this.runAsStringTest(
-          [
-              'node_modules/mypkg/lib/mainsrc.js'
-            , 'node_modules/mypkg/lib/foo/bar.js'
-            , 'node_modules/mypkg/lib/foo/bar/baz.js'
-          ] // files
-        , [
-              'mainsrc.js contents'
-            , 'BAR!'
-            , 'BAZ!'
-          ] // contents
-        , [ 100, 50, 0 ] // delays
-        , [] // parents
-        , 'mypkg' // package
-        , {
-              main: [
-                  'lib/mainsrc.js'
-                , 'lib/foo/bar'
-                , 'lib/foo/bar/baz'
+            , fileContents: [
+                  'mainsrc.js contents'
+                , 'BAR!'
+                , 'BAZ!'
+                , 'endersrc.js contents'
+                , 'ENDERBAR!'
+                , 'ENDERBAZ!'
               ]
-          } // package.json
-        , 'mainsrc.js contents\n\nBAR!\n\nBAZ!' // expected result
-        ,  done
-      )
-    }
+            , readDelays: [ 50, 0, 25, 40, 0, 20 ]
+            , pkg: 'mypkg'
+            , json: {
+                  name: 'mypkg-name'
+                , main: [
+                      'lib/mainsrc.js'
+                    , 'lib/foo/bar'
+                    , 'lib/foo/bar/baz'
+                  ]
+                , ender: [
+                      'ender/endersrc.js'
+                    , 'ender/foo/bar'
+                    , 'ender/foo/bar/baz'
+                  ]
+              }
+            , expectedResult: this.buildExpectedResult({
+                  name: 'mypkg-name'
+                , main: '  mainsrc.js contents\n\n  BAR!\n\n  BAZ!'
+                , ender: '  endersrc.js contents\n\n  ENDERBAR!\n\n  ENDERBAZ!'
+              })
+          },  done)
+      }
+
 })
