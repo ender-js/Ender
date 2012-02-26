@@ -1,13 +1,19 @@
+{{! some minor pre-processing is performed on this file before being passed }} \
+{{! to Handlebars so we can keep it readable without leaving extra whitespace }} \
+{{#unless options.noop}} \
 !function () {
 
   var module = { exports: {} }, exports = module.exports;
-{{#if mainSource}}
-{{mainSource.indented}}
-{{/if}}
+  {{#if mainSource}}
+    {{mainSource.indented}}
+  {{/if}}
   provide("{{packageName}}", module.exports);
-{{#if enderSource}}
-{{enderSource.indented}}
-{{else}}
+  {{#if enderSource}}
+    {{enderSource.indented}}
+  {{else}}
   $.ender(module.exports);
-{{/if}}
-}();
+  {{/if}}
+}(); \
+{{else}} \
+  {{mainSource}} \
+{{/unless}}

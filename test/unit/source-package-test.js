@@ -40,7 +40,7 @@ testCase('Source package', {
           templateFileContents[tmplType] = -1 // i.e. only run this branch once
         }
 
-        srcPkg = sourcePackage.create(options.parents || [], options.pkg, options.json)
+        srcPkg = sourcePackage.create(options.parents || [], options.pkg, options.json, options.options || {})
 
         srcPkg.asString(function (err, actual) {
           refute(err)
@@ -409,6 +409,17 @@ testCase('Source package', {
         , pkg: 'ender-js'
         , json: { name: 'ender-js', main: './main.js' }
         , expectedResult: 'ender-js\ncontents\n'
+      }, done)
+    }
+
+  , 'test noop option': function (done) {
+      this.runAsStringTest({
+          expectedFileReads: [ 'node_modules/foobar/main.js' ]
+        , fileContents: [ 'main\nsource\ncontents' ]
+        , pkg: 'foobar'
+        , json: { name: 'foobar', main: './main.js' }
+        , options: { noop: true }
+        , expectedResult: 'main\nsource\ncontents\n'
       }, done)
     }
 
