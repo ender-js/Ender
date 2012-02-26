@@ -1,9 +1,13 @@
 var testCase = require('buster').testCase
   , fs = require('fs')
   , path = require('path')
+  , async = require('async')
   , sourcePackage = require('../../lib/source-package')
 
-  , templateFile = __dirname + '/../../resources/source-package.handlebars'
+  , templateFiles = {
+        'standard': __dirname + '/../../resources/source-package.handlebars'
+      , 'ender-js': __dirname + '/../../resources/ender-js-package.handlebars'
+    }
   , templateFileContents
 
 testCase('Source package', {
@@ -13,6 +17,7 @@ testCase('Source package', {
         // options: expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult
 
         var fsMock = this.mock(fs)
+          , tmplType = templateFileContents[options.pkg] ? options.pkg : 'standard'
 
         options.expectedFileReads.forEach(function (file, index) {
           var exp = fsMock.expects('readFile')
@@ -29,9 +34,9 @@ testCase('Source package', {
           }
         })
 
-        if (typeof templateFileContents == 'string') {
-          fsMock.expects('readFile').withArgs(path.resolve(templateFile), 'utf-8').callsArgWith(2, null, templateFileContents)
-          templateFileContents = -1
+        if (typeof templateFileContents[tmplType] == 'string') {
+          fsMock.expects('readFile').withArgs(path.resolve(templateFiles[tmplType]), 'utf-8').callsArgWith(2, null, templateFileContents[tmplType])
+          templateFileContents[tmplType] = -1 // i.e. only run this branch once
         }
 
         sourcePackage.create(options.parents || [], options.pkg, options.json).asString(function (err, actual) {
@@ -59,13 +64,21 @@ testCase('Source package', {
 
       if (!templateFileContents) {
         // unfortunately we have to mock this out as we're mocking out the whole `fs`
-        fs.readFile(templateFile, 'utf8', function (err, data) {
-          if (err)
-            throw err
-
-          templateFileContents = data
-          done()
-        })
+        async.map(
+            [ 'standard', 'ender-js' ]
+          , function (type, callback) {
+              fs.readFile(templateFiles[type], 'utf8', callback)
+            }
+          , function (err, templates) {
+              if (err)
+                throw err
+              templateFileContents = {
+                  'standard': templates[0]
+                , 'ender-js': templates[1]
+              }
+              done()
+            }
+        )
       } else
         done()
     }
@@ -299,46 +312,56 @@ testCase('Source package', {
         }
     }
 
-    , 'test (multiple) main and ender asString (mixed extensions) with out-of-order read returns': function (done) {
-        // crazytown!
-        this.runAsStringTest({
-              expectedFileReads: [
-                  'node_modules/mypkg/lib/mainsrc.js'
-                , 'node_modules/mypkg/lib/foo/bar.js'
-                , 'node_modules/mypkg/lib/foo/bar/baz.js'
-                , 'node_modules/mypkg/ender/endersrc.js'
-                , 'node_modules/mypkg/ender/foo/bar.js'
-                , 'node_modules/mypkg/ender/foo/bar/baz.js'
-              ]
-            , fileContents: [
-                  'mainsrc.js contents'
-                , 'BAR!'
-                , 'BAZ!'
-                , 'endersrc.js contents'
-                , 'ENDERBAR!'
-                , 'ENDERBAZ!'
-              ]
-            , readDelays: [ 50, 0, 25, 40, 0, 20 ]
-            , pkg: 'mypkg'
-            , json: {
-                  name: 'mypkg-name'
-                , main: [
-                      'lib/mainsrc.js'
-                    , 'lib/foo/bar'
-                    , 'lib/foo/bar/baz'
-                  ]
-                , ender: [
-                      'ender/endersrc.js'
-                    , 'ender/foo/bar'
-                    , 'ender/foo/bar/baz'
-                  ]
-              }
-            , expectedResult: this.buildExpectedResult({
-                  name: 'mypkg-name'
-                , main: '  mainsrc.js contents\n\n  BAR!\n\n  BAZ!'
-                , ender: '  endersrc.js contents\n\n  ENDERBAR!\n\n  ENDERBAZ!'
-              })
-          },  done)
-      }
+  , 'test (multiple) main and ender asString (mixed extensions) with out-of-order read returns': function (done) {
+      // crazytown!
+      this.runAsStringTest({
+            expectedFileReads: [
+                'node_modules/mypkg/mainsrc.js'
+              , 'node_modules/mypkg/lib/foo/bar.js'
+              , 'node_modules/mypkg/lib/foo/bar/baz.js'
+              , 'node_modules/mypkg/endersrc.js'
+              , 'node_modules/mypkg/ender/foo/bar.js'
+              , 'node_modules/mypkg/ender/foo/bar/baz.js'
+            ]
+          , fileContents: [
+                'mainsrc.js contents'
+              , 'BAR!'
+              , 'BAZ!'
+              , 'endersrc.js contents'
+              , 'ENDERBAR!'
+              , 'ENDERBAZ!'
+            ]
+          , readDelays: [ 50, 0, 25, 40, 0, 20 ]
+          , pkg: 'mypkg'
+          , json: {
+                name: 'mypkg-name'
+              , main: [
+                    './mainsrc.js'
+                  , 'lib/foo/bar'
+                  , 'lib/foo/bar/baz'
+                ]
+              , ender: [
+                    './endersrc.js'
+                  , 'ender/foo/bar'
+                  , 'ender/foo/bar/baz'
+                ]
+            }
+          , expectedResult: this.buildExpectedResult({
+                name: 'mypkg-name'
+              , main: '  mainsrc.js contents\n\n  BAR!\n\n  BAZ!'
+              , ender: '  endersrc.js contents\n\n  ENDERBAR!\n\n  ENDERBAZ!'
+            })
+        },  done)
+    }
+
+  , 'test ender-js package': function (done) {
+      this.runAsStringTest({
+          expectedFileReads: [ 'node_modules/ender-js/main.js' ]
+        , fileContents: [ 'ender-js\ncontents' ]
+        , pkg: 'ender-js'
+        , json: { name: 'ender-js', main: './main.js' }
+        , expectedResult: 'ender-js\ncontents\n'
+      }, done)
+    }
 
 })

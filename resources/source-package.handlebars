@@ -1,12 +1,12 @@
 !function () {
 
   var module = { exports: {} }, exports = module.exports;
-{{#if mainSource}}
-{{mainSource}}
+{{#if mainSourceIndented}}
+{{mainSourceIndented}}
 {{/if}}
   provide("{{packageName}}", module.exports);
-{{#if enderBridge}}
-{{enderBridge}}
+{{#if enderBridgeIndented}}
+{{enderBridgeIndented}}
 {{else}}
   $.ender(module.exports);
 {{/if}}
