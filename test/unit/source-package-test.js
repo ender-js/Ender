@@ -18,6 +18,7 @@ testCase('Source package', {
 
         var fsMock = this.mock(fs)
           , tmplType = templateFileContents[options.pkg] ? options.pkg : 'standard'
+          , srcPkg
 
         options.expectedFileReads.forEach(function (file, index) {
           var exp = fsMock.expects('readFile')
@@ -39,11 +40,15 @@ testCase('Source package', {
           templateFileContents[tmplType] = -1 // i.e. only run this branch once
         }
 
-        sourcePackage.create(options.parents || [], options.pkg, options.json).asString(function (err, actual) {
+        srcPkg = sourcePackage.create(options.parents || [], options.pkg, options.json)
+
+        srcPkg.asString(function (err, actual) {
           refute(err)
           assert.equals(actual, options.expectedResult)
-          done()
+          done && done()
         })
+
+        return srcPkg
       }
 
       this.buildExpectedResult = function (options) {
@@ -352,6 +357,49 @@ testCase('Source package', {
               , ender: '  endersrc.js contents\n\n  ENDERBAR!\n\n  ENDERBAZ!'
             })
         },  done)
+    }
+
+  , 'test multiple calls to asString on same build before complete': function (done) {
+      // test that if we call asString twice prior to it finishing that we'll only
+      // process once.
+      var expectedResult = this.buildExpectedResult({
+              name: 'mypkg-name'
+            , main: '  mainsrc.js contents'
+            , ender: '  endersrc.js contents'
+          })
+        , srcPkg = this.runAsStringTest({
+              expectedFileReads: [
+                  'node_modules/mypkg/mainsrc.js'
+                , 'node_modules/mypkg/endersrc.js'
+              ]
+            , fileContents: [
+                  'mainsrc.js contents'
+                , 'endersrc.js contents'
+              ]
+            , readDelays: [ 25, 25 ]
+            , pkg: 'mypkg'
+            , json: {
+                  name: 'mypkg-name'
+                , main: './mainsrc.js'
+                , ender: './endersrc.js'
+              }
+            , expectedResult: expectedResult
+          })
+
+        // second call
+        srcPkg.asString(function (err, actual) {
+          refute(err)
+          assert.equals(actual, expectedResult)
+        })
+
+        setTimeout(function () {
+          // third call, after 'generated'
+          srcPkg.asString(function (err, actual) {
+            refute(err)
+            assert.equals(actual, expectedResult)
+            done()
+          })
+        }, 50)
     }
 
   , 'test ender-js package': function (done) {
