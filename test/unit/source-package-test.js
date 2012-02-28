@@ -59,6 +59,8 @@ testCase('Source package', {
         if (options.main)
           src += options.main + '\n\n'
         src += '  provide("' + options.name + '", module.exports);\n\n'
+        if (options.sandbox)
+          src += '  window["' + options.name + '"] = module.exports;\n\n'
         if (options.ender)
           src += options.ender + '\n\n'
         else
@@ -420,6 +422,63 @@ testCase('Source package', {
         , json: { name: 'foobar', main: './main.js' }
         , options: { noop: true }
         , expectedResult: 'main\nsource\ncontents\n'
+      }, done)
+    }
+
+  , 'test sandbox option (not on this package)': function (done) {
+      this.runAsStringTest({
+          expectedFileReads: [ 'node_modules/foobar/main.js' ]
+        , fileContents: [ 'main\nsource\ncontents' ]
+        , pkg: 'foobar'
+        , json: {
+              name: 'foobar'
+            , main: './main.js'
+          }
+        , options: { sandbox: [ 'foo', 'bar' ] }
+        , expectedResult: this.buildExpectedResult({
+              name: 'foobar'
+            , main: '  main\n  source\n  contents'
+          })
+      }, done)
+    }
+
+  , 'test sandbox option (on this package)': function (done) {
+      this.runAsStringTest({
+          expectedFileReads: [ 'node_modules/foobar/main.js' ]
+        , fileContents: [ 'main\nsource\ncontents' ]
+        , pkg: 'foobar'
+        , json: {
+              name: 'foobar'
+            , main: './main.js'
+          }
+        , options: { sandbox: [ 'foobar', 'bar' ] }
+        , expectedResult: this.buildExpectedResult({
+              name: 'foobar'
+            , main: '  main\n  source\n  contents'
+            , sandbox: true
+          })
+      }, done)
+    }
+
+  , 'test sandbox option for root package (ender-js)': function (done) {
+      this.runAsStringTest({
+          expectedFileReads: [ './foobar/main.js' ]
+        , fileContents: [ 'main\nsource\ncontents\n' ]
+        , pkg: './foobar'
+        , json: {
+              name: 'ender-js'
+            , main: './main.js'
+          }
+        , options: { sandbox: [ 'foo', 'bar' ] }
+        , expectedResult:
+              '/* Declare local API */\n'
+            + 'var require, provide, $, ender;\n\n'
+            + 'main\nsource\ncontents\n\n\n'
+            + '/* Set Local API */\n'
+            + 'require = this.require\n'
+            + 'provide = this.provide\n'
+            + 'ender = $ = this.ender\n'
+
       }, done)
     }
 

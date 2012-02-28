@@ -8,6 +8,10 @@
     {{mainSource.indented}}
   {{/if}}
   provide("{{packageName}}", module.exports);
+  {{#if options.sandbox}} \
+
+  window["{{packageName}}"] = module.exports;
+  {{/if}} \
   {{#if enderSource}}
     {{enderSource.indented}}
   {{else}}

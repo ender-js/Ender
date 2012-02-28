@@ -1,1 +1,13 @@
+{{#if options.sandbox}} \
+/* Declare local API */
+var require, provide, $, ender;
+{{SPACE}}
 {{mainSource}}
+
+/* Set Local API */
+require = this.require
+provide = this.provide
+ender = $ = this.ender
+{{else}} \
+{{mainSource}}
+{{/if}} \
