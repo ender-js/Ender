@@ -2,12 +2,12 @@
 /* Declare local API */
 var require, provide, $, ender;
 {{SPACE}}
-{{mainSource}}
+{{{mainSource.raw}}}
 
 /* Set Local API */
 require = this.require
 provide = this.provide
 ender = $ = this.ender
 {{else}} \
-{{mainSource}}
+{{{mainSource.raw}}}
 {{/if}} \

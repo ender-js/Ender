@@ -378,6 +378,46 @@ buster.testCase('Build util', {
           })
         }
 
+      , 'test ender-js at front': function () {
+          var originalTree = {
+                  'apkg-3': {
+                      dependencies: {
+                          'mypkg-2': {
+                              _expectParents: [ 'apkg-3' ]
+                            , dependencies: {}
+                          }
+                      }
+                  }
+                , 'somepkg-4': { dependencies: {} }
+                , 'ender-js': { dependencies: {} } // it should spit this out first
+                , 'apkg-6': {
+                      dependencies: {
+                          'mypkg-5': {
+                              _expectParents: [ 'apkg-6' ]
+                            , dependencies: {}
+                          }
+                      }
+                  }
+              }
+            , spy = this.spy()
+
+          buildUtil.forEachOrderedDependency(originalTree, spy)
+
+          assert.equals(spy.args.length, 6)
+
+          spy.args.forEach(function (c, i) {
+            assert.equals(c[3], i)
+            refute.isNull(c[2])
+            refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
+            assert.equals(c[1], c[2]._expectParents || [], 'expected parents for ' + c[0]) // array of parents, so we can locate it
+            if (!i) {
+              assert.equals(c[0], 'ender-js')
+              assert.same(c[2], originalTree['ender-js'])
+            } else
+              assert.match(c[0], new RegExp('-' + (++i) + '$'))
+          })
+        }
+
       , 'test duplicate dependencies': function () {
           var originalTree = {
                   'apkg-6': {

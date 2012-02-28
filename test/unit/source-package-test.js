@@ -2,7 +2,7 @@ var testCase = require('buster').testCase
   , fs = require('fs')
   , path = require('path')
   , async = require('async')
-  , sourcePackage = require('../../lib/source-package')
+  , SourcePackage = require('../../lib/source-package')
 
   , templateFiles = {
         'standard': __dirname + '/../../resources/source-package.handlebars'
@@ -40,7 +40,7 @@ testCase('Source package', {
           templateFileContents[tmplType] = -1 // i.e. only run this branch once
         }
 
-        srcPkg = sourcePackage.create(options.parents || [], options.pkg, options.json, options.options || {})
+        srcPkg = SourcePackage.create(options.parents || [], options.pkg, options.json, options.options || {})
 
         srcPkg.asString(function (err, actual) {
           refute(err)
@@ -239,6 +239,18 @@ testCase('Source package', {
               , expectedResult: this.buildExpectedResult({ name: 'mypkg-name', main: '  mainsrc.js contents\n\n  BAR!\n\n  BAZ!' })
             },  done)
         }
+
+      , 'test (single) main-only asString, with ender=noop': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/mainsrc.js' ]
+              , fileContents: [ 'mainsrc contents' ]
+              , parents: [ 'parent1', 'parent2' ]
+              , pkg: 'apkg'
+              , json: { name: 'apkg-name', main: 'lib/mainsrc', ender: 'noop' }
+              , expectedResult: this.buildExpectedResult({ name: 'apkg-name', main: '  mainsrc contents' })
+            },  done)
+        }
+
     }
 
   , 'ender-only': {
@@ -479,6 +491,24 @@ testCase('Source package', {
             + 'provide = this.provide\n'
             + 'ender = $ = this.ender\n'
 
+      }, done)
+    }
+
+  , 'test special characters not escaped': function (done) {
+      // don't want a templating engine to escape for us
+      this.runAsStringTest({
+          expectedFileReads: [ 'node_modules/foobar/main.js' ]
+        , fileContents: [ '!@#$%^&*()_+=-\\][{}|\';:"/.,<>?' ]
+        , pkg: 'foobar'
+        , json: {
+              name: 'foobar'
+            , main: './main.js'
+          }
+        , options: { }
+        , expectedResult: this.buildExpectedResult({
+              name: 'foobar'
+            , main: '  !@#$%^&*()_+=-\\][{}|\';:"/.,<>?'
+          })
       }, done)
     }
 

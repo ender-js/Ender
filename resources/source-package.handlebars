@@ -5,7 +5,7 @@
 
   var module = { exports: {} }, exports = module.exports;
   {{#if mainSource}}
-    {{mainSource.indented}}
+    {{{mainSource.indented}}}
   {{/if}}
   provide("{{packageName}}", module.exports);
   {{#if options.sandbox}} \
@@ -13,11 +13,11 @@
   window["{{packageName}}"] = module.exports;
   {{/if}} \
   {{#if enderSource}}
-    {{enderSource.indented}}
+    {{{enderSource.indented}}}
   {{else}}
   $.ender(module.exports);
   {{/if}}
 }(); \
 {{else}} \
-  {{mainSource}} \
+  {{{mainSource.raw}}} \
 {{/unless}}
