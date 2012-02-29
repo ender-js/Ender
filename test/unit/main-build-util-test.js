@@ -18,19 +18,19 @@ buster.testCase('Build util', {
           }
 
       , 'test 1 package': function () {
-          this.testPackageList({ remaining: [ 'apkg' ] }, [ 'ender-js', 'apkg' ])
+          this.testPackageList({ packages: [ 'apkg' ] }, [ 'ender-js', 'apkg' ])
         }
 
       , 'test multiple packages': function () {
           this.testPackageList(
-              { remaining: [ 'apkg', 'pkg2', 'pkg3', '.', '..' ] }
+              { packages: [ 'apkg', 'pkg2', 'pkg3', '.', '..' ] }
             , [ 'ender-js', 'apkg', 'pkg2', 'pkg3', '.', '..' ]
           )
         }
 
       , 'test duplicate packages': function () {
           this.testPackageList(
-              { remaining: [ 'apkg', 'pkg2', 'apkg' ] }
+              { packages: [ 'apkg', 'pkg2', 'apkg' ] }
             , [ 'ender-js', 'apkg', 'pkg2' ]
           )
         }
@@ -41,7 +41,7 @@ buster.testCase('Build util', {
 
       , 'test noop and packages': function () {
           this.testPackageList(
-              { remaining: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { noop: true } }
+              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { noop: true } }
             , [ 'foo', 'bar', '.', '../../bang' ]
           )
         }
@@ -52,14 +52,14 @@ buster.testCase('Build util', {
 
       , 'test sans and packages': function () {
           this.testPackageList(
-              { remaining: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true } }
+              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true } }
             , [ 'foo', 'bar', '.', '../../bang' ]
           )
         }
 
       , 'test noop and sans and packages': function () {
           this.testPackageList(
-              { remaining: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true, noop: true } }
+              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true, noop: true } }
             , [ 'foo', 'bar', '.', '../../bang' ]
           )
         }

@@ -12,7 +12,7 @@ testCase('Search', {
       var searchExpectation = mock.expects('search').once().callsArg(1)
       mock.expects('packup').once()
 
-      search.exec({ remaining: terms })
+      search.exec({ packages: terms })
 
       assert.same(searchExpectation.args[0][0], terms)
       assert.isFunction(searchExpectation.args[0][1]) // internal 'handle()' method
@@ -42,7 +42,7 @@ testCase('Search', {
       var resultsEx = outMock.expects('searchResults').once()
 
       // execute
-      search.exec({ remaining: [ 'hoohaa' ] }, out, done)
+      search.exec({ packages: [ 'hoohaa' ] }, out, done)
 
       var results = resultsEx.args[0][0]
       // verify searchResults data

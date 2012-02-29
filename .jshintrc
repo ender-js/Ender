@@ -6,7 +6,7 @@
   , "trailing": true
   , "immed": true
   , "latedef": true
-  , "forin": true
+  , "forin": false
   , "curly": false
   , "debug": true
   , "devel": false

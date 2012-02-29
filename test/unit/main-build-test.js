@@ -17,7 +17,7 @@ testCase('Build', {
       var installExpectation = mock.expects('install').once().callsArgWith(1, 'err') // err shortcircuits
       mock.expects('packup').once()
 
-      build.exec({ remaining: [ 'package' ] })
+      build.exec({ packages: [ 'package' ] })
 
       assert.equals(installExpectation.args[0][0], [ 'ender-js', 'package' ])
       assert.isFunction(installExpectation.args[0][1]) // internal 'handle()' method
