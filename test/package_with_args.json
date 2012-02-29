@@ -1,5 +1,5 @@
 {
-  "name":"Multiple ender build"
+  "name":"single_ender_build_with_options"
 , "ender":{
     "dependencies":{
       "bean":"latest"
