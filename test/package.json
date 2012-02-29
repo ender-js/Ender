@@ -1,0 +1,12 @@
+{
+  "name":"single_ender_build"
+, "description":"Run ender build [args] based off package.json"
+, "version":"0.0.1"
+, "dependencies": {}
+, "ender":{
+    "dependencies":{
+      "bean":"latest"
+    },
+    "ouput":"ender"
+  }
+}

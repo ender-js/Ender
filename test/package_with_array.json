@@ -1,0 +1,17 @@
+{
+  "name":"Single ender build"
+, "ender":[
+    {
+      "dependencies":{
+        "bean":"latest"
+      },
+      "output":"bean"
+    },
+    {
+      "dependencies":{
+        "kizzy":"latest"
+      },
+      "output":"kizzy"
+    }
+  ]
+}

@@ -241,7 +241,88 @@ sink('ENDER - NOOP', function (test, ok, before, after) {
   });
 });
 
- sink('ENDER - INFO', function (test, ok, before, after) {
+sink('ENDER - INSTALL', function (test, ok, before, after) {
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+
+    fs.unlink('args.js')
+    fs.unlink('args.min.js')
+
+    fs.unlink('bean.js')
+    fs.unlink('bean.min.js')
+
+    fs.unlink('ender.js')
+    fs.unlink('ender.min.js')
+
+    fs.unlink('multi.js')
+    fs.unlink('multi.min.js')
+
+    fs.unlink('kizzy.js')
+    fs.unlink('kizzy.min.js')
+  });
+
+  test('exec: ender install package.json', 3, function () {
+    var cmd = 'ender install package.json';
+    ender.exec(cmd, function () {
+      path.exists('./ender.js', function (exists) {
+        ok(exists, 'ender.js was created');
+      });
+      path.exists('./ender.min.js', function (exists) {
+        ok(exists, 'ender.min.js was created');
+      });
+      fs.readFile('./ender.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading ender.js');
+        ok(new RegExp(cmd).test(data), 'includes correct build command in comment');
+      });
+    });
+  });
+
+  test('exec: ender install ./package_with_args.json', 4, function () {
+    var cmd = 'ender install ./package_with_args.json';
+    ender.exec(cmd, function () {
+      path.exists('./args.js', function(exists) {
+        ok(exists, 'args.js was created');
+      });
+      path.exists('./args.min.js', function(exists) {
+        ok(exists, 'args.min.js was created');
+      });
+      fs.readFile('./args.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading args.js');
+        ok(!new RegExp('function ender').test(data), 'does not include ender-js');
+        ok(/'bean'/.test(data), 'bean was included in build');
+      })
+    });
+  });
+
+  test('exec: ender install ./package_with_array.json', 6, function () {
+    ender.exec('ender install ./package_with_array.json', function () {
+      path.exists('./bean.js', function(exists) {
+        ok(exists, 'bean.js was created');
+      });
+      path.exists('./bean.min.js', function(exists) {
+        ok(exists, 'bean.min.js was created');
+      });
+      path.exists('./kizzy.js', function(exists) {
+        ok(exists, 'kizzy.js was created');
+      });
+      path.exists('./kizzy.min.js', function(exists) {
+        ok(exists, 'kizzy.min.js was created');
+      });
+
+      fs.readFile('./bean.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading bean.js');
+        ok(/'bean/.test(data), 'bean.js contains bean');
+      });
+      fs.readFile('./kizzy.js', 'utf-8', function (err, data) {
+        if (err) ok(false, 'error reading kizzy.js');
+        ok(/'kizzy/.test(data), 'kizzy.js contains kizzy');
+      });
+    });
+  });
+});
+
+
+sink('ENDER - INFO', function (test, ok, before, after) {
   var NPM;
 
   before(function () {

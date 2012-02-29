@@ -1,0 +1,11 @@
+{
+  "name":"Multiple ender build"
+, "ender":{
+    "dependencies":{
+      "bean":"latest"
+    }
+  , "noop":true
+  , "output":"args"
+  , "invalid_option":"jiggawatts"
+  }
+}
