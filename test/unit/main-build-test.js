@@ -5,6 +5,7 @@ var testCase = require('buster').testCase
   , SourcePackage = require('../../lib/source-package')
   , SourceBuild = require('../../lib/source-build')
   , build = require('../../lib/main-build')
+  , write = require('../../lib/write')
 
 testCase('Build', {
     'test exec() calls setup(), install() and packup() on repository': function () {
@@ -37,9 +38,10 @@ testCase('Build', {
         , sourceBuild = SourceBuild.create()
         , sourceBuildMock = this.mock(sourceBuild)
         , SourceBuildMock = this.mock(SourceBuild)
+        , writeMock = this.mock(write)
 
-        , args = { args: 1 }
-        , packages = { packages: 1 }
+        , optionsArg = { options: 1 }
+        , packagesArg = { packages: 1 }
         , installedArg = { installed: 1 }
         , npmTreeArg = { tree: 1 }
         , prettyArg = { pretty: 1 }
@@ -49,7 +51,7 @@ testCase('Build', {
         , parentsArg = { parents: 1 }
         , dataArg = { packageJSON: { packageJSON: 1, name: 'foobar' } }
 
-      mockBuildUtil.expects('packageList').once().withExactArgs(args).returns(packages)
+      mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
       mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
       outMock.expects('repositoryLoadError').never()
@@ -58,9 +60,8 @@ testCase('Build', {
       mockRepository.expects('packup').once()
       outMock.expects('repositoryError').never()
       outMock.expects('installedFromRepository').once().withArgs(installedArg, npmTreeArg, prettyArg)
-      mockBuildUtil.expects('constructDependencyTree').once().withArgs(packages).callsArgWith(1, null, depTreeArg)
-      //TODO: options goes in here as arg
-      SourceBuildMock.expects('create').once().returns(sourceBuild)
+      mockBuildUtil.expects('constructDependencyTree').once().withArgs(packagesArg).callsArgWith(1, null, depTreeArg)
+      SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)
       mockBuildUtil
         .expects('forEachOrderedDependency')
         .once()
@@ -69,15 +70,13 @@ testCase('Build', {
       SourcePackageMock
         .expects('create')
         .once()
-        // TODO: options object goes here as arg
-        .withArgs(parentsArg, packageNameArg, dataArg.packageJSON)
+        .withExactArgs(parentsArg, packageNameArg, dataArg.packageJSON, optionsArg)
         .returns(sourcePackage)
       sourceBuildMock.expects('addPackage').once().withArgs(sourcePackage)
-      sourceBuildMock.expects('asString').once().callsArgWith(0, null, 'source output')
-      //TODO... next?
+      writeMock.expects('write').once().withArgs(optionsArg, sourceBuild, out).callsArg(3)
 
       // execute
-      build.exec(args, out, done)
+      build.exec(optionsArg, out, done)
 
       assert(true) // required, buster bug
     }

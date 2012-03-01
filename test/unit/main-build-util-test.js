@@ -36,30 +36,30 @@ buster.testCase('Build util', {
         }
 
       , 'test noop no args': function () {
-          this.testPackageList({ options: { noop: true } }, [ '.' ])
+          this.testPackageList({ noop: true }, [ '.' ])
         }
 
       , 'test noop and packages': function () {
           this.testPackageList(
-              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { noop: true } }
+              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], noop: true }
             , [ 'foo', 'bar', '.', '../../bang' ]
           )
         }
 
       , 'test sans no args': function () {
-          this.testPackageList({ options: { sans: true } }, [ '.' ])
+          this.testPackageList({ sans: true }, [ '.' ])
         }
 
       , 'test sans and packages': function () {
           this.testPackageList(
-              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true } }
+              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], sans: true }
             , [ 'foo', 'bar', '.', '../../bang' ]
           )
         }
 
       , 'test noop and sans and packages': function () {
           this.testPackageList(
-              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], options: { sans: true, noop: true } }
+              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], sans: true, noop: true }
             , [ 'foo', 'bar', '.', '../../bang' ]
           )
         }
