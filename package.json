@@ -33,6 +33,6 @@
     }
   , "preferGlobal": true
   , "scripts": {
-        "test": "buster-test"
+        "test": "make"
     }
 }
