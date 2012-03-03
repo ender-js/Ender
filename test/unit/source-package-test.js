@@ -512,4 +512,8 @@ testCase('Source package', {
       }, done)
     }
 
+  , 'test identifier': function () {
+      var srcPackage = SourcePackage.create(null, null, { name: 'foobar', version: '1.2.3' })
+      assert.equals(srcPackage.getIdentifier(), 'foobar@1.2.3')
+    }
 })
