@@ -26,6 +26,7 @@
       , "bin": "./bin"
     }
   , "devDependencies": {
+      "buster-test-cli": "*"
     }
   , "bin": {
         "ender": "./bin/ender"
