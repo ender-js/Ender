@@ -55,17 +55,17 @@ testCase('Source package', {
         // don't be too clever here so we can be clever in the code we're testing.
         // source indenting should be done by the caller, not here.
         var src = ''
-        src += '!function () {\n\n  var module = { exports: {} }, exports = module.exports;\n\n'
+        src += '!function () {\n\n  var module = { exports: {} }, exports = module.exports;\n'
         if (options.main)
-          src += options.main + '\n\n'
-        src += '  provide("' + options.name + '", module.exports);\n\n'
+          src += '\n' + options.main
+        src += '\n  provide("' + options.name + '", module.exports);'
         if (options.sandbox)
-          src += '  window["' + options.name + '"] = module.exports;\n\n'
+          src += '\n\n  window["' + options.name + '"] = module.exports;'
         if (options.ender)
-          src += options.ender + '\n\n'
+          src += '\n\n' + options.ender
         else
-          src += '  $.ender(module.exports);\n\n'
-        src += '}();\n'
+          src += '\n  $.ender(module.exports);'
+        src += '\n}();'
         return src
       }
 
@@ -107,10 +107,10 @@ testCase('Source package', {
                   + '  this is a test\n\n'
                   + '  1\n'
                   + '  2\n'
-                  + '  3\n\n\n'
-                  + '  provide("foobar", module.exports);\n\n'
-                  + '  $.ender(module.exports);\n\n'
-                  + '}();\n'
+                  + '  3\n\n'
+                  + '  provide("foobar", module.exports);\n'
+                  + '  $.ender(module.exports);\n'
+                  + '}();'
               )
             }
 
@@ -129,8 +129,8 @@ testCase('Source package', {
                   + '  this is a test\n\n'
                   + '  1\n'
                   + '  2\n'
-                  + '  3\n\n\n'
-                  + '}();\n'
+                  + '  3\n\n'
+                  + '}();'
               )
             }
 
@@ -151,13 +151,13 @@ testCase('Source package', {
                   + '  var module = { exports: {} }, exports = module.exports;\n\n'
                   + '  main\n\n'
                   + '  source\n'
-                  + '  here\n\n\n'
+                  + '  here\n\n'
                   + '  provide("foobar", module.exports);\n\n'
                   + '  this is a test\n\n'
                   + '  1\n'
                   + '  2\n'
-                  + '  3\n\n\n'
-                  + '}();\n'
+                  + '  3\n\n'
+                  + '}();'
               )
             }
         }
@@ -422,7 +422,7 @@ testCase('Source package', {
         , fileContents: [ 'ender-js\ncontents' ]
         , pkg: 'ender-js'
         , json: { name: 'ender-js', main: './main.js' }
-        , expectedResult: 'ender-js\ncontents\n'
+        , expectedResult: 'ender-js\ncontents'
       }, done)
     }
 
@@ -433,7 +433,7 @@ testCase('Source package', {
         , pkg: 'foobar'
         , json: { name: 'foobar', main: './main.js' }
         , options: { noop: true }
-        , expectedResult: 'main\nsource\ncontents\n'
+        , expectedResult: 'main\nsource\ncontents'
       }, done)
     }
 
@@ -489,7 +489,7 @@ testCase('Source package', {
             + '/* Set Local API */\n'
             + 'require = this.require\n'
             + 'provide = this.provide\n'
-            + 'ender = $ = this.ender\n'
+            + 'ender = $ = this.ender'
 
       }, done)
     }
