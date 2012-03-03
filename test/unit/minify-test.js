@@ -22,4 +22,31 @@ buster.testCase('Minify', {
         done()
       })
     }
+
+  , 'test minifier ignores copyright comment blocks': function (done) {
+      var original =
+              '/*!\n'
+            + ' * this is a copyright block\n'
+            + ' */\n'
+            + '!function foobar () { var biglongvar = \'str\'; return biglongvar + \'str\'; }();\n\n'
+            + '/*!\n'
+            + ' * this is another copyright block\n'
+            + ' */\n\n'
+            + '!function foobar2 () { var biglongvar = \'str\'; return biglongvar + \'str\'; }();'
+         , expected =
+              '/*!\n'
+            + ' * this is a copyright block\n'
+            + ' */\n'
+            + '!function(){var b="str";return b+"str"}(),\n'
+            + '/*!\n'
+            + ' * this is another copyright block\n'
+            + ' */\n'
+            + '!function(){var b="str";return b+"str"}()'
+
+      minify.minify(original, function (err, actual) {
+        refute(err)
+        assert.equals(actual, expected)
+        done()
+      })
+    }
 })
