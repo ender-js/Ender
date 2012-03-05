@@ -10,7 +10,7 @@
   , "curly": false
   , "debug": true
   , "devel": false
-  , "evil": false
+  , "evil": true
   , "regexp": false
   , "undef": true
   , "sub": true

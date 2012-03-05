@@ -5,8 +5,8 @@ var testCase = require('buster').testCase
   , SourcePackage = require('../../lib/source-package')
 
   , templateFiles = {
-        'standard': __dirname + '/../../resources/source-package.handlebars'
-      , 'ender-js': __dirname + '/../../resources/ender-js-package.handlebars'
+        'standard': __dirname + '/../../resources/source-package.ejs'
+      , 'ender-js': __dirname + '/../../resources/ender-js-package.ejs'
     }
   , templateFileContents
 

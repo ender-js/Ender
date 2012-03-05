@@ -19,7 +19,7 @@
       , "uglify-js": ">= 0.0.1"
       , "gzip": ">= 0.1.0"
       , "async": ">= 0.1.9"
-      , "handlebars": "*"
+      , "ejs": "*"
     }
   , "directories": {
         "lib": "./lib"

@@ -1,13 +1,14 @@
-{{#if options.sandbox}} \
+<% if (options.sandbox) { %>
 /* Declare local API */
 var require, provide, $, ender;
-{{SPACE}}
-{{{mainSource.raw}}}
+
+<%- mainSource.raw() %>
+
 
 /* Set Local API */
 require = this.require
 provide = this.provide
 ender = $ = this.ender \
-{{else}} \
-{{{mainSource.raw}}} \
-{{/if}} \
+<% } else { %> \
+<%- mainSource.raw() %> \
+<% } %> \
