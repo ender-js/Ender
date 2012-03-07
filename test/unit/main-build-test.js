@@ -65,8 +65,8 @@ testCase('Build', {
       mockBuildUtil
         .expects('forEachOrderedDependency')
         .once()
-        .withArgs(depTreeArg)
-        .callsArgWith(1, packageNameArg, parentsArg, dataArg)
+        .withArgs(packagesArg, depTreeArg)
+        .callsArgWith(2, packageNameArg, parentsArg, dataArg)
       SourcePackageMock
         .expects('create')
         .once()
