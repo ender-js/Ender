@@ -13,8 +13,13 @@ buster.testCase('Build util', {
           }
         }
 
+      , 'test empty args': function () {
+            // not really going to happen given the current args-parse
+            this.testPackageList({ }, [ 'ender-js', '.' ])
+          }
+
       , 'test no args': function () {
-            this.testPackageList({}, [ 'ender-js', '.' ])
+            this.testPackageList({ packages: [] }, [ 'ender-js', '.' ])
           }
 
       , 'test 1 package': function () {
@@ -658,5 +663,41 @@ buster.testCase('Build util', {
           })
         }
 
+    }
+
+  , 'localizePackageList': {
+      'test leaves standard package list alone': function () {
+        assert.equals(buildUtil.localizePackageList([ 'one', 'two', 'three' ]), [ 'one', 'two', 'three' ], {})
+      }
+
+    , 'test returns local packages for relative paths': function () {
+        var originalPackageList = [ 'one', './two', 'three/foo/bar', '/four' ]
+          , expectedPackageList = [ 'one', 'two', 'three', 'four' ]
+          , tree = {
+                'one': {}
+              , './two': { packageJSON: { name: 'two' } }
+              , 'two': {}
+              , 'three/foo/bar': { packageJSON: { name: 'three' } }
+              , 'three': {}
+              , '/four': { packageJSON: { name: 'four' } }
+              , 'four': {}
+            }
+
+          assert.equals(buildUtil.localizePackageList(originalPackageList, tree), expectedPackageList)
+      }
+
+    , 'test leaves unlocalizable packages alone': function () {
+        var originalPackageList = [ 'one', './two', 'three/foo/bar', '/four' ]
+          , expectedPackageList = [ 'one', './two', 'three', '/four' ]
+          , tree = {
+                'one': {}
+              , './two': { packageJSON: { name: 'two' } }
+              , 'three/foo/bar': { packageJSON: { name: 'three' } }
+              , 'three': {}
+              , '/four': { packageJSON: { name: 'four' } }
+            }
+
+          assert.equals(buildUtil.localizePackageList(originalPackageList, tree), expectedPackageList)
+      }
     }
 })

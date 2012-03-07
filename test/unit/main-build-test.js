@@ -42,6 +42,7 @@ testCase('Build', {
 
         , optionsArg = { options: 1 }
         , packagesArg = { packages: 1 }
+        , localizedArg = { localized: 1 }
         , installedArg = { installed: 1 }
         , npmTreeArg = { tree: 1 }
         , prettyArg = { pretty: 1 }
@@ -62,10 +63,11 @@ testCase('Build', {
       outMock.expects('installedFromRepository').once().withArgs(installedArg, npmTreeArg, prettyArg)
       mockBuildUtil.expects('constructDependencyTree').once().withArgs(packagesArg).callsArgWith(1, null, depTreeArg)
       SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)
+      mockBuildUtil.expects('localizePackageList').withExactArgs(packagesArg, depTreeArg).returns(localizedArg)
       mockBuildUtil
         .expects('forEachOrderedDependency')
         .once()
-        .withArgs(packagesArg, depTreeArg)
+        .withArgs(localizedArg, depTreeArg)
         .callsArgWith(2, packageNameArg, parentsArg, dataArg)
       SourcePackageMock
         .expects('create')
