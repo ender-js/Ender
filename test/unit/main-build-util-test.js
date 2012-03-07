@@ -108,20 +108,23 @@ buster.testCase('Build util', {
 
   , 'constructDependencyTree': {
         'setUp': function () {
-          this.runTest = function (packages, jsons, directories, expectedTree, done) {
+          this.runTest = function (setupTree, jsons, directories, expectedTree, done) {
             var packageUtilMock = this.mock(packageUtil)
-              , setupExpectations = function (parents, packages) {
-                  Object.keys(packages).forEach(function (p, i) {
-                    if (jsons[p] != 'missing') {
+              , setupExpectations = function (parents, setupTree) {
+                  Object.keys(setupTree).forEach(function (p, i) {
+                    if (p == '$id')
+                      return
+                    var id = setupTree[p].$id || p // for doing special indirection
+                    if (jsons[id] != 'missing') {
                       packageUtilMock.expects('readPackageJSON')
                         .once()
                         .withArgs(parents, p)
-                        .callsArgWith(2, null, jsons[p])
+                        .callsArgWith(2, null, jsons[id])
                       packageUtilMock.expects('getDependenciesFromDirectory')
                         .once()
                         .withArgs(parents, p)
-                        .callsArgWith(2, null, directories[p])
-                      setupExpectations(parents.concat([ p ]), packages[p])
+                        .callsArgWith(2, null, directories[id])
+                      setupExpectations(parents.concat([ p ]), setupTree[p])
                     } else {
                       // dir & package.json missing
                       packageUtilMock.expects('readPackageJSON')
@@ -139,9 +142,9 @@ buster.testCase('Build util', {
             packageUtilMock.expects('getDependenciesFromDirectory')
               .once()
               .withArgs([], '.')
-              .callsArgWith(2, null, Object.keys(packages).filter(function (p) { return !/\//.test(p) }))
-            setupExpectations([], packages)
-            buildUtil.constructDependencyTree(Object.keys(packages), function (err, tree) {
+              .callsArgWith(2, null, Object.keys(setupTree).filter(function (p) { return !/\//.test(p) }))
+            setupExpectations([], setupTree)
+            buildUtil.constructDependencyTree(Object.keys(setupTree), function (err, tree) {
               assert.equals(tree, expectedTree)
               done()
             })
@@ -164,17 +167,18 @@ buster.testCase('Build util', {
             , expectedTree = {
                   'pkg1': {
                       packageJSON: jsons['pkg1']
+                    , parents: []
                     , dependencies: {}
                   }
                 , 'some/path/to/pkg2': {
                       packageJSON: jsons['some/path/to/pkg2']
+                    , parents: []
                     , dependencies: {}
                   }
               }
           this.runTest(packages, jsons, directories, expectedTree, done)
         }
 
-        /*
       , 'test complex dependencies': function (done) {
           var packages = {
                   'pkg1': {
@@ -216,7 +220,8 @@ buster.testCase('Build util', {
                 , 'yo': { name: 'yo' }
               }
             , directories = {
-                  'pkg': [ 'foo', 'woohoo' ]
+                  'pkg1': [ 'foo', 'woohoo' ]
+                , 'pkg': [ 'foo', 'woohoo' ]
                 , 'some/path/to/pkg2': [ 'wee', 'foo' ]
                 , 'foo': [ 'bar' ]
                 , 'bar': []
@@ -228,33 +233,41 @@ buster.testCase('Build util', {
             , expectedTree = {
                   'pkg1': {
                       packageJSON: jsons['pkg1']
+                    , parents: []
                     , dependencies: {
                           'foo': {
                               packageJSON: jsons['foo']
+                            , parents: [ 'pkg1' ]
                             , dependencies: {
                                   'bar': {
                                       packageJSON: jsons['bar']
+                                    , parents: [ 'pkg1', 'foo' ]
                                     , dependencies: {}
                                   }
                               }
                           }
                         , 'woohoo': {
                               packageJSON: jsons['woohoo']
+                            , parents: [ 'pkg1' ]
                             , dependencies: {}
                           }
                       }
                   }
                 , 'some/path/to/pkg2': {
                       packageJSON: jsons['some/path/to/pkg2']
+                    , parents: []
                     , dependencies: {
                           'wee': {
                               packageJSON: jsons['wee']
+                            , parents: [ 'some/path/to/pkg2' ]
                             , dependencies: {
                                   'hee': {
                                       packageJSON: jsons['hee']
+                                    , parents: [ 'some/path/to/pkg2', 'wee' ]
                                     , dependencies: {
                                           'yo': {
                                               packageJSON: jsons['yo']
+                                            , parents: [ 'some/path/to/pkg2', 'wee', 'hee' ]
                                             , dependencies: {}
                                           }
                                       }
@@ -263,9 +276,11 @@ buster.testCase('Build util', {
                           }
                         , 'foo': {
                               packageJSON: jsons['foo']
+                            , parents: [ 'some/path/to/pkg2' ]
                             , dependencies: {
                                   'bar': {
                                       packageJSON: jsons['bar']
+                                    , parents: [ 'some/path/to/pkg2', 'foo' ]
                                     , dependencies: {}
                                   }
                               }
@@ -275,7 +290,6 @@ buster.testCase('Build util', {
               }
           this.runTest(packages, jsons, directories, expectedTree, done)
         }
-        */
 
       , 'test dependencies with missing directories': function (done) {
           var packages = {
@@ -304,9 +318,11 @@ buster.testCase('Build util', {
             , expectedTree = {
                   'pkg1': {
                       packageJSON: jsons['pkg1']
+                    , parents: []
                     , dependencies: {
                           'foo': {
                               packageJSON: jsons['foo']
+                            , parents: [ 'pkg1' ]
                             , dependencies: {
                                   'bar': 'missing'
                               }
@@ -317,13 +333,98 @@ buster.testCase('Build util', {
               }
           this.runTest(packages, jsons, directories, expectedTree, done)
         }
+
+      , 'test dependencies in scattered directories': function (done) {
+          // this test is designed to show that even with missing dependency directories
+          // the proper dependency tree can be built if the packages are available in the
+          // tree somewhere.
+          //
+          // the $id awkwardness is so that we can specify the simulation of missing
+          // directories & package.json files.
+          //
+          // see the 'directories' object to see what the simulated directory structure is
+          // yet it should be able to piece together the full expectedTree
+          var packages = {
+                  'pkg1': {
+                      'pkg4': { 'pkg6': { $id: 'pkg6-missing' } }
+                    , 'pkg3': { $id: 'pkg3-missing' }
+                  }
+                , 'pkg2': {}
+                , 'pkg3': {}
+                , 'pkg5': { 'pkg6': {} }
+              }
+            , jsons = {
+                  'pkg1': { name: 'pkg1', dependencies: [ 'pkg4', 'pkg3' ] }
+                , 'pkg2': { name: 'pkg2', dependencies: [] }
+                , 'pkg3-missing': 'missing'
+                , 'pkg3': { name: 'pkg3', dependencies: [] }
+                , 'pkg4': { name: 'pkg4', dependencies: [ 'pkg6' ] }
+                , 'pkg5': { name: 'pkg5', dependencies: [ 'pkg6' ] }
+                , 'pkg6-missing': 'missing'
+                , 'pkg6': { name: 'pkg6', dependencies: [] }
+              }
+            , directories = {
+                  'pkg1': [ 'pkg4' ]
+                , 'pkg2': []
+                , 'pkg3': []
+                , 'pkg4': []
+                , 'pkg5': [ 'pkg6' ]
+                , 'pkg6': []
+              }
+            , expectedTree = {
+                  'pkg1': {
+                      packageJSON: jsons['pkg1']
+                    , parents: []
+                    , dependencies: {
+                          'pkg4': {
+                              packageJSON: jsons['pkg4']
+                            , parents: [ 'pkg1' ]
+                            , dependencies: {
+                                'pkg6': {
+                                    packageJSON: jsons['pkg6']
+                                  , parents: [ 'pkg5' ]
+                                  , dependencies: {}
+                                }
+                              }
+                          }
+                        , 'pkg3': {
+                              packageJSON: jsons['pkg3']
+                            , parents: []
+                            , dependencies: {}
+                          }
+                      }
+                  }
+                , 'pkg2': {
+                      packageJSON: jsons['pkg2']
+                    , parents: []
+                    , dependencies: {}
+                  }
+                , 'pkg3': {
+                      packageJSON: jsons['pkg3']
+                    , parents: []
+                    , dependencies: {}
+                  }
+                , 'pkg5': {
+                      packageJSON: jsons['pkg5']
+                    , parents: []
+                    , dependencies: {
+                          'pkg6': {
+                              packageJSON: jsons['pkg6']
+                            , parents: [ 'pkg5' ]
+                            , dependencies: {}
+                          }
+                      }
+                  }
+              }
+          this.runTest(packages, jsons, directories, expectedTree, done)
+        }
     }
 
   , 'flattenAndOrderDependencies': {
         'test no dependencies': function () {
           var originalTree = {
-                  'pkg1': { dependencies: {} }
-                , 'some/path/to/pkg2': { dependencies: {} }
+                  'pkg1': { dependencies: {}, parents: [ 'foo' ] }
+                , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
               }
             , spy = this.spy()
 
@@ -331,30 +432,32 @@ buster.testCase('Build util', {
 
           assert.equals(spy.callCount, 2)
           assert.equals(spy.getCall(0).args[0], 'pkg1')
-          assert.equals(spy.getCall(0).args[1], [])
+          assert.equals(spy.getCall(0).args[1], [ 'foo' ])
           assert.equals(spy.getCall(0).args[2], originalTree['pkg1'])
           assert.equals(spy.getCall(1).args[0], 'some/path/to/pkg2')
-          assert.equals(spy.getCall(1).args[1], [])
+          assert.equals(spy.getCall(1).args[1], [ 'foo' , 'bar' ])
           assert.equals(spy.getCall(1).args[2], originalTree['some/path/to/pkg2'])
         }
 
       , 'test simple dependencies': function () {
           var originalTree = {
                   'apkg-2': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'mypkg-1': {
-                              _expectParents: [ 'apkg-2' ]
+                              parents: [ 'apkg-2' ]
                             , dependencies: {}
                           }
                       }
                   }
                 , 'somepkg-5': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'foo-4': {
-                              _expectParents: [ 'somepkg-5' ]
+                              parents: [ 'somepkg-5' ]
                             , dependencies: {
                                 'bar-3': {
-                                    _expectParents: [ 'somepkg-5', 'foo-4' ]
+                                    parents: [ 'somepkg-5', 'foo-4' ]
                                   , dependencies: {}
                                 }
                               }
@@ -362,9 +465,10 @@ buster.testCase('Build util', {
                       }
                   }
                 , 'apkg-7': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'mypkg-6': {
-                              _expectParents: [ 'apkg-7' ]
+                              parents: [ 'apkg-7' ]
                             , dependencies: {}
                           }
                       }
@@ -380,7 +484,7 @@ buster.testCase('Build util', {
             assert.equals(c[3], i)
             refute.isNull(c[2])
             refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.equals(c[1], c[2]._expectParents || [], 'expected parents for ' + c[0]) // array of parents, so we can locate it
+            assert.same(c[1], c[2].parents)
             assert.match(c[0], new RegExp('-' + (++i) + '$'))
           })
         }
@@ -388,19 +492,21 @@ buster.testCase('Build util', {
       , 'test ender-js at front': function () {
           var originalTree = {
                   'apkg-3': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'mypkg-2': {
-                              _expectParents: [ 'apkg-3' ]
+                              parents: [ 'apkg-3' ]
                             , dependencies: {}
                           }
                       }
                   }
-                , 'somepkg-4': { dependencies: {} }
-                , 'ender-js': { dependencies: {} } // it should spit this out first
+                , 'somepkg-4': { parents: [], dependencies: {} }
+                , 'ender-js': { parents: [], dependencies: {} } // it should spit this out first
                 , 'apkg-6': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'mypkg-5': {
-                              _expectParents: [ 'apkg-6' ]
+                              parents: [ 'apkg-6' ]
                             , dependencies: {}
                           }
                       }
@@ -416,7 +522,7 @@ buster.testCase('Build util', {
             assert.equals(c[3], i)
             refute.isNull(c[2])
             refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.equals(c[1], c[2]._expectParents || [], 'expected parents for ' + c[0]) // array of parents, so we can locate it
+            assert.same(c[1], c[2].parents)
             if (!i) {
               assert.equals(c[0], 'ender-js')
               assert.same(c[2], originalTree['ender-js'])
@@ -428,24 +534,25 @@ buster.testCase('Build util', {
       , 'test duplicate dependencies': function () {
           var originalTree = {
                   'apkg-6': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'mypkg-5': {
-                              _expectParents: [ 'apkg-6' ]
+                              parents: [ 'apkg-6' ]
                             , dependencies: {
                                   'apkg-2': {
-                                      _expectParents: [ 'apkg-6', 'mypkg-5' ]
+                                      parents: [ 'apkg-6', 'mypkg-5' ]
                                     , dependencies: {
                                           'mypkg-1': {
-                                              _expectParents: [ 'apkg-6', 'mypkg-5', 'apkg-2' ]
+                                              parents: [ 'apkg-6', 'mypkg-5', 'apkg-2' ]
                                             , dependencies: {}
                                           }
                                       }
                                   }
                                 , 'apkg-4': {
-                                      _expectParents: [ 'apkg-6', 'mypkg-5' ]
+                                      parents: [ 'apkg-6', 'mypkg-5' ]
                                     , dependencies: {
                                           'mypkg-3': {
-                                              _expectParents: [ 'apkg-6', 'mypkg-5', 'apkg-4' ]
+                                              parents: [ 'apkg-6', 'mypkg-5', 'apkg-4' ]
                                             , dependencies: {}
                                           }
                                       }
@@ -455,32 +562,35 @@ buster.testCase('Build util', {
                       }
                   }
                 , 'somepkg-9': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'foo-8': {
-                              _expectParents: [ 'somepkg-9' ]
+                              parents: [ 'somepkg-9' ]
                             , dependencies: {
                                 'bar-7': {
-                                    _expectParents: [ 'somepkg-9', 'foo-8' ]
+                                    parents: [ 'somepkg-9', 'foo-8' ]
                                   , dependencies: {}
                                 }
                               }
                           }
                         , 'mypkg-3': {
-                              _expectParents: [ 'somepkg-9' ]
+                              parents: [ 'somepkg-9' ]
                             , dependencies: {}
                           }
                       }
                   }
                 , 'apkg-2': {
-                      dependencies: {
+                      parents: []
+                    , dependencies: {
                           'mypkg-1': {
-                              _expectParents: [ 'apkg-2' ]
+                              parents: [ 'apkg-2' ]
                             , dependencies: {}
                           }
                       }
                   }
                 , 'lastpkg-10': {
-                      dependencies: {}
+                      parents: []
+                    , dependencies: {}
                   }
               }
             , spy = this.spy()
@@ -493,7 +603,7 @@ buster.testCase('Build util', {
             assert.equals(c[3], i)
             refute.isNull(c[2])
             refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.equals(c[1], c[2]._expectParents || []) // array of parents, so we can locate it
+            assert.same(c[1], c[2].parents)
             assert.match(c[0], new RegExp('-' + (++i) + '$'))
           })
         }
