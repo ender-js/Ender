@@ -43,7 +43,7 @@ testCase('Build', {
         , optionsArg = { options: 1 }
         , packagesArg = { packages: 1 }
         , localizedArg = { localized: 1 }
-        , installedArg = { installed: 1 }
+        , installedArg = [ { installed: 1 } ]
         , npmTreeArg = { tree: 1 }
         , prettyArg = { pretty: 1 }
         , fakePackage = { fakePackage: 1 }
@@ -57,7 +57,10 @@ testCase('Build', {
       mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
       outMock.expects('repositoryLoadError').never()
       mockRepository.expects('setup').once().callsArg(0)
-      mockRepository.expects('install').once().callsArgWith(1, null, installedArg, npmTreeArg, prettyArg)
+      mockRepository
+        .expects('install')
+        .once()
+        .callsArgWith(1, null, [ { installed: installedArg, tree: npmTreeArg, pretty: prettyArg } ])
       mockRepository.expects('packup').once()
       outMock.expects('repositoryError').never()
       outMock.expects('installedFromRepository').once().withArgs(installedArg, npmTreeArg, prettyArg)

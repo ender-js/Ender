@@ -193,7 +193,28 @@ buster.testCase('Repository (NPM interface)', {
               }
 
           npmMock.expects('load').once().callsArg(1)
-          npmCommandsMock.expects('install').once().withArgs(packages, finish).callsArg(1)
+          npmCommandsMock.expects('install').once().withArgs(packages).callsArg(1)
+
+          repository.setup(function () {
+            repository.install(packages, finish)
+          })
+
+          assert(true) // required, buster issue #62
+        }
+
+      , 'test install() calls npm.commands.install() twice if "." package is specified': function (done) {
+          var npm = require('npm')
+            , npmMock = this.mock(npm)
+            , npmCommandsMock = this.mock(npm.commands)
+            , packages = [ 'packages', 'argument', 'foo/..' ]
+            , finish = function () {
+                repository.packup()
+                done()
+              }
+
+          npmMock.expects('load').once().callsArg(1)
+          npmCommandsMock.expects('install').once().withArgs(packages.slice(0, 2)).callsArg(1)
+          npmCommandsMock.expects('install').once().withArgs([ '.' ]).callsArg(1)
 
           repository.setup(function () {
             repository.install(packages, finish)
@@ -202,6 +223,4 @@ buster.testCase('Repository (NPM interface)', {
           assert(true) // required, buster issue #62
         }
     }
-
 })
-
