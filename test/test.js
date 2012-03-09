@@ -30,7 +30,7 @@ sink('ENDER - VERSION', function (test, ok, before, after, assert) {
         }
       })
       ender.exec('ender version', function () {
-        assert.equal('Active Version: ' + expectedVersion, actualVersionString , 'printed correct version string')
+        assert.equal('Active Version: v' + expectedVersion, actualVersionString , 'printed correct version string')
         complete()
       })
     })
