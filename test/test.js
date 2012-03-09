@@ -12,6 +12,31 @@ sink.timeout = false;
 // only output sink log statements
 spec.setLogKey('$__sink::');
 
+sink('ENDER - VERSION', function (test, ok, before, after, assert) {
+
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+  });
+
+  test('exec: version', function (complete) {
+    fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (err, contents) {
+      ok(!err, 'read package.json')
+      var expectedVersion = contents.match(/"version"\s*:\s*"([^"]+)"/)[1]
+        , actualVersionString
+      O_O(console, 'log').andCallFake(function (str) {
+        if (/^Active /.test(str)) {
+          actualVersionString = str.replace(/[^\w\:\s\.]/, '')
+          O_O.removeAll(); //clear all spies after each test
+        }
+      })
+      ender.exec('ender version', function () {
+        assert.equal('Active Version: ' + expectedVersion, actualVersionString , 'printed correct version string')
+        complete()
+      })
+    })
+  })
+})
+
 sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
 
   after(function () {
