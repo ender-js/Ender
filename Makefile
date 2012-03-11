@@ -1,5 +1,5 @@
 tests:
 	@jshint lib/ test/
-	@node -e 'require("buster-test-cli").cli.test.create().run(process.argv.slice(2));'
+	@./node_modules/.bin/buster test
 
 #@buster-test -g unit

@@ -20,13 +20,14 @@
       , "gzip": ">= 0.1.0"
       , "async": ">= 0.1.9"
       , "ejs": "*"
+      , "archy": "*"
     }
   , "directories": {
         "lib": "./lib"
       , "bin": "./bin"
     }
   , "devDependencies": {
-      "buster-test-cli": "*"
+      "buster": "*"
     }
   , "bin": {
         "ender": "./bin/ender"
