@@ -426,26 +426,40 @@ buster.testCase('Build util', {
     }
 
   , 'forEachOrderedDependency': {
-        'test no dependencies': function () {
-          var originalTree = {
-                  'pkg1': { dependencies: {}, parents: [ 'foo' ] }
-                , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
+        'no dependencies': {
+            'setUp': function () {
+              this.originalTree = {
+                      'pkg1': { dependencies: {}, parents: [ 'foo' ] }
+                    , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
               }
-            , spy = this.spy()
+              this.callSpy = this.spy()
 
-          buildUtil.forEachOrderedDependency(Object.keys(originalTree), originalTree, spy)
+              this.verifySpy = function () {
+                assert.equals(this.callSpy.callCount, 2)
+                assert.equals(this.callSpy.getCall(0).args[0], 'pkg1')
+                assert.equals(this.callSpy.getCall(0).args[1], [ 'foo' ])
+                assert.equals(this.callSpy.getCall(0).args[2], this.originalTree['pkg1'])
+                assert.equals(this.callSpy.getCall(1).args[0], 'some/path/to/pkg2')
+                assert.equals(this.callSpy.getCall(1).args[1], [ 'foo' , 'bar' ])
+                assert.equals(this.callSpy.getCall(1).args[2], this.originalTree['some/path/to/pkg2'])
+              }
+            }
 
-          assert.equals(spy.callCount, 2)
-          assert.equals(spy.getCall(0).args[0], 'pkg1')
-          assert.equals(spy.getCall(0).args[1], [ 'foo' ])
-          assert.equals(spy.getCall(0).args[2], originalTree['pkg1'])
-          assert.equals(spy.getCall(1).args[0], 'some/path/to/pkg2')
-          assert.equals(spy.getCall(1).args[1], [ 'foo' , 'bar' ])
-          assert.equals(spy.getCall(1).args[2], originalTree['some/path/to/pkg2'])
+          , 'test forEachUniqueOrderedDependency': function () {
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
+
+          , 'test forEachOrderedDependency': function () {
+              // should do the same thing
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
         }
 
-      , 'test simple dependencies': function () {
-          var originalTree = {
+      , 'simple dependencies': {
+            'setUp': function () {
+              this.originalTree = {
                   'apkg-2': {
                       parents: []
                     , dependencies: {
@@ -479,23 +493,35 @@ buster.testCase('Build util', {
                       }
                   }
               }
-            , spy = this.spy()
+              this.callSpy = this.spy()
+              this.verifySpy = function () {
+                assert.equals(this.callSpy.args.length, 7)
 
-          buildUtil.forEachOrderedDependency(Object.keys(originalTree), originalTree, spy)
+                this.callSpy.args.forEach(function (c, i) {
+                  assert.equals(c[3], i)
+                  refute.isNull(c[2])
+                  refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
+                  assert.same(c[1], c[2].parents)
+                  assert.match(c[0], new RegExp('-' + (++i) + '$'))
+                })
+              }
+            }
 
-          assert.equals(spy.args.length, 7)
+          , 'test forEachUniqueOrderedDependency': function () {
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
 
-          spy.args.forEach(function (c, i) {
-            assert.equals(c[3], i)
-            refute.isNull(c[2])
-            refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.same(c[1], c[2].parents)
-            assert.match(c[0], new RegExp('-' + (++i) + '$'))
-          })
+          , 'test forEachOrderedDependency': function () {
+              // should do the same thing
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
         }
 
-      , 'test ender-js at front': function () {
-          var originalTree = {
+      , 'ender-js at front': {
+            'setUp': function () {
+              this.originalTree = {
                   'apkg-3': {
                       parents: []
                     , dependencies: {
@@ -517,27 +543,39 @@ buster.testCase('Build util', {
                       }
                   }
               }
-            , spy = this.spy()
+              this.callSpy = this.spy()
+              this.verifySpy = function () {
+                assert.equals(this.callSpy.args.length, 6)
 
-          buildUtil.forEachOrderedDependency(Object.keys(originalTree), originalTree, spy)
+                this.callSpy.args.forEach(function (c, i) {
+                  assert.equals(c[3], i)
+                  refute.isNull(c[2])
+                  refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
+                  assert.same(c[1], c[2].parents)
+                  if (!i) {
+                    assert.equals(c[0], 'ender-js')
+                    assert.same(c[2], this.originalTree['ender-js'])
+                  } else
+                    assert.match(c[0], new RegExp('-' + (++i) + '$'))
+                }.bind(this))
+              }
+            }
 
-          assert.equals(spy.args.length, 6)
+          , 'test forEachUniqueOrderedDependency': function () {
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
 
-          spy.args.forEach(function (c, i) {
-            assert.equals(c[3], i)
-            refute.isNull(c[2])
-            refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.same(c[1], c[2].parents)
-            if (!i) {
-              assert.equals(c[0], 'ender-js')
-              assert.same(c[2], originalTree['ender-js'])
-            } else
-              assert.match(c[0], new RegExp('-' + (++i) + '$'))
-          })
+          , 'test forEachOrderedDependency': function () {
+              // should do the same thing
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
         }
 
-      , 'test duplicate dependencies': function () {
-          var originalTree = {
+      , 'test duplicate dependencies': {
+            'setUp': function () {
+              this.originalTree = {
                   'apkg-6': {
                       parents: []
                     , dependencies: {
@@ -598,23 +636,47 @@ buster.testCase('Build util', {
                     , dependencies: {}
                   }
               }
-            , spy = this.spy()
+              this.callSpy = this.spy()
+            }
 
-          buildUtil.forEachOrderedDependency(Object.keys(originalTree), originalTree, spy)
+          , 'test forEachUniqueOrderedDependency': function () {
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
 
-          assert.equals(spy.args.length, 10)
+              // expect only uniques
+              assert.equals(this.callSpy.args.length, 10)
 
-          spy.args.forEach(function (c, i) {
-            assert.equals(c[3], i)
-            refute.isNull(c[2])
-            refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.same(c[1], c[2].parents)
-            assert.match(c[0], new RegExp('-' + (++i) + '$'))
-          })
+              this.callSpy.args.forEach(function (c, i) {
+                assert.equals(c[3], i)
+                refute.isNull(c[2])
+                refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
+                assert.same(c[1], c[2].parents)
+                assert.match(c[0], new RegExp('-' + (++i) + '$'))
+              })
+            }
+
+          , 'test forEachOrderedDependency': function () {
+              var expectedPackages =
+                'mypkg-1 apkg-2 mypkg-3 apkg-4 mypkg-5 apkg-6 bar-7 foo-8 mypkg-3 somepkg-9 mypkg-1 apkg-2 lastpkg-10'
+                .split(' ')
+
+              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+
+              assert.equals(this.callSpy.args.length, expectedPackages.length)
+
+              this.callSpy.args.forEach(function (c, i) {
+                assert.equals(c[3], i)
+                refute.isNull(c[2])
+                refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
+                assert.same(c[1], c[2].parents)
+                assert.equals(c[0], expectedPackages[i])
+                assert.equals(c[4], new RegExp('-' + (++i) + '$').test(c[0]), 'index ' + i + ': ' + c[0])
+              })
+            }
         }
 
-      , 'test additional unnecessary dependencies': function () {
-          var originalTree = {
+      , 'additional unnecessary dependencies': {
+            'setUp': function () {
+              this.originalTree = {
                   'apkg-2': {
                       parents: []
                     , dependencies: {
@@ -648,21 +710,31 @@ buster.testCase('Build util', {
                       }
                   }
               }
-            , spy = this.spy()
+              this.callSpy = this.spy()
+              this.verifySpy = function () {
+                assert.equals(this.callSpy.args.length, 5)
 
-          buildUtil.forEachOrderedDependency([ 'apkg-2', 'somepkg-5' ], originalTree, spy)
+                this.callSpy.args.forEach(function (c, i) {
+                  assert.equals(c[3], i)
+                  refute.isNull(c[2])
+                  refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
+                  assert.same(c[1], c[2].parents)
+                  assert.match(c[0], new RegExp('-' + (++i) + '$'))
+                })
+              }
+            }
 
-          assert.equals(spy.args.length, 5)
+          , 'test forEachUniqueOrderedDependency': function () {
+              buildUtil.forEachOrderedDependency([ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
 
-          spy.args.forEach(function (c, i) {
-            assert.equals(c[3], i)
-            refute.isNull(c[2])
-            refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
-            assert.same(c[1], c[2].parents)
-            assert.match(c[0], new RegExp('-' + (++i) + '$'))
-          })
+          , 'test forEachOrderedDependency': function () {
+              // should do the same thing
+              buildUtil.forEachOrderedDependency([ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
+              this.verifySpy()
+            }
         }
-
     }
 
   , 'localizePackageList': {

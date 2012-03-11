@@ -1,13 +1,8 @@
 var testCase = require('buster').testCase
-  , fs = require('fs')
-  , zlib = require('zlib')
   , mainInfo = require('../../lib/main-info')
   , mainInfoOut = require('../../lib/main-info-output').create()
   , mainInfoUtil = require('../../lib/main-info-util')
   , SourceBuild = require('../../lib/source-build')
-  , minify = require('../../lib/minify')
-
-  , _i = 100
 
 testCase('Info', {
     'setUp': function () {
@@ -19,7 +14,11 @@ testCase('Info', {
           , sizesArg = { sizes: 1 }
           , contextArg = { options: optionsArg, packages: packagesArg }
 
-        mainInfoUtilMock.expects('sizes').once().withArgs(expectedFilename).callsArgWith(1, null, sizesArg)
+        mainInfoUtilMock
+          .expects('sizes')
+          .once()
+          .withArgs(expectedFilename)
+          .callsArgWith(1, null, sizesArg)
         mainInfoUtilMock
           .expects('parseContext')
           .once()
@@ -29,6 +28,7 @@ testCase('Info', {
           .expects('buildInfo')
           .once()
           .withExactArgs(expectedFilename, optionsArg, packagesArg, sizesArg)
+
         mainInfo.exec(options, mainInfoOut, function (err) {
           refute(err)
           done()
