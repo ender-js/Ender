@@ -68,7 +68,7 @@ testCase('Build', {
       SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)
       mockBuildUtil.expects('localizePackageList').withExactArgs(packagesArg, depTreeArg).returns(localizedArg)
       mockBuildUtil
-        .expects('forEachOrderedDependency')
+        .expects('forEachUniqueOrderedDependency')
         .once()
         .withArgs(localizedArg, depTreeArg)
         .callsArgWith(2, packageNameArg, parentsArg, dataArg)

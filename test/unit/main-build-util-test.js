@@ -446,7 +446,7 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
@@ -508,7 +508,7 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
@@ -562,7 +562,7 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
@@ -573,7 +573,7 @@ buster.testCase('Build util', {
             }
         }
 
-      , 'test duplicate dependencies': {
+      , 'duplicate dependencies': {
             'setUp': function () {
               this.originalTree = {
                   'apkg-6': {
@@ -639,8 +639,10 @@ buster.testCase('Build util', {
               this.callSpy = this.spy()
             }
 
+            // we should only see unique packages here, they have numbers in their names so we can match them
+            // easily
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
 
               // expect only uniques
               assert.equals(this.callSpy.args.length, 10)
@@ -654,22 +656,30 @@ buster.testCase('Build util', {
               })
             }
 
+            // in this case we should see all packages in order, not just uniques, but we should get an argument
+            // for uniqueness
           , 'test forEachOrderedDependency': function () {
               var expectedPackages =
-                'mypkg-1 apkg-2 mypkg-3 apkg-4 mypkg-5 apkg-6 bar-7 foo-8 mypkg-3 somepkg-9 mypkg-1 apkg-2 lastpkg-10'
-                .split(' ')
+                  'mypkg-1 apkg-2 mypkg-3 apkg-4 mypkg-5 apkg-6 bar-7 foo-8 mypkg-3 somepkg-9 mypkg-1 apkg-2 lastpkg-10'
+                  .split(' ')
+                , orderedIndex = 1
 
               buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
 
               assert.equals(this.callSpy.args.length, expectedPackages.length)
 
               this.callSpy.args.forEach(function (c, i) {
+                // use 'orderedIndex' to check if the current package is a dupe or not according to the
+                // package name
+                var expectedIsUnique = new RegExp('-' + orderedIndex + '$').test(c[0])
+                if (expectedIsUnique)
+                  orderedIndex++
                 assert.equals(c[3], i)
                 refute.isNull(c[2])
                 refute.isNull(c[2].dependencies) // should be the packageJSON, 'dependencies' is a proxy for this
                 assert.same(c[1], c[2].parents)
                 assert.equals(c[0], expectedPackages[i])
-                assert.equals(c[4], new RegExp('-' + (++i) + '$').test(c[0]), 'index ' + i + ': ' + c[0])
+                assert.equals(c[4], expectedIsUnique, 'index ' + i + ' ' + c[0])
               })
             }
         }
@@ -725,7 +735,7 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachOrderedDependency([ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency([ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
