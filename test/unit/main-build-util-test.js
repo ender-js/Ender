@@ -752,6 +752,10 @@ buster.testCase('Build util', {
         assert.equals(buildUtil.localizePackageList([ 'one', 'two', 'three' ]), [ 'one', 'two', 'three' ], {})
       }
 
+    , 'test strips out versions from names': function () {
+        assert.equals(buildUtil.localizePackageList([ 'one', 'two@0.1.2', 'three@1.2.3' ]), [ 'one', 'two', 'three' ], {})
+      }
+
     , 'test returns local packages for relative paths': function () {
         var originalPackageList = [ 'one', './two', 'three/foo/bar', '/four' ]
           , expectedPackageList = [ 'one', 'two', 'three', 'four' ]
