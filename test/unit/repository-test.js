@@ -165,6 +165,45 @@ buster.testCase('Repository (NPM interface)', {
         }
     }
 
+  , 'uninstall()': {
+        setUp: function () {
+          // we have to replace npm.commands because all properties on the original object
+          // are defined with only getters (via defineProperty) so can't be mocked as they are
+          this.npm = require('npm')
+          this.npmCommandsOriginal = this.npm.commands
+          this.npm.commands = this.npmCommands = {
+              uninstall: function () {}
+          }
+        }
+      , tearDown: function () {
+          this.npm.commands = this.npmCommandsOriginal
+        }
+
+      , 'test uninstall() throws RepositorySetupError if setup() has not been called': function () {
+          assert.exception(repository.uninstall, 'RepositorySetupError')
+        }
+
+      , 'test uninstall() calls npm.commands.uninstall()': function (done) {
+          var npm = require('npm')
+            , npmMock = this.mock(npm)
+            , npmCommandsMock = this.mock(npm.commands)
+            , packages = [ 'packages', 'argument' ]
+            , finish = function () {
+                repository.packup()
+                done()
+              }
+
+          npmMock.expects('load').once().callsArg(1)
+          npmCommandsMock.expects('uninstall').once().withArgs(packages, finish).callsArg(1)
+
+          repository.setup(function () {
+            repository.uninstall(packages, finish)
+          })
+
+          assert(true) // required, buster issue #62
+        }
+    }
+
   , 'install()': {
         setUp: function () {
           // see note for search() setUp

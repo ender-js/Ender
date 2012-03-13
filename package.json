@@ -27,7 +27,7 @@
       , "bin": "./bin"
     }
   , "devDependencies": {
-      "buster": "*"
+        "buster": "*"
     }
   , "bin": {
         "ender": "./bin/ender"

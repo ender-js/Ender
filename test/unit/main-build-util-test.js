@@ -111,6 +111,32 @@ buster.testCase('Build util', {
         }
     }
 
+  , 'isRootPackage': {
+        'test not root package': function () {
+          refute(buildUtil.isRootPackage({}, 'foobar'))
+        }
+
+      , 'test default root package': function () {
+          assert(buildUtil.isRootPackage({}, 'ender-js'))
+        }
+
+      , 'test default root package but with "sans" option': function () {
+          refute(buildUtil.isRootPackage({ sans: true }, 'ender-js'))
+        }
+
+      , 'test default root package but with "noop" option': function () {
+          refute(buildUtil.isRootPackage({ noop: true }, 'ender-js'))
+        }
+
+      , 'test not root package but with "sans" option': function () {
+          refute(buildUtil.isRootPackage({ sans: true }, 'foobar'))
+        }
+
+      , 'test not root package but with "noop" option': function () {
+          refute(buildUtil.isRootPackage({ sans: true }, 'foobar'))
+        }
+    }
+
   , 'constructDependencyTree': {
         'setUp': function () {
           this.runTest = function (setupTree, jsons, directories, expectedTree, done) {
