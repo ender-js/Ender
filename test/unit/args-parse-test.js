@@ -146,7 +146,54 @@ buster.testCase('Args parser', {
               }
           )
         }
+    }
 
+  , 'extend': {
+        'no specials': function () {
+          var originalArgs = {
+                  main: 'build'
+                , packages: [ 'fee', 'fie', 'foe', 'fum' ]
+              }
+            , newArgs = {
+                  main: 'add'
+                , packages: [ 'baz', 'bing' ]
+              }
+            , expectedArgs = {
+                  main: 'build'
+                , packages: [ 'fee', 'fie', 'foe', 'fum', 'baz', 'bing' ]
+              }
+
+          assert.equals(argsParse.extend(originalArgs, newArgs), expectedArgs)
+        }
+
+      , 'with specials': function () {
+          var originalArgs = {
+                  main: 'build'
+                , packages: [ 'fee', 'fie', 'foe', 'fum' ]
+                , sandbox: [ 'foo' ]
+                , use: 'yeehaw'
+                , silent: true
+                , help: true
+              }
+            , newArgs = {
+                  main: 'add'
+                , packages: [ 'baz', 'bing' ]
+                , sandbox: [ 'bar', 'baz' ]
+                , noop: true
+                , silent: true
+              }
+            , expectedArgs = {
+                  main: 'build'
+                , packages: [ 'fee', 'fie', 'foe', 'fum', 'baz', 'bing' ]
+                , sandbox: [ 'foo', 'bar', 'baz' ]
+                , use: 'yeehaw'
+                , silent: true
+                , help: true
+                , noop: true
+              }
+
+          assert.equals(argsParse.extend(originalArgs, newArgs), expectedArgs)
+        }
     }
 
   , 'toContextString': {

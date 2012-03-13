@@ -12,7 +12,7 @@ testCase('Build', {
       var mock = this.mock(repository)
         , mockUtil = this.mock(util)
 
-      mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
+      //mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
 
       mock.expects('setup').once().callsArg(0)
       var installExpectation = mock.expects('install').once().callsArgWith(1, 'err') // err shortcircuits
@@ -54,7 +54,7 @@ testCase('Build', {
 
       mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
-      mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
+      //mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
       outMock.expects('repositoryLoadError').never()
       mockRepository.expects('setup').once().callsArg(0)
       mockRepository
