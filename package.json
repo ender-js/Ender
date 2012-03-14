@@ -14,13 +14,14 @@
         "node": ">= 0.6.0"
     }
   , "dependencies": {
-        "npm": ">=1.1.4"
+        "npm": ">= 1.1.8"
       , "colors": ">= 0.3.0"
       , "uglify-js": ">= 0.0.1"
       , "gzip": ">= 0.1.0"
       , "async": ">= 0.1.9"
-      , "ejs": "*"
-      , "archy": "*"
+      , "ejs": ">= 0.6.1"
+      , "archy": ">= 0.0.2"
+      , "colors-tmpl": ">= 0.0.2"
     }
   , "directories": {
         "lib": "./lib"

@@ -1,0 +1,12 @@
+{yellow}- build:{/yellow}
+  + accepts multiple npm packages to build into ender library
+  + example: {cyan} $ender build domready qwery bean{/cyan}
+  + note: alternatively you can specify the -b flag
+  {red}+ options:{/red}
+  - {yellow}--sandbox{/yellow} Prevents global leakage of ender lib variables. Passing additional arguments will define the specified packages directly on the window.
+    + example: {cyan}$ ender build jeesh backbone --sandbox backbone{/cyan}
+  - {yellow}--noop{/yellow} (or {yellow}-x{/yellow}) build without the ender-js client library
+    + example: {cyan}$ ender build mootools-class --noop{/cyan}
+  - {yellow}--output{/yellow} (or {yellow}-o{/yellow}) out ender library to path with custom name
+    + example: {cyan}$ ender build mootools-class --output ../public/js/mootools.js{/cyan}
+    + (above example would generate a mootools.js file as well as a mootools.min.js file in the ../public/js/ dir.)
