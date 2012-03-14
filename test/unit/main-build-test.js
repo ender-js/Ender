@@ -5,12 +5,13 @@ var testCase = require('buster').testCase
   , SourcePackage = require('../../lib/source-package')
   , SourceBuild = require('../../lib/source-build')
   , build = require('../../lib/main-build')
+  , info = require('../../lib/main-info')
   , write = require('../../lib/write')
 
 testCase('Build', {
     'test exec() calls setup(), install() and packup() on repository': function () {
       var mock = this.mock(repository)
-        , mockUtil = this.mock(util)
+        //, mockUtil = this.mock(util)
 
       //mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
 
@@ -28,12 +29,13 @@ testCase('Build', {
     // build process and that it calls everything we expect it to
   , 'test standard main-build interaction': function (done) {
       var mockRepository = this.mock(repository)
-        , mockUtil = this.mock(util)
+        //, mockUtil = this.mock(util)
         , mockBuildUtil = this.mock(buildUtil)
+        , mockInfo = this.mock(info)
         , out = require('../../lib/main-build-output').create(1)
         , outMock = this.mock(out)
         , sourcePackage = SourcePackage.create()
-        , sourcePackageMock = this.mock(sourcePackage)
+        //, sourcePackageMock = this.mock(sourcePackage)
         , SourcePackageMock = this.mock(SourcePackage)
         , sourceBuild = SourceBuild.create()
         , sourceBuildMock = this.mock(sourceBuild)
@@ -46,7 +48,6 @@ testCase('Build', {
         , installedArg = [ { installed: 1 } ]
         , npmTreeArg = { tree: 1 }
         , prettyArg = { pretty: 1 }
-        , fakePackage = { fakePackage: 1 }
         , depTreeArg = { depTree: 1 }
         , packageNameArg = { packageName: 1 }
         , parentsArg = { parents: 1 }
@@ -78,7 +79,13 @@ testCase('Build', {
         .withExactArgs(parentsArg, packageNameArg, dataArg.packageJSON, optionsArg)
         .returns(sourcePackage)
       sourceBuildMock.expects('addPackage').once().withArgs(sourcePackage)
+      outMock.expects('finishedAssembly').once()
       writeMock.expects('write').once().withArgs(optionsArg, sourceBuild, out).callsArg(3)
+      mockInfo
+        .expects('generateAndPrint')
+        .once()
+        .withArgs(optionsArg, out, optionsArg, localizedArg, depTreeArg)
+        .callsArg(5)
 
       // execute
       build.exec(optionsArg, out, done)
