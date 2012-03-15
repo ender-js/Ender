@@ -11,10 +11,10 @@ testCase('Info', {
         var mainInfoOutMock = this.mock(mainInfoOut)
           , mainInfoUtilMock = this.mock(mainInfoUtil)
           , mainBuildUtilMock = this.mock(mainBuildUtil)
-          , optionsArg = { options: 1 }
           , packagesArg = { packages: 1 }
+          , optionsPackagesArg = { optionsPackages: 1 }
           , sizesArg = { sizes: 1 }
-          , contextArg = { options: optionsArg, packages: packagesArg }
+          , contextArg = { options: { packages: optionsPackagesArg }, packages: packagesArg }
           , treeArg = { tree: 1 }
           , archyTreeArg = { archyTree: 1 }
 
@@ -31,17 +31,19 @@ testCase('Info', {
         mainBuildUtilMock
           .expects('constructDependencyTree')
           .once()
-          .withArgs(packagesArg)
+          .withArgs(optionsPackagesArg)
+            // important we use packages from context->options->packages which is the command-line packages
+            // and not context->packages which is the full list of packages in the build
           .callsArgWith(1, null, treeArg)
         mainInfoUtilMock
           .expects('buildArchyTree')
           .once()
-          .withExactArgs(packagesArg, treeArg)
+          .withExactArgs(optionsPackagesArg, treeArg)
           .returns(archyTreeArg)
         mainInfoOutMock
           .expects('buildInfo')
           .once()
-          .withExactArgs(expectedFilename, optionsArg, packagesArg, sizesArg, archyTreeArg)
+          .withExactArgs(expectedFilename, contextArg.options, packagesArg, sizesArg, archyTreeArg)
 
         mainInfo.exec(options, mainInfoOut, function (err) {
           refute(err)
