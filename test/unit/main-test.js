@@ -20,17 +20,35 @@ buster.testCase('Main program', {
       assert(true)
     }
 
-  , 'test main loads main module as specified by args-parse': function () {
+  , 'test main loads main module as specified by args-parse': function (done) {
       var argsParseMock = this.mock(argsParse)
         , mainSearchMock = this.mock(mainSearch)
         , mainSearchOutMock = this.mock(mainSearchOut)
         , expectedArgs = [ 'foo', 'bar', 'search' ]
+        , argsArg = { main: 'search' }
 
-      argsParseMock.expects('parse').once().withArgs(expectedArgs).returns({ main: 'search' })
-      mainSearchMock.expects('exec').once()
+      argsParseMock.expects('parse').once().withArgs(expectedArgs).returns(argsArg)
+      mainSearchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
       mainSearchOutMock.expects('welcome').once()
 
-      main.exec(expectedArgs)
+      main.exec(expectedArgs, done)
+      assert(true)
+    }
+
+  , 'test API exec(string, cb) call': function (done) {
+      var argsParseMock = this.mock(argsParse)
+        , mainSearchMock = this.mock(mainSearch)
+        , mainSearchOutMock = this.mock(mainSearchOut)
+        , expectedArgs = [ 'search', 'foo', 'bar' ]
+        , argsArg = { main: 'search' }
+
+      // note the difference hear is that the first 2 elements of our args array aren't
+      // discarded, only the unnecessary 'ender' element (below)
+      argsParseMock.expects('parseClean').once().withArgs(expectedArgs).returns(argsArg)
+      mainSearchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
+      mainSearchOutMock.expects('welcome').once()
+
+      main.exec('ender ' + expectedArgs.join(' '), done)
       assert(true)
     }
 })
