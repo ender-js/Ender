@@ -28,7 +28,8 @@
       , "bin": "./bin"
     }
   , "devDependencies": {
-        "buster": "*"
+        "buster": ">= 0.4.6"
+      , "rimraf": ">= 2.0.1"
     }
   , "bin": {
         "ender": "./bin/ender"

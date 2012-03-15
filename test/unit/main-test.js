@@ -1,5 +1,4 @@
 var buster = require('buster')
-  , assert = buster.assert
   , main = require('../../lib/main')
   , mainSearch = require('../../lib/main-search')
   , mainSearchOut = require('../../lib/main-search-output')

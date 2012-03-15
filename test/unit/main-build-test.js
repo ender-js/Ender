@@ -11,9 +11,9 @@ var testCase = require('buster').testCase
 testCase('Build', {
     'test exec() calls setup(), install() and packup() on repository': function () {
       var mock = this.mock(repository)
-        //, mockUtil = this.mock(util)
+        , mockUtil = this.mock(util)
 
-      //mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
+      mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
 
       mock.expects('setup').once().callsArg(0)
       var installExpectation = mock.expects('install').once().callsArgWith(1, 'err') // err shortcircuits
@@ -29,7 +29,7 @@ testCase('Build', {
     // build process and that it calls everything we expect it to
   , 'test standard main-build interaction': function (done) {
       var mockRepository = this.mock(repository)
-        //, mockUtil = this.mock(util)
+        , mockUtil = this.mock(util)
         , mockBuildUtil = this.mock(buildUtil)
         , mockInfo = this.mock(info)
         , out = require('../../lib/main-build-output').create(1)
@@ -55,7 +55,7 @@ testCase('Build', {
 
       mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
-      //mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
+      mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
       outMock.expects('repositoryLoadError').never()
       mockRepository.expects('setup').once().callsArg(0)
       mockRepository

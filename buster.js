@@ -10,3 +10,8 @@ config['integration'] = {
     environment: 'node'
   , tests: [ 'test/integration/*-test.js' ]
 }
+
+config['functional'] = {
+    environment: 'node'
+  , tests: [ 'test/functional/*-test.js' ]
+}
