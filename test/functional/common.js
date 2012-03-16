@@ -6,18 +6,45 @@ var buster = require('buster')
   , rimraf = require('rimraf')
   , util = require('../../lib/util')
 
+  , makeSourceProvideRegex = function (pkg) {
+      return RegExp('[;, ]provide\\("' + pkg + '", ?\\w+\\.exports\\)[;,]')
+    }
 buster.assertions.add('sourceHasProvide', {
     assert: function (source, pkg, file) {
-      return new RegExp('[;, ]provide\\("' + pkg + '", ?\\w+\\.exports\\)[;,]').test(source)
+      var re = makeSourceProvideRegex(pkg)
+      this.times = source.split(re).length - 1
+      return this.times == 1
     }
-  , assertMessage: '${2} contains provide("${1}")'
+  , assertMessage: '${2} contains provide("${1}") [${times} time(s), expected 1]'
 })
 
 buster.assertions.add('sourceHasStandardWrapFunction', {
     assert: function (source, pkg, file) {
-      return new RegExp('\\s*\\}\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{').test(source)
+      var re = new RegExp('\\s*\\}\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{')
+      this.times = source.split(re).length - 1
+      return this.times == 1
     }
-  , assertMessage: '${2} contains standard wrapper function for ${1}'
+  , assertMessage: '${2} contains standard wrapper function for ${1} [${times} time(s), expected 1]'
+})
+
+buster.assertions.add('sourceContainsProvideStatements', {
+    assert: function (source, times, file) {
+      var re = makeSourceProvideRegex('\\w+')
+      this.times = source.split(re).length - 1
+      return this.times == times
+    }
+  , assertMessage: '${2} contains ${1} provide() statements [${times} time(s), expected ${1}]'
+})
+
+buster.assertions.add('sourceHasProvidesInOrder', {
+    assert: function (source, pkg1, pkg2, file) {
+      var re1 = makeSourceProvideRegex(pkg1)
+        , re2 = makeSourceProvideRegex(pkg2)
+        , idx1 = source.search(re1)
+        , idx2 = source.search(re2)
+      return idx1 < idx2
+    }
+  , assertMessage: '${3} has provide("${1}") before provide("${2}")'
 })
 
 buster.assertions.add('hasVersionedPackage', {
