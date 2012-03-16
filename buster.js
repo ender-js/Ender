@@ -9,9 +9,11 @@ config['unit'] = {
 config['integration'] = {
     environment: 'node'
   , tests: [ 'test/integration/*-test.js' ]
+  , libs: [ 'test/common.js' ]
 }
 
 config['functional'] = {
     environment: 'node'
   , tests: [ 'test/functional/*-test.js' ]
+  , libs: [ 'test/common.js' ]
 }
