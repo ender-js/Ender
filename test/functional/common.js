@@ -29,7 +29,7 @@ buster.assertions.add('sourceHasStandardWrapFunction', {
 
 buster.assertions.add('sourceContainsProvideStatements', {
     assert: function (source, times, file) {
-      var re = makeSourceProvideRegex('\\w+')
+      var re = makeSourceProvideRegex('[\\w\\-]+')
       this.times = source.split(re).length - 1
       return this.times == times
     }
@@ -88,9 +88,8 @@ var mktmpdir = function (callback) {
 
   , enderpath = path.resolve(__dirname, '../../bin/ender')
 
-  , runEnder = function (cmd, expectedFiles, callback) {
-      mktmpdir(function (err, dir) {
-        refute(err)
+  , runEnder = function (cmd, expectedFiles, dir, callback) {
+      var run = function (dir) {
         childProcess.exec(
             enderpath + ' ' + cmd
           , { cwd: dir, env: process.env }
@@ -116,10 +115,33 @@ var mktmpdir = function (callback) {
               )
             }
         )
+      }
+
+      if (typeof dir == 'function') {
+        callback = dir
+        mktmpdir(function (err, dir) {
+          refute(err)
+          if (err)
+            return callback(err)
+          run(dir)
+        })
+      } else
+        run(dir)
+    }
+
+  , verifyNodeModulesDirectories = function (root, expectedDirectories, callback) {
+      fs.readdir(path.join(root, 'node_modules'), function (err, actualDirectories) {
+        refute(err)
+        if (err)
+          return callback(err)
+        assert.equals(actualDirectories.length, expectedDirectories.length)
+        assert.equals(actualDirectories.sort(), expectedDirectories.sort())
+        callback()
       })
     }
 
 module.exports = {
     enderpath: enderpath
   , runEnder: runEnder
+  , verifyNodeModulesDirectories: verifyNodeModulesDirectories
 }

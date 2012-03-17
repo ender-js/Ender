@@ -30,6 +30,7 @@
   , "devDependencies": {
         "buster": ">= 0.4.6"
       , "rimraf": ">= 2.0.1"
+      , "jshint": ">= 0.5.9"
     }
   , "bin": {
         "ender": "./bin/ender"

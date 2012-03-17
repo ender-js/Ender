@@ -17,7 +17,7 @@ testCase('Add', {
         , extendedOptionsArg = { extendedOptions: 1 }
         , outArg = { out: 1 }
 
-      utilMock.expects('getFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
+      utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
       mainInfoUtilMock.expects('parseContext').once().withArgs(filenameArg).callsArgWith(1, null, contextArg)
       argsParseMock.expects('extend').once().withExactArgs(contextArg.options, optionsArg).returns(extendedOptionsArg)
       mainBuildMock.expects('exec').once().withExactArgs(extendedOptionsArg, outArg, done).callsArg(2)

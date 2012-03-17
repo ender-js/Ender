@@ -3,7 +3,7 @@ var testCase = require('buster').testCase
   , path = require('path')
   , functionalCommon = require('./common')
 
-testCase('Functional: dependencies', {
+testCase('Functional: build / dependencies', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'
@@ -52,7 +52,12 @@ testCase('Functional: dependencies', {
               assert.sourceHasProvidesInOrder(contents, 'bonzo', 'jeesh', files[i])
               assert.sourceHasProvidesInOrder(contents, 'bean', 'jeesh', files[i])
             })
-            callback(done)
+
+            functionalCommon.verifyNodeModulesDirectories(
+                dir
+              , 'ender-js jeesh'.split(' ')
+              , callback.bind(null, done)
+            )
         })
     }
 
@@ -88,7 +93,7 @@ so if we include bean at the top level we should see it once in our build file.
 
             fileContents.forEach(function (contents, i) {
               assert.match(contents, /Build: ender build sel bean dagron$/m, files[i] + ' contains correct build command')
-              assert.sourceContainsProvideStatements(contents, 4, files[i]) // es5-basic doesn't provide()
+              assert.sourceContainsProvideStatements(contents, 5, files[i])
               assert.hasVersionedPackage(contents, 'sel', files[i])
               assert.hasVersionedPackage(contents, 'es5-basic', files[i])
               assert.hasVersionedPackage(contents, 'bean', files[i])
@@ -111,7 +116,12 @@ so if we include bean at the top level we should see it once in our build file.
               // check that they are in the order specified on the commandline
               assert.sourceHasProvidesInOrder(contents, 'sel', 'dagron', files[i])
             })
-            callback(done)
+
+            functionalCommon.verifyNodeModulesDirectories(
+                dir
+              , 'ender-js sel bean dagron'.split(' ')
+              , callback.bind(null, done)
+            )
         })
     }
 
@@ -160,7 +170,7 @@ so if we include bean at the top level we should see it once in our build file.
                 , /Build: ender build ender-bootstrap-popover$/m
                 , files[i] + ' contains correct build command'
               )
-              assert.sourceContainsProvideStatements(contents, 5, files[i]) // ender-bootstrap-* pkgs don't provide()
+              assert.sourceContainsProvideStatements(contents, 9, files[i])
               assert.hasVersionedPackage(contents, 'ender-bootstrap-popover', files[i])
               assert.hasVersionedPackage(contents, 'ender-bootstrap-base', files[i])
               assert.hasVersionedPackage(contents, 'bowser', files[i])
@@ -194,7 +204,12 @@ so if we include bean at the top level we should see it once in our build file.
               assert.sourceHasProvidesInOrder(contents, 'bean', 'ender-bootstrap-base', files[i])
               assert.sourceHasProvidesInOrder(contents, 'qwery', 'ender-bootstrap-base', files[i])
             })
-            callback(done)
+
+            functionalCommon.verifyNodeModulesDirectories(
+                dir
+              , 'ender-js ender-bootstrap-popover'.split(' ')
+              , callback.bind(null, done)
+            )
         })
     }
 })

@@ -84,8 +84,8 @@ testCase('Build', {
       mockInfo
         .expects('generateAndPrint')
         .once()
-        .withArgs(optionsArg, out, optionsArg, localizedArg, depTreeArg)
-        .callsArg(5)
+        .withArgs(optionsArg, out, 'ender.js', optionsArg, localizedArg, depTreeArg)
+        .callsArg(6)
 
       // execute
       build.exec(optionsArg, out, done)

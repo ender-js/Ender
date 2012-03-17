@@ -34,7 +34,7 @@ testCase('Remove', {
           }
         , outArg = { out: 1 }
 
-      utilMock.expects('getFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
+      utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
       mainInfoUtilMock.expects('parseContext').once().withArgs(filenameArg).callsArgWith(1, null, contextArg)
       mainBuildMock.expects('exec').once().withArgs(expectedBuildOptions, outArg).callsArg(2)
       repositoryMock.expects('setup').once().callsArg(0)

@@ -1,7 +1,12 @@
-tests:
-	@jshint lib/ test/
+unittests:
+	@node -e "require('colors');console.log('Running unit tests...'.bold.yellow)"
+	@./node_modules/.bin/jshint lib/ test/
 	@./node_modules/.bin/buster-test -g unit
 
-functional:
-	@jshint lib/ test/
+functionaltests:
+	@node -e "require('colors');console.log('Running functional tests (patience please)...'.bold.yellow)"
+	@./node_modules/.bin/jshint lib/ test/
 	@./node_modules/.bin/buster-test -g functional
+
+alltests: unittests functionaltests
+
