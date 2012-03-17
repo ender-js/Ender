@@ -99,8 +99,7 @@ buster.testCase('Repository (NPM interface)', {
           var npm = require('npm')
             , npmMock = this.mock(npm)
             , finish = function () {
-                repository.packup()
-                done()
+                repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
@@ -112,8 +111,7 @@ buster.testCase('Repository (NPM interface)', {
           var npm = require('npm')
             , npmMock = this.mock(npm)
             , finish = function () {
-                repository.packup()
-                done()
+                repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
@@ -150,8 +148,7 @@ buster.testCase('Repository (NPM interface)', {
             , npmCommandsMock = this.mock(npm.commands)
             , keywords = 'keywords argument'
             , finish = function () {
-                repository.packup()
-                done()
+                repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
@@ -189,8 +186,7 @@ buster.testCase('Repository (NPM interface)', {
             , npmCommandsMock = this.mock(npm.commands)
             , packages = [ 'packages', 'argument' ]
             , finish = function () {
-                repository.packup()
-                done()
+                repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
@@ -227,8 +223,7 @@ buster.testCase('Repository (NPM interface)', {
             , npmCommandsMock = this.mock(npm.commands)
             , packages = [ 'packages', 'argument' ]
             , finish = function () {
-                repository.packup()
-                done()
+                repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
@@ -247,8 +242,7 @@ buster.testCase('Repository (NPM interface)', {
             , npmCommandsMock = this.mock(npm.commands)
             , packages = [ 'packages', 'argument', 'foo/..' ]
             , finish = function () {
-                repository.packup()
-                done()
+                repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)

@@ -12,7 +12,7 @@ testCase('Functional: version', {
       }.bind(this))
     }
 
-  , 'exec: version': function (complete) {
+  , 'exec version (API)': function (complete) {
       fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8', function (err, contents) {
         refute(err, 'read package.json')
 

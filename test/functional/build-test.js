@@ -10,7 +10,7 @@ testCase('Functional: build / dependencies', {
     }
 
     // jeesh is a virtual package that we expect to pull in 5 actual packages
-  , 'ender build jeesh': function (done) {
+  , '`ender build jeesh`': function (done) {
       var files = [ 'ender.js', 'ender.min.js' ]
       functionalCommon.runEnder(
           'build jeesh'
@@ -73,7 +73,7 @@ so if we include bean at the top level we should see it once in our build file.
     └── qwery
 */
 
-  , 'ender build sel bean dagron': function (done) {
+  , '`ender build sel bean dagron`': function (done) {
       var files = [ 'ender.js', 'ender.min.js' ]
       functionalCommon.runEnder(
           'build sel bean dagron'
@@ -142,7 +142,7 @@ so if we include bean at the top level we should see it once in our build file.
     └─┬ ender-bootstrap-base
       └── ...
 */
-  , 'ender build ender-bootstrap-popover': function (done) {
+  , '`ender build ender-bootstrap-popover`': function (done) {
       var files = [ 'ender.js', 'ender.min.js' ]
       functionalCommon.runEnder(
           'build ender-bootstrap-popover'

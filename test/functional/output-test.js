@@ -3,14 +3,14 @@ var testCase = require('buster').testCase
   , path = require('path')
   , functionalCommon = require('./common')
 
-testCase('Functional: build output', {
+testCase('Functional: build with output', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'
     }
 
     // jeesh is a virtual package that we expect to pull in 5 actual packages
-  , 'ender build bonzo bean --output foobar': function (done) {
+  , '`ender build bonzo bean --output foobar`': function (done) {
       var files = [ 'foobar.js', 'foobar.min.js' ]
       functionalCommon.runEnder(
           'build bonzo bean --output foobar'
