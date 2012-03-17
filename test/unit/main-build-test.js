@@ -32,7 +32,7 @@ testCase('Build', {
         , mockUtil = this.mock(util)
         , mockBuildUtil = this.mock(buildUtil)
         , mockInfo = this.mock(info)
-        , out = require('../../lib/main-build-output').create(1)
+        , out = require('../../lib/output/main-build-output').create(1)
         , outMock = this.mock(out)
         , sourcePackage = SourcePackage.create()
         //, sourcePackageMock = this.mock(sourcePackage)

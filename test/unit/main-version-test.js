@@ -2,7 +2,7 @@ var testCase = require('buster').testCase
   , fs = require('fs')
   , path = require('path')
   , mainVersion = require('../../lib/main-version')
-  , mainVersionOut = require('../../lib/main-version-output').create()
+  , mainVersionOut = require('../../lib/output/main-version-output').create()
 
 testCase('Version', {
     'test version': function (done) {

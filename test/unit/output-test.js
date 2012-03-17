@@ -1,6 +1,6 @@
 var buster = require('buster')
   , assert = buster.assert
-  , Output = require('../../lib/output')
+  , Output = require('../../lib/output/output')
 
 buster.testCase('Output (base)', {
     setUp: function () {

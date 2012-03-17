@@ -1,7 +1,7 @@
 var buster = require('buster')
   , main = require('../../lib/main')
   , mainSearch = require('../../lib/main-search')
-  , mainSearchOut = require('../../lib/main-search-output')
+  , mainSearchOut = require('../../lib/output/main-search-output')
   , argsParse = require('../../lib/args-parse')
 
 buster.testCase('Main program', {

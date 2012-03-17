@@ -1,6 +1,6 @@
 var testCase = require('buster').testCase
   , mainInfo = require('../../lib/main-info')
-  , mainInfoOut = require('../../lib/main-info-output').create()
+  , mainInfoOut = require('../../lib/output/main-info-output').create()
   , mainInfoUtil = require('../../lib/main-info-util')
   , mainBuildUtil = require('../../lib/main-build-util')
   , SourceBuild = require('../../lib/source-build')

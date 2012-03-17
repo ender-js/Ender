@@ -4,7 +4,7 @@ var buster = require('buster')
   , path = require('path')
   , SourceBuild = require('../../lib/source-build')
   , write = require('../../lib/write')
-  , buildOutput = require('../../lib/main-build-output')
+  , buildOutput = require('../../lib/output/main-build-output')
 
 buster.testCase('Write', {
     'test standard write': function (done) {

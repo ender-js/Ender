@@ -1,6 +1,6 @@
 var buster = require('buster')
   , assert = buster.assert
-  , SearchOutput = require('../../lib/main-search-output')
+  , SearchOutput = require('../../lib/output/main-search-output')
 
 buster.testCase('Search output', {
     setUp: function () {

@@ -3,7 +3,7 @@ var testCase = require('buster').testCase
   , path = require('path')
   , colorsTmpl = require('colors-tmpl')
   , mainHelp = require('../../lib/main-help')
-  , mainHelpOut = require('../../lib/main-help-output').create()
+  , mainHelpOut = require('../../lib/output/main-help-output').create()
 
 testCase('Help', {
     'setUp': function () {

@@ -21,7 +21,7 @@ testCase('Search', {
   , 'test main-search-util interaction': function (done) {
       var mockRepository = this.mock(repository)
       var mockSearchUtil = this.mock(searchUtil)
-      var out = require('../../lib/main-search-output').create(1)
+      var out = require('../../lib/output/main-search-output').create(1)
       var outMock = this.mock(out)
 
       mockRepository.expects('setup').once().callsArg(0)
