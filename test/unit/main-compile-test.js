@@ -1,0 +1,112 @@
+/*!
+ * ENDER - The open module JavaScript framework
+ *
+ * Copyright (c) 2011-2012 @ded, @fat, @rvagg and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+var testCase = require('buster').testCase
+  , childProcess = require('child_process')
+  , path = require('path')
+  , fs = require('fs')
+  , zlib = require('zlib')
+  , mainCompile = require('../../lib/main-compile')
+  , mainCompileOut = require('../../lib/output/main-compile-output').create()
+
+testCase('Compile', {
+    'setUp': function () {
+      this.jarPath = path.resolve(__dirname, '../../support/closure.jar')
+      this.runTest = function (args, expectedOutputFile, expectedJavaCmd, done) {
+        var childProcessMock = this.mock(childProcess)
+          , fsMock = this.mock(fs)
+          , zlibMock = this.mock(zlib)
+          , outMock = this.mock(mainCompileOut)
+          , stdoutArg = 'stdout output'
+          , dataArg = { data: 1, length: 222 }
+          , zDataArg = { zData: 1, length: 111 }
+
+        outMock.expects('compiling').once()
+        childProcessMock.expects('exec')
+          .once()
+          .withArgs(expectedJavaCmd)
+          .callsArgWith(1, null, stdoutArg, null)
+        fsMock.expects('readFile').once().withArgs(expectedOutputFile, 'utf-8').callsArgWith(2, null, dataArg)
+        zlibMock.expects('gzip').once().withArgs(dataArg).callsArgWith(1, null, zDataArg)
+        outMock.expects('compiled').once().withArgs(expectedOutputFile, dataArg.length, zDataArg.length)
+        mainCompile.exec(
+            args
+          , mainCompileOut
+          , function (err) {
+              refute(err)
+              done()
+            }
+        )
+      }
+    }
+
+  , 'test noarg compile': function (done) {
+      var args = { packages: [] }
+        , expectedOutputFile = 'ender-app.js'
+        , expectedJavaCmd =
+              'java -jar '
+            + this.jarPath
+            + ' --compilation_level ADVANCED_OPTIMIZATIONS'
+            + ' --js=ender.js'
+            + ' --js_output_file=ender-app.js'
+      this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
+    }
+
+  , 'test simple compile': function (done) {
+      var args = { packages: [ 'foo.js', 'bar.js' ] }
+        , expectedOutputFile = 'ender-app.js'
+        , expectedJavaCmd =
+              'java -jar '
+            + this.jarPath
+            + ' --compilation_level ADVANCED_OPTIMIZATIONS'
+            + ' --js=ender.js'
+            + ' --js=foo.js'
+            + ' --js=bar.js'
+            + ' --js_output_file=ender-app.js'
+      this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
+    }
+
+  , 'test complex compile': function (done) {
+      // ender compile foo.js bar.js --externs bing.js bang.js --use foobar --output hoohaa
+      var args = {
+              packages: [ 'foo.js', 'bar.js' ]
+            , externs: [ 'bing.js', 'bang.js' ]
+            , use: 'foobar'
+            , output: 'hoohaa'
+          }
+        , expectedOutputFile = 'hoohaa.js'
+        , expectedJavaCmd =
+              'java -jar '
+            + this.jarPath
+            + ' --compilation_level ADVANCED_OPTIMIZATIONS'
+            + ' --js=foobar.js'
+            + ' --js=foo.js'
+            + ' --js=bar.js'
+            + ' --externs=bing.js'
+            + ' --externs=bang.js'
+            + ' --js_output_file=hoohaa.js'
+      this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
+    }
+})
