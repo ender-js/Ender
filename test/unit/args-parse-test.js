@@ -173,8 +173,34 @@ buster.testCase('Args parser', {
         }
     }
 
+  , 'aliases': {
+        'test set = add': function () {
+          var actual = argsParse.parse(buildargs('set'))
+          assert.isString(actual.main)
+          assert.equals(actual.main, 'add')
+        }
+
+      , 'test rm = remove': function () {
+          var actual = argsParse.parse(buildargs('rm'))
+          assert.isString(actual.main)
+          assert.equals(actual.main, 'remove')
+        }
+
+      , 'test ls = info': function () {
+          var actual = argsParse.parse(buildargs('ls'))
+          assert.isString(actual.main)
+          assert.equals(actual.main, 'info')
+        }
+
+      , 'test list = info': function () {
+          var actual = argsParse.parse(buildargs('list'))
+          assert.isString(actual.main)
+          assert.equals(actual.main, 'info')
+        }
+    }
+
   , 'extend': {
-        'no specials': function () {
+        'test no specials': function () {
           var originalArgs = {
                   main: 'build'
                 , packages: [ 'fee', 'fie', 'foe', 'fum' ]
@@ -191,7 +217,7 @@ buster.testCase('Args parser', {
           assert.equals(argsParse.extend(originalArgs, newArgs), expectedArgs)
         }
 
-      , 'with specials': function () {
+      , 'test with specials': function () {
           var originalArgs = {
                   main: 'build'
                 , packages: [ 'fee', 'fie', 'foe', 'fum' ]
