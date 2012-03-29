@@ -133,7 +133,7 @@ var mktmpdir = function (callback) {
                 , function (f, callback) {
                     f = path.join(dir, f)
                     fs.stat(f, function (err, stats) {
-                      refute(err, f + ' exists')
+                      refute(err, f + ' exists [' + err + ']')
                       if (err)
                         return callback()
                       assert(stats && stats.isFile(), f + ' is a file')
