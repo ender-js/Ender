@@ -76,6 +76,8 @@ testCase('Functional: build / dependencies', {
               assert.sourceHasProvidesInOrder(contents, 'qwery', 'jeesh', files[i])
               assert.sourceHasProvidesInOrder(contents, 'bonzo', 'jeesh', files[i])
               assert.sourceHasProvidesInOrder(contents, 'bean', 'jeesh', files[i])
+
+              assert.sourceHasCopyrightComments(contents, 6, files[i]) // 1 each + header
             })
 
             functionalCommon.verifyNodeModulesDirectories(
@@ -140,6 +142,8 @@ so if we include bean at the top level we should see it once in our build file.
               assert.sourceHasProvidesInOrder(contents, 'qwery', 'dagron', files[i])
               // check that they are in the order specified on the commandline
               assert.sourceHasProvidesInOrder(contents, 'sel', 'dagron', files[i])
+
+              assert.sourceHasCopyrightComments(contents, 5, files[i]) // head, ender-js, bean, dagron, qwery
             })
 
             functionalCommon.verifyNodeModulesDirectories(
@@ -228,6 +232,8 @@ so if we include bean at the top level we should see it once in our build file.
               assert.sourceHasProvidesInOrder(contents, 'domready', 'ender-bootstrap-base', files[i])
               assert.sourceHasProvidesInOrder(contents, 'bean', 'ender-bootstrap-base', files[i])
               assert.sourceHasProvidesInOrder(contents, 'qwery', 'ender-bootstrap-base', files[i])
+
+              assert.sourceHasCopyrightComments(contents, 7, files[i]) // head, ender-js, bowser, bonzo, domready, bean, qwery
             })
 
             functionalCommon.verifyNodeModulesDirectories(

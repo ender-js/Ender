@@ -30,10 +30,12 @@ var buster = require('buster')
   , async = require('async')
   , rimraf = require('rimraf')
   , util = require('../../lib/util')
+  , copyrightCommentRe = /\/\*![\s\S]*?\*\//g
 
   , makeSourceProvideRegex = function (pkg) {
       return RegExp('[;, ]provide\\("' + pkg + '", ?\\w+\\.exports\\)[;,]')
     }
+
 buster.assertions.add('sourceHasProvide', {
     assert: function (source, pkg, file) {
       var re = makeSourceProvideRegex(pkg)
@@ -45,7 +47,7 @@ buster.assertions.add('sourceHasProvide', {
 
 buster.assertions.add('sourceHasStandardWrapFunction', {
     assert: function (source, pkg, file) {
-      var re = new RegExp('\\s*\\}\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{')
+      var re = new RegExp('\\s*\\}\\)?\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{')
       this.times = source.split(re).length - 1
       return this.times == 1
     }
@@ -98,6 +100,13 @@ buster.assertions.add('stdoutReportsOutputSizes', {
       return (/current build size is: .*[\d\.]+ kB.* raw, .*[\d\.]+ kB.* minified and .*[\d\.]+ kB.* gzipped/).test(stdout)
     }
   , assertMessage: 'stdout reports build sizes ${0}'
+})
+
+buster.assertions.add('sourceHasCopyrightComments', {
+    assert: function (source, expectedComments, sourceName) {
+      return source.split(copyrightCommentRe).length - 1 == expectedComments
+    }
+  , assertMessage: '${2} has ${1} copyright comments'
 })
 
 var mktmpdir = function (callback) {
