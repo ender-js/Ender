@@ -28,16 +28,7 @@ var buster = require('buster')
   , searchUtil = require('../../lib/main-search-util')
 
 buster.testCase('Search util', {
-    'test escapeRegExp plain strings': function () {
-      assert.equals(searchUtil.escapeRegExp(''), '')
-      assert.equals(searchUtil.escapeRegExp('vanilla'), 'vanilla')
-    }
-
-  , 'test escapeRegExp escapable strings': function () {
-      assert.equals(searchUtil.escapeRegExp('-[]{}()*+?.\\^$|,# '), '\\-\\[\\]\\{\\}\\(\\)\\*\\+\\?\\.\\\\\\^\\$\\|\\,\\#\\ ')
-    }
-
-  , 'test sortByRegExp': function () {
+    'test sortByRegExp': function () {
       var regex = /a|D|6|I$/ // match 0, 1 & 3 ('6' is ignored because it's not in priority list
         , array = [
               { p1: 'abc', p2: '123', p3: 'ABC' }

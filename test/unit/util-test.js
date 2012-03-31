@@ -28,6 +28,7 @@ var buster = require('buster')
   , fs = require('fs')
   , path = require('path')
   , util = require('../../lib/util')
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
   , verifyWritable = function (name, dir, done) {
       path.exists(dir, function (exists) {
@@ -111,6 +112,19 @@ buster.testCase('Util', {
             })
           })
         }
-    }
 
+      , 'test mkdir error': function (done) {
+          var fsMock = this.mock(fs)
+            , errArg = new Error('this is an error')
+
+          fsMock.expects('mkdir').callsArgWith(1, errArg)
+          util.mkdir('foobar', function (err) {
+            assert(err)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
+            done()
+          })
+        }
+    }
 })

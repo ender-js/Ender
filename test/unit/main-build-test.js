@@ -30,13 +30,15 @@ var testCase = require('buster').testCase
   , SourcePackage = require('../../lib/source-package')
   , SourceBuild = require('../../lib/source-build')
   , build = require('../../lib/main-build')
+  , buildOutput = require('../../lib/output/main-build-output').create()
   , info = require('../../lib/main-info')
   , write = require('../../lib/write')
 
 testCase('Build', {
-    'test exec() calls setup(), install() and packup() on repository': function () {
+    'test exec() calls setup(), install() and packup() on repository': function (done) {
       var mock = this.mock(repository)
         , mockUtil = this.mock(util)
+        , mockOut = this.mock(buildOutput)
 
       mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
 
@@ -44,10 +46,12 @@ testCase('Build', {
       var installExpectation = mock.expects('install').once().callsArgWith(1, 'err') // err shortcircuits
       mock.expects('packup').once()
 
-      build.exec({ packages: [ 'package' ] })
-
-      assert.equals(installExpectation.args[0][0], [ 'ender-js', 'package' ])
-      assert.isFunction(installExpectation.args[0][1]) // internal 'handle()' method
+      build.exec({ packages: [ 'package' ] }, buildOutput, function (err) {
+        assert.equals(err, 'err')
+        assert.equals(installExpectation.args[0][0], [ 'ender-js', 'package' ])
+        assert.isFunction(installExpectation.args[0][1]) // internal 'handle()' method
+        done()
+      })
     }
 
     // OK, this is a bit of a mess, more of an integration test, but it tests the ful
@@ -81,14 +85,12 @@ testCase('Build', {
       mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
       mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
-      outMock.expects('repositoryLoadError').never()
       mockRepository.expects('setup').once().callsArg(0)
       mockRepository
         .expects('install')
         .once()
         .callsArgWith(1, null, [ { installed: installedArg, tree: npmTreeArg, pretty: prettyArg } ])
       mockRepository.expects('packup').once()
-      outMock.expects('repositoryError').never()
       outMock.expects('installedFromRepository').once().withArgs(installedArg, npmTreeArg, prettyArg)
       mockBuildUtil.expects('constructDependencyTree').once().withArgs(packagesArg).callsArgWith(1, null, depTreeArg)
       SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)

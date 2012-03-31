@@ -27,9 +27,10 @@ var testCase = require('buster').testCase
   , searchUtil = require('../../lib/main-search-util')
   , repository = require('../../lib/repository')
   , search = require('../../lib/main-search')
+  , searchOutput = require('../../lib/output/main-search-output').create()
 
 testCase('Search', {
-    'test exec() calls setup(), search() and packup() on repository': function () {
+    'test exec() calls setup(), search() and packup() on repository': function (done) {
       var mock = this.mock(repository)
         , terms = 'terms argument'
 
@@ -37,10 +38,12 @@ testCase('Search', {
       var searchExpectation = mock.expects('search').once().callsArg(1)
       mock.expects('packup').once()
 
-      search.exec({ packages: terms })
-
-      assert.same(searchExpectation.args[0][0], terms)
-      assert.isFunction(searchExpectation.args[0][1]) // internal 'handle()' method
+      search.exec({ packages: terms }, searchOutput, function (err) {
+        refute(err)
+        assert.same(searchExpectation.args[0][0], terms)
+        assert.isFunction(searchExpectation.args[0][1]) // internal 'handle()' method
+        done()
+      })
     }
 
   , 'test main-search-util interaction': function (done) {
@@ -62,7 +65,6 @@ testCase('Search', {
       mockSearchUtil.expects('sortByRegExp').exactly(6) // 3 for primary, 3 for secondary
 
       outMock.expects('searchInit').once()
-      outMock.expects('searchError').never()
       outMock.expects('searchNoResults').never()
       var resultsEx = outMock.expects('searchResults').once()
 

@@ -31,6 +31,7 @@ var testCase = require('buster').testCase
   , SourceBuild = require('../../lib/source-build')
   , minify = require('../../lib/minify')
   , argsParse = require('../../lib/args-parse')
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
 var createExpectedHeader = function (context, packageList) {
       return [
@@ -264,6 +265,44 @@ testCase('Source build', {
             assert(err instanceof BuildParseError)
             assert.equals(err.name, 'BuildParseError')
             refute(err.cause)
+            done()
+          })
+        }
+
+      , 'test no such file error': function (done) {
+          var filename = 'somefile'
+            , mockFs = this.mock(fs)
+            , errArg = new Error('this is an error')
+
+          mockFs.expects('open').withArgs(filename, 'r').callsArgWith(2, errArg)
+
+          SourceBuild.parseContext(filename, function (err, options, packages) {
+            assert(err)
+            refute(options)
+            refute(packages)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
+            done()
+          })
+        }
+
+      , 'test file read error': function (done) {
+          var filename = 'somefile'
+            , mockFs = this.mock(fs)
+            , errArg = new Error('this is an error')
+            , fdArg = 99
+
+          mockFs.expects('open').withArgs(filename, 'r').callsArgWith(2, null, fdArg)
+          mockFs.expects('read').withArgs(fdArg).callsArgWith(5, errArg)
+
+          SourceBuild.parseContext(filename, function (err, options, packages) {
+            assert(err)
+            refute(options)
+            refute(packages)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
             done()
           })
         }

@@ -26,6 +26,7 @@
 var buster = require('buster')
   , assert = buster.assert
   , Output = require('../../lib/output/output')
+  , errors = require('../../lib/errors')
 
 buster.testCase('Output (base)', {
     setUp: function () {
@@ -57,17 +58,10 @@ buster.testCase('Output (base)', {
       assert.equals(this.out.buf, 'DEBUG: a string\n')
     }
 
-  , 'test repositoryLoadError() with debug=false': function () {
+  , 'test error() with debug=false': function () {
       this.output.init(this.out, false)
-      this.output.repositoryLoadError(new Error())
-      assert.match(this.out.buf, 'Something went wrong trying to load NPM')
-    }
-
-  , 'test repositoryLoadError() with debug=true': function () {
-      this.output.init(this.out, true)
-      assert.exception(function () {
-        this.output.repositoryLoadError(new Error())
-      })
+      this.output.error(new errors.EnderError('an error'))
+      assert.match(this.out.buf, /.*Error:.*an error.*/)
     }
 
   , 'test heading() short': function () {

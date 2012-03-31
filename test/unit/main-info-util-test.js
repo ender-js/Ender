@@ -30,6 +30,7 @@ var testCase = require('buster').testCase
   , mainInfoUtil = require('../../lib/main-info-util')
   , mainBuildUtil = require('../../lib/main-build-util')
   , SourceBuild = require('../../lib/source-build')
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
   , _i = 100
 
@@ -55,6 +56,23 @@ testCase('Info util', {
       mainInfoUtil.sizes(filenameArg, function (err, sizes) {
         refute(err)
         assert.equals(sizes, expectedSizes)
+        done()
+      })
+    }
+
+  , 'test sizes fs error': function (done) {
+      var fsMock = this.mock(fs)
+        , filenameArg = { filename: 1 }
+        , errArg = new Error('this is an error')
+
+      fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, errArg)
+
+      mainInfoUtil.sizes(filenameArg, function (err, sizes) {
+        assert(err)
+        refute(sizes)
+        assert(err instanceof FilesystemError)
+        assert.same(err.cause, errArg)
+        assert.same(err.message, errArg.message)
         done()
       })
     }

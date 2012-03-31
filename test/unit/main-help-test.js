@@ -29,6 +29,7 @@ var testCase = require('buster').testCase
   , colorsTmpl = require('colors-tmpl')
   , mainHelp = require('../../lib/main-help')
   , mainHelpOut = require('../../lib/output/main-help-output').create()
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
 testCase('Help', {
     'setUp': function () {
@@ -43,7 +44,7 @@ testCase('Help', {
         expectedFilename = path.join(path.resolve(__dirname, '../../resources/help/'), expectedFilename)
         pathMock.expects('existsSync').once().withExactArgs(expectedFilename).returns(exists)
         if (exists) {
-          fsMock.expects('readFileSync').once().withExactArgs(expectedFilename, 'utf-8').returns(contentsArg)
+          fsMock.expects('readFile').once().withArgs(expectedFilename, 'utf-8').callsArgWith(2, null, contentsArg)
           colorsTmplMock
             .expects('render')
             .once()
@@ -71,4 +72,17 @@ testCase('Help', {
       this.runTest({ packages: [ 'foobar' ] }, 'foobar.tmpl', false, done)
     }
 
+  , 'test fs error': function (done) {
+      var fsMock = this.mock(fs)
+        , errArg = new Error('this is an error')
+
+      fsMock.expects('readFile').once().callsArgWith(2, errArg)
+      mainHelp.exec({ packages: [] }, null, function (err) {
+        assert(err)
+        assert(err instanceof FilesystemError)
+        assert.same(err.cause, errArg)
+        assert.same(err.message, errArg.message)
+        done()
+      })
+    }
 })

@@ -30,6 +30,9 @@ var testCase = require('buster').testCase
   , zlib = require('zlib')
   , mainCompile = require('../../lib/main-compile')
   , mainCompileOut = require('../../lib/output/main-compile-output').create()
+  , FilesystemError = require('../../lib/errors').FilesystemError
+  , ChildProcessError = require('../../lib/errors').ChildProcessError
+  , CompressionError = require('../../lib/errors').CompressionError
 
 testCase('Compile', {
     'setUp': function () {
@@ -109,4 +112,64 @@ testCase('Compile', {
             + ' --js_output_file=hoohaa.js'
       this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
     }
+
+  , 'test child process error': function (done) {
+        var childProcessMock = this.mock(childProcess)
+          , outMock = this.mock(mainCompileOut)
+          , errArg = new Error('this is an error')
+
+        outMock.expects('compiling').once()
+        childProcessMock.expects('exec').once().callsArgWith(1, errArg)
+        mainCompile.exec({ packages: [] }, mainCompileOut, function (err, stdout, stderr) {
+          assert(err)
+          refute(stdout)
+          refute(stderr)
+          assert(err instanceof ChildProcessError)
+          assert.same(err.cause, errArg)
+          assert.same(err.message, errArg.message)
+          done()
+        })
+     }
+
+  , 'test fs error': function (done) {
+        var childProcessMock = this.mock(childProcess)
+          , outMock = this.mock(mainCompileOut)
+          , fsMock = this.mock(fs)
+          , errArg = new Error('this is an error')
+
+        outMock.expects('compiling').once()
+        childProcessMock.expects('exec').once().callsArgWith(1, null, '')
+        fsMock.expects('readFile').once().callsArgWith(2, errArg)
+        mainCompile.exec({ packages: [] }, mainCompileOut, function (err, stdout, stderr) {
+          assert(err)
+          refute(stdout)
+          refute(stderr)
+          assert(err instanceof FilesystemError)
+          assert.same(err.cause, errArg)
+          assert.same(err.message, errArg.message)
+          done()
+        })
+     }
+
+  , 'test zlib error': function (done) {
+        var childProcessMock = this.mock(childProcess)
+          , outMock = this.mock(mainCompileOut)
+          , fsMock = this.mock(fs)
+          , zlibMock = this.mock(zlib)
+          , errArg = new Error('this is an error')
+
+        outMock.expects('compiling').once()
+        childProcessMock.expects('exec').once().callsArgWith(1, null, '')
+        fsMock.expects('readFile').once().callsArgWith(2, null, '')
+        zlibMock.expects('gzip').once().callsArgWith(1, errArg)
+        mainCompile.exec({ packages: [] }, mainCompileOut, function (err, stdout, stderr) {
+          assert(err)
+          refute(stdout)
+          refute(stderr)
+          assert(err instanceof CompressionError)
+          assert.same(err.cause, errArg)
+          assert.same(err.message, errArg.message)
+          done()
+        })
+     }
 })

@@ -28,6 +28,7 @@ var testCase = require('buster').testCase
   , path = require('path')
   , async = require('async')
   , SourcePackage = require('../../lib/source-package')
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
   , templateFiles = {
         'standard': __dirname + '/../../resources/source-package.ejs'
@@ -37,8 +38,7 @@ var testCase = require('buster').testCase
 
 testCase('Source package', {
     'setUp': function (done) {
-      this.runAsStringTest =
-          function (options, done) {
+      this.runAsStringTest = function (options, done) {
         // options: expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult
 
         var fsMock = this.mock(fs)
@@ -540,5 +540,23 @@ testCase('Source package', {
   , 'test identifier': function () {
       var srcPackage = SourcePackage.create(null, null, { name: 'foobar', version: '1.2.3' })
       assert.equals(srcPackage.getIdentifier(), 'foobar@1.2.3')
+    }
+
+  , 'test fs error': function (done) {
+        var fsMock = this.mock(fs)
+          , errArg = new Error('this is an error')
+
+        fsMock.expects('readFile').once().callsArgWith(2, errArg)
+
+        SourcePackage
+          .create([], 'whatevs', { name: 'whatevs', main: './main.js' }, {})
+          .asString(function (err, arg) {
+            assert(err)
+            refute(arg)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
+            done()
+          })
     }
 })

@@ -30,13 +30,13 @@ var buster = require('buster')
   , SourceBuild = require('../../lib/source-build')
   , write = require('../../lib/write')
   , buildOutput = require('../../lib/output/main-build-output')
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
 buster.testCase('Write', {
     'test standard write': function (done) {
       var sourceBuild = SourceBuild.create()
         , mockFs = this.mock(fs)
         , mockSourceBuild = this.mock(sourceBuild)
-        , mockBuildOutput = this.mock(buildOutput)
         , sourceArg = 'source contents'
         , compressedSourceArg = 'compressed source'
         , fileArg = 'ender.js'
@@ -49,6 +49,30 @@ buster.testCase('Write', {
 
       write.write({}, sourceBuild, buildOutput, function (err) {
         refute(err)
+        done()
+      })
+    }
+
+  , 'test fs error': function (done) {
+      var sourceBuild = SourceBuild.create()
+        , mockFs = this.mock(fs)
+        , mockSourceBuild = this.mock(sourceBuild)
+        , sourceArg = 'source contents'
+        , compressedSourceArg = 'compressed source'
+        , fileArg = 'ender.js'
+        , compressedFileArg = 'ender.min.js'
+        , errArg = new Error('this is an error')
+
+      mockSourceBuild.expects('asString').once().withArgs({ type: 'plain' }).callsArgWith(1, null, sourceArg)
+      mockFs.expects('writeFile').once().withArgs(fileArg, sourceArg, 'utf-8').callsArg(3)
+      mockSourceBuild.expects('asString').once().withArgs({ type: 'minified' }).callsArgWith(1, null, compressedSourceArg)
+      mockFs.expects('writeFile').once().withArgs(compressedFileArg, compressedSourceArg, 'utf-8').callsArgWith(3, errArg)
+
+      write.write({}, sourceBuild, buildOutput, function (err) {
+        assert(err)
+        assert(err instanceof FilesystemError)
+        assert.same(err.cause, errArg)
+        assert.same(err.message, errArg.message)
         done()
       })
     }

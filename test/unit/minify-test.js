@@ -26,6 +26,7 @@
 var buster = require('buster')
   , assert = buster.assert
   , minify = require('../../lib/minify')
+  , MinifyError = require('../../lib/errors').MinifyError
 
 buster.testCase('Minify', {
     'test basic minification': function (done) {
@@ -43,6 +44,8 @@ buster.testCase('Minify', {
       minify.minify('this is not javascript!', function (err, output) {
         refute(output)
         assert(err)
+        assert(err instanceof MinifyError)
+        assert(err.cause)
         assert.isString(err.message)
         done()
       })

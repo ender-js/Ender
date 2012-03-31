@@ -26,7 +26,10 @@
 var testCase = require('buster').testCase
   , fs = require('fs')
   , path = require('path')
+  , xregexp = require('xregexp')
   , packageUtil = require('../../lib/package-util')
+  , FilesystemError = require('../../lib/errors').FilesystemError
+  , JSONParseError = require('../../lib/errors').JSONParseError
 
   , setupReadPackageJSON = function (testPath, data, callback) {
       var mock = this.mock(fs)
@@ -80,9 +83,7 @@ testCase('Package util', {
         }
 
       , 'test package name with same name as cwd': function (done) {
-          var data = { name: 'foobar to youbar!' }
-            , testPath = path.basename(path.resolve())
-
+          var testPath = path.basename(path.resolve())
           packageUtil.findRootPackageName(
               [ 'pkg1', 'pkg2', '/foo/bar', 'foo/bar', '..', '../', '/', testPath ]
             , function (err, rootPackageName) {
@@ -186,6 +187,42 @@ testCase('Package util', {
           packageUtil.readPackageJSON([ 'what???' ], './some/path/../path/without/dots', function (err, actual) {
             refute(err)
             assert.equals(actual, expected)
+            done()
+          })
+        }
+
+      , 'test fs error': function (done) {
+          var mockFs = this.mock(fs)
+            , errArg = new Error('this is an error')
+
+          mockFs.expects('readFile').once().callsArgWith(2, errArg)
+
+          packageUtil.readPackageJSON([], 'whatevs', function (err, data) {
+            assert(err)
+            refute(data)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
+            done()
+          })
+        }
+
+      , 'test JSON.parse error': function (done) {
+          var mockFs = this.mock(fs)
+
+          mockFs.expects('readFile').once().callsArgWith(2, null, 'not;json!@#$%^&*()')
+
+          packageUtil.readPackageJSON([], 'whatevs', function (err, data) {
+            assert(err)
+            refute(data)
+            assert(err instanceof JSONParseError)
+            assert(err.cause)
+            assert.match(err.message, /Unexpected token/)
+            // includes reference to filename:
+            assert.match(
+                err.message
+              , new RegExp(xregexp.escape(path.join('node_modules', 'whatevs', 'package.json')))
+            )
             done()
           })
         }
@@ -315,6 +352,24 @@ testCase('Package util', {
             done()
           })
         }
+
+      , 'test fs error': function (done) {
+          var mockFs = this.mock(fs)
+            , mockPath = this.mock(path)
+            , errArg = new Error('this is an error')
+
+          mockPath.expects('exists').once().callsArgWith(1, true)
+          mockFs.expects('readdir').once().callsArgWith(1, errArg)
+
+          packageUtil.getDependenciesFromDirectory([], 'whatevs', function (err, data) {
+            assert(err)
+            refute(data)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
+            done()
+          })
+      }
     }
 })
 

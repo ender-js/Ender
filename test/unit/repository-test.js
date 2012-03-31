@@ -28,6 +28,8 @@ var buster = require('buster')
   , fs = require('fs')
   , repository = require('../../lib/repository')
   , util = require('../../lib/util')
+  , FilesystemError = require('../../lib/errors').FilesystemError
+  , RepositoryCommandError = require('../../lib/errors').RepositoryCommandError
 
   , executeSetupPackupTempDirTest = function (execute, verify, done) {
       fs.readdir(util.tmpDir, function (err, files) {
@@ -53,7 +55,7 @@ var buster = require('buster')
       assert.equals(files2, files)
     }
 
-buster.testCase('Repository (NPM interface)', {
+buster.testCase('Repository (npm interface)', {
     'setup() and packup()': {
         'test setup() and packup() exist': function () {
           assert.isFunction(repository.setup)
@@ -147,6 +149,21 @@ buster.testCase('Repository (NPM interface)', {
           })
           assert(true) // required, buster issue #62
         }
+
+      , 'test open temp file error': function (done) {
+          var fsMock = this.mock(fs)
+            , errArg = new Error('this is an error')
+
+          fsMock.expects('open').callsArgWith(3, errArg)
+
+          repository.setup(function (err) {
+            assert(err)
+            assert(err instanceof FilesystemError)
+            assert.same(err.cause, errArg)
+            assert.same(err.message, errArg.message)
+            done()
+          })
+        }
     }
 
   , 'search()': {
@@ -168,22 +185,41 @@ buster.testCase('Repository (NPM interface)', {
         }
 
       , 'test search() calls npm.commands.search()': function (done) {
-          var npm = require('npm')
-            , npmMock = this.mock(npm)
-            , npmCommandsMock = this.mock(npm.commands)
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
             , keywords = 'keywords argument'
             , finish = function () {
                 repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
-          npmCommandsMock.expects('search').once().withArgs(keywords, finish).callsArg(1)
+          npmCommandsMock.expects('search').once().withArgs(keywords).callsArg(1)
 
           repository.setup(function () {
             repository.search(keywords, finish)
           })
 
           assert(true) // required, buster issue #62
+        }
+
+      , 'test npm.commands.search error': function (done) {
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
+            , keywords = 'keywords argument'
+            , errArg = new Error('this is an error')
+
+          npmMock.expects('load').once().callsArg(1)
+          npmCommandsMock.expects('search').once().withArgs(keywords).callsArgWith(1, errArg)
+
+          repository.setup(function () {
+            repository.search(keywords, function (err) {
+              assert(err)
+              assert(err instanceof RepositoryCommandError)
+              assert.same(err.cause, errArg)
+              assert.same(err.message, errArg.message)
+              repository.packup(false, done)
+            })
+          })
         }
     }
 
@@ -206,22 +242,41 @@ buster.testCase('Repository (NPM interface)', {
         }
 
       , 'test uninstall() calls npm.commands.uninstall()': function (done) {
-          var npm = require('npm')
-            , npmMock = this.mock(npm)
-            , npmCommandsMock = this.mock(npm.commands)
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
             , packages = [ 'packages', 'argument' ]
             , finish = function () {
                 repository.packup(false, done)
               }
 
           npmMock.expects('load').once().callsArg(1)
-          npmCommandsMock.expects('uninstall').once().withArgs(packages, finish).callsArg(1)
+          npmCommandsMock.expects('uninstall').once().withArgs(packages).callsArg(1)
 
           repository.setup(function () {
             repository.uninstall(packages, finish)
           })
 
           assert(true) // required, buster issue #62
+        }
+
+      , 'test npm.commands.uninstall error': function (done) {
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
+            , packages = [ 'packages', 'argument' ]
+            , errArg = new Error('this is an error')
+
+          npmMock.expects('load').once().callsArg(1)
+          npmCommandsMock.expects('uninstall').once().withArgs(packages).callsArgWith(1, errArg)
+
+          repository.setup(function () {
+            repository.uninstall(packages, function (err) {
+              assert(err)
+              assert(err instanceof RepositoryCommandError)
+              assert.same(err.cause, errArg)
+              assert.same(err.message, errArg.message)
+              repository.packup(false, done)
+            })
+          })
         }
     }
 
@@ -243,9 +298,8 @@ buster.testCase('Repository (NPM interface)', {
         }
 
       , 'test install() calls npm.commands.install()': function (done) {
-          var npm = require('npm')
-            , npmMock = this.mock(npm)
-            , npmCommandsMock = this.mock(npm.commands)
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
             , packages = [ 'packages', 'argument' ]
             , finish = function () {
                 repository.packup(false, done)
@@ -262,9 +316,8 @@ buster.testCase('Repository (NPM interface)', {
         }
 
       , 'test install() calls npm.commands.install() twice if "." package is specified': function (done) {
-          var npm = require('npm')
-            , npmMock = this.mock(npm)
-            , npmCommandsMock = this.mock(npm.commands)
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
             , packages = [ 'packages', 'argument', 'foo/..' ]
             , finish = function () {
                 repository.packup(false, done)
@@ -279,6 +332,26 @@ buster.testCase('Repository (NPM interface)', {
           })
 
           assert(true) // required, buster issue #62
+        }
+
+      , 'test npm.commands.install error': function (done) {
+          var npmMock = this.mock(this.npm)
+            , npmCommandsMock = this.mock(this.npmCommands)
+            , packages = [ 'packages', 'argument' ]
+            , errArg = new Error('this is an error')
+
+          npmMock.expects('load').once().callsArg(1)
+          npmCommandsMock.expects('install').once().withArgs(packages).callsArgWith(1, errArg)
+
+          repository.setup(function () {
+            repository.install(packages, function (err) {
+              assert(err)
+              assert(err instanceof RepositoryCommandError)
+              assert.same(err.cause, errArg)
+              assert.same(err.message, errArg.message)
+              repository.packup(false, done)
+            })
+          })
         }
     }
 })
