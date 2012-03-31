@@ -20,13 +20,6 @@ Feel free to open an issue on GitHub if you would like to discuss something or w
  * Packages are properly ordered (*!!*). Your *ender.js* will contain the packages you requested *in the order you requested them* on the commandline, with any dependencies placed *before* they are required.
  * *bin/ender* now gives proper exit-codes, if there is any kind of error you'll get a `1`, otherwise a `0`.
 
-## TODO
-
- * `ender set` and `ender compile` are not yet implemented. These are not big jobs and should be done soon.
- * Error handling needs a lot more work. Already there's a big improvement over 0.8.x, errors will bubble up through the callbacks all the way to the top, but it can be difficult to tell where they came from and how to report them. Errors triggered by external libs need to be wrapped in custom `EnderError` objects and described better on stdout when they occur. There is also very little treatment of error conditions in the unit-tests, this needs a lot more work so the various potential error states can be simulated and appropriate behaviour observed.
- * Some 'integration' tests would be nice, to test the border between the code and dependent libs. The functional tests give good coverage but are not detailed enough. Most interaction with `fs`, `npm` and other external libs are mocked or stubbed out so the functional tests are the only places where this interaction is tested. The goal of integration tests should be to test small chunks of code at the boundaries. `npm.commands.install()`, or use of `archy()` for example. If anything changes or breaks in an external lib we may not pick it up in the tests.
-
-
 ------------
 
 #ENDER [![Build Status](https://secure.travis-ci.org/ender-js/Ender.png)](http://travis-ci.org/ender-js/Ender)
