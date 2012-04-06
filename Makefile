@@ -9,4 +9,3 @@ functionaltests:
 	@./node_modules/.bin/buster-test -g functional
 
 alltests: unittests functionaltests
-
