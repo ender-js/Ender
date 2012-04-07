@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "0.8.6"
+  , "version": "0.8.8"
   , "authors": [
       "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
     , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
