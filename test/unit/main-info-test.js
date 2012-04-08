@@ -63,7 +63,7 @@ testCase('Info', {
         mainInfoUtilMock
           .expects('buildArchyTree')
           .once()
-          .withExactArgs(optionsPackagesArg, treeArg)
+          .withExactArgs(contextArg.options, optionsPackagesArg, treeArg)
           .returns(archyTreeArg)
         mainInfoOutMock
           .expects('buildInfo')

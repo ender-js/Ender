@@ -108,7 +108,9 @@ buster.testCase('Args parser', {
         }
 
       , 'test parse returns expected object (-- long form)': function () {
-          var actual = argsParse.parse(buildargs('build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug'))
+          var actual = argsParse.parse(buildargs(
+                'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM'
+              ))
           assert.equals(
               actual
             , {
@@ -123,6 +125,8 @@ buster.testCase('Args parser', {
                 , help: true
                 , sans: true
                 , debug: true
+                , externs: [ 'what', 'tha' ]
+                , 'client-lib': 'BOOM'
               }
           )
         }
@@ -277,9 +281,11 @@ buster.testCase('Args parser', {
       , 'test "--" long form': function () {
           var ctx = argsParse.toContextString(
                 argsParse.parse(
-                  buildargs('build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug')))
+                  buildargs(
+                    'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM'
+                  )))
           assert(ctx)
-          assert.equals(ctx.split(' ').length, 19)
+          assert.equals(ctx.split(' ').length, 24)
           ctx += ' ' // for convenience so we can match spaces around each element, even at the end
           assert.match(ctx, /^build fee fie foe fum /)
           assert.match(ctx, / --output foobar /)
@@ -291,6 +297,8 @@ buster.testCase('Args parser', {
           assert.match(ctx, / --help /)
           assert.match(ctx, / --sans /)
           assert.match(ctx, / --debug /)
+          assert.match(ctx, / --externs what tha /)
+          assert.match(ctx, / --client-lib BOOM /)
         }
     }
 })

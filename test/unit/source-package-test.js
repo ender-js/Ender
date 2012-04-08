@@ -31,8 +31,8 @@ var testCase = require('buster').testCase
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , templateFiles = {
-        'standard': __dirname + '/../../resources/source-package.mustache'
-      , 'ender-js': __dirname + '/../../resources/ender-js-package.mustache'
+        'standard' : __dirname + '/../../resources/source-package.mustache'
+      , 'root'     : __dirname + '/../../resources/root-package.mustache'
     }
   , templateFileContents
 
@@ -42,7 +42,7 @@ testCase('Source package', {
         // options: expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult
 
         var fsMock = this.mock(fs)
-          , tmplType = templateFileContents[options.pkg] ? options.pkg : 'standard'
+          , tmplType = options.json.name == 'ender-js' ? 'root' : 'standard'
           , srcPkg
 
         options.expectedFileReads.forEach(function (file, index) {
@@ -61,11 +61,20 @@ testCase('Source package', {
         })
 
         if (typeof templateFileContents[tmplType] == 'string') {
-          fsMock.expects('readFile').withArgs(path.resolve(templateFiles[tmplType]), 'utf-8').callsArgWith(2, null, templateFileContents[tmplType])
+          fsMock
+            .expects('readFile')
+            .withArgs(path.resolve(templateFiles[tmplType]), 'utf-8')
+            .callsArgWith(2, null, templateFileContents[tmplType])
           templateFileContents[tmplType] = -1 // i.e. only run this branch once
         }
 
-        srcPkg = SourcePackage.create(options.parents || [], options.pkg, options.json, options.options || {})
+        srcPkg = SourcePackage.create(
+            options.pkg
+          , options.parents || []
+          , tmplType == 'root'
+          , options.json
+          , options.options || {}
+        )
 
         srcPkg.asString(function (err, actual) {
           refute(err)
@@ -97,7 +106,7 @@ testCase('Source package', {
       if (!templateFileContents) {
         // unfortunately we have to mock this out as we're mocking out the whole `fs`
         async.map(
-            [ 'standard', 'ender-js' ]
+            [ 'standard', 'root' ]
           , function (type, callback) {
               fs.readFile(templateFiles[type], 'utf8', callback)
             }
@@ -105,8 +114,8 @@ testCase('Source package', {
               if (err)
                 throw err
               templateFileContents = {
-                  'standard': templates[0]
-                , 'ender-js': templates[1]
+                  'standard' : templates[0]
+                , 'root'     : templates[1]
               }
               done()
             }
@@ -512,8 +521,8 @@ testCase('Source package', {
             + 'var require, provide, $, ender;\n\n'
             + 'main\nsource\ncontents\n\n\n'
             + '/* Set Local API */\n'
-            + 'require = this.require\n'
-            + 'provide = this.provide\n'
+            + 'require = this.require;\n'
+            + 'provide = this.provide;\n'
             + 'ender = $ = this.ender;'
 
       }, done)
@@ -538,7 +547,7 @@ testCase('Source package', {
     }
 
   , 'test identifier': function () {
-      var srcPackage = SourcePackage.create(null, null, { name: 'foobar', version: '1.2.3' })
+      var srcPackage = SourcePackage.create(null, null, false, { name: 'foobar', version: '1.2.3' })
       assert.equals(srcPackage.getIdentifier(), 'foobar@1.2.3')
     }
 
@@ -549,7 +558,7 @@ testCase('Source package', {
         fsMock.expects('readFile').once().callsArgWith(2, errArg)
 
         SourcePackage
-          .create([], 'whatevs', { name: 'whatevs', main: './main.js' }, {})
+          .create('whatevs', [], false, { name: 'whatevs', main: './main.js' }, {})
           .asString(function (err, arg) {
             assert(err)
             refute(arg)

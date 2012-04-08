@@ -38,7 +38,6 @@ testCase('Build', {
     'test exec() calls setup(), install() and packup() on repository': function (done) {
       var mock = this.mock(repository)
         , mockUtil = this.mock(util)
-        , mockOut = this.mock(buildOutput)
 
       mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
 
@@ -73,7 +72,7 @@ testCase('Build', {
 
         , optionsArg = { options: 1 }
         , packagesArg = { packages: 1 }
-        , localizedArg = { localized: 1 }
+        , localizedArg = [ 'foobar' ]
         , installedArg = [ { installed: 1 } ]
         , npmTreeArg = { tree: 1 }
         , prettyArg = { pretty: 1 }
@@ -98,12 +97,12 @@ testCase('Build', {
       mockBuildUtil
         .expects('forEachUniqueOrderedDependency')
         .once()
-        .withArgs(localizedArg, depTreeArg)
-        .callsArgWith(2, packageNameArg, parentsArg, dataArg)
+        .withArgs(optionsArg, localizedArg, depTreeArg)
+        .callsArgWith(3, packageNameArg, parentsArg, dataArg)
       SourcePackageMock
         .expects('create')
         .once()
-        .withExactArgs(parentsArg, packageNameArg, dataArg.packageJSON, optionsArg)
+        .withExactArgs(packageNameArg, parentsArg, false, dataArg.packageJSON, optionsArg)
         .returns(sourcePackage)
       sourceBuildMock.expects('addPackage').once().withArgs(sourcePackage)
       outMock.expects('finishedAssembly').once()

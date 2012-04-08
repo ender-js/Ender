@@ -100,6 +100,7 @@ testCase('Info util', {
     // compatible yet but can be easily transformed by the output routine
   , 'test generateArchyTree': function () {
       var mainBuildUtilMock = this.mock(mainBuildUtil)
+        , optionsArg = { options: 1 }
         , packagesArg = { packages: 1 }
         , treeArg = { tree: 1 }
         , localPackagesArg = { localPackages: 1 }
@@ -173,13 +174,13 @@ testCase('Info util', {
       forEachExpectation = mainBuildUtilMock
         .expects('forEachOrderedDependency')
         .once()
-        .withArgs(localPackagesArg, treeArg)
+        .withArgs(optionsArg, localPackagesArg, treeArg)
 
-      result = mainInfoUtil.buildArchyTree(packagesArg, treeArg)
+      result = mainInfoUtil.buildArchyTree(optionsArg, packagesArg, treeArg)
 
       mainBuildUtilMock.verify()
 
-      forEachCallback = forEachExpectation.lastCall.args[2]
+      forEachCallback = forEachExpectation.lastCall.args[3]
 
       forEachCallback(
           'foobar'

@@ -497,13 +497,13 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
           , 'test forEachOrderedDependency': function () {
               // should do the same thing
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
         }
@@ -559,13 +559,13 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
           , 'test forEachOrderedDependency': function () {
               // should do the same thing
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
         }
@@ -613,13 +613,13 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
           , 'test forEachOrderedDependency': function () {
               // should do the same thing
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
               this.verifySpy()
             }
         }
@@ -693,7 +693,7 @@ buster.testCase('Build util', {
             // we should only see unique packages here, they have numbers in their names so we can match them
             // easily
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachUniqueOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
 
               // expect only uniques
               assert.equals(this.callSpy.args.length, 10)
@@ -715,7 +715,7 @@ buster.testCase('Build util', {
                   .split(' ')
                 , orderedIndex = 1
 
-              buildUtil.forEachOrderedDependency(Object.keys(this.originalTree), this.originalTree, this.callSpy)
+              buildUtil.forEachOrderedDependency({}, Object.keys(this.originalTree), this.originalTree, this.callSpy)
 
               assert.equals(this.callSpy.args.length, expectedPackages.length)
 
@@ -786,13 +786,13 @@ buster.testCase('Build util', {
             }
 
           , 'test forEachUniqueOrderedDependency': function () {
-              buildUtil.forEachUniqueOrderedDependency([ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
+              buildUtil.forEachUniqueOrderedDependency({}, [ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
               this.verifySpy()
             }
 
           , 'test forEachOrderedDependency': function () {
               // should do the same thing
-              buildUtil.forEachOrderedDependency([ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
+              buildUtil.forEachOrderedDependency({}, [ 'apkg-2', 'somepkg-5' ], this.originalTree, this.callSpy)
               this.verifySpy()
             }
         }
