@@ -1,18 +1,13 @@
 /*!
   * =============================================================
   * Ender: open module JavaScript framework (https://ender.no.de)
-  * Build: ender <%- context %>
-  * Packages: <%- packages %>
+  * Build: ender {{{context}}}
+  * Packages: {{packages}}
   * =============================================================
   */
-<% if (sandbox) { %>
 
-!function () {
-<% } %>
+{{#sandbox}}!function () {
 
-<%- source %>
-<% if (sandbox) { %>
+{{/sandbox}}{{{source}}}{{#sandbox}}
 
-
-}.call({}); \
-<% } %> \
+}.call({});{{/sandbox}}

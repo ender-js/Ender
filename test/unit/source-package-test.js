@@ -31,8 +31,8 @@ var testCase = require('buster').testCase
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , templateFiles = {
-        'standard': __dirname + '/../../resources/source-package.ejs'
-      , 'ender-js': __dirname + '/../../resources/ender-js-package.ejs'
+        'standard': __dirname + '/../../resources/source-package.mustache'
+      , 'ender-js': __dirname + '/../../resources/ender-js-package.mustache'
     }
   , templateFileContents
 
