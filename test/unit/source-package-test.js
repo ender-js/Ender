@@ -514,7 +514,7 @@ testCase('Source package', {
             + '/* Set Local API */\n'
             + 'require = this.require\n'
             + 'provide = this.provide\n'
-            + 'ender = $ = this.ender'
+            + 'ender = $ = this.ender;'
 
       }, done)
     }
