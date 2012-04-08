@@ -53,7 +53,6 @@ buster.testCase('Main program', {
 
       argsParseMock.expects('parse').once().withArgs(expectedArgs).returns(argsArg)
       mainSearchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
-      mainSearchOutMock.expects('welcome').once()
 
       main.exec(expectedArgs, done)
       assert(true)
@@ -70,7 +69,6 @@ buster.testCase('Main program', {
       // discarded, only the unnecessary 'ender' element (below)
       argsParseMock.expects('parseClean').once().withArgs(expectedArgs).returns(argsArg)
       mainSearchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
-      mainSearchOutMock.expects('welcome').once()
 
       main.exec('ender ' + expectedArgs.join(' '), done)
       assert(true)
