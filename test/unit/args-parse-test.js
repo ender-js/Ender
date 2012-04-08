@@ -56,7 +56,6 @@ buster.testCase('Args parser', {
 
       , 'test parse provides help when no arguments present': function () {
           var actual = argsParse.parse(buildargs(''))
-
            assert.equals(
               actual
             , { main: 'help', packages: [] }
