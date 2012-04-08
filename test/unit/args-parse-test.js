@@ -54,10 +54,13 @@ buster.testCase('Args parser', {
           assert.equals(actual.main, 'info')
         }
 
-      , 'test parse throws exception on no arguments': function () {
-          assert.exception(function () {
-            argsParse.parse(buildargs(''))
-          }, 'UnknownMainError')
+      , 'test parse provides help when no arguments present': function () {
+          var actual = argsParse.parse(buildargs(''))
+
+           assert.equals(
+              actual
+            , { main: 'help', packages: [] }
+          )
         }
 
       , 'test parse throws exception on only dashed (--) arguments arguments': function () {
