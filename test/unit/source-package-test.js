@@ -89,7 +89,7 @@ testCase('Source package', {
         // don't be too clever here so we can be clever in the code we're testing.
         // source indenting should be done by the caller, not here.
         var src = ''
-        src += '!function () {\n\n  var module = { exports: {} }, exports = module.exports;\n'
+        src += '(function () {\n\n  var module = { exports: {} }, exports = module.exports;\n'
         if (options.main)
           src += '\n' + options.main
         src += '\n  provide("' + options.name + '", module.exports);'
@@ -99,7 +99,7 @@ testCase('Source package', {
           src += '\n\n' + options.ender
         else
           src += '\n  $.ender(module.exports);'
-        src += '\n}();'
+        src += '\n}());'
         return src
       }
 
@@ -136,7 +136,7 @@ testCase('Source package', {
                         + '  2\n'
                         + '  3\n'
                   })
-                ,   '!function () {\n\n'
+                ,   '(function () {\n\n'
                   + '  var module = { exports: {} }, exports = module.exports;\n\n'
                   + '  this is a test\n\n'
                   + '  1\n'
@@ -144,7 +144,7 @@ testCase('Source package', {
                   + '  3\n\n'
                   + '  provide("foobar", module.exports);\n'
                   + '  $.ender(module.exports);\n'
-                  + '}();'
+                  + '}());'
               )
             }
 
@@ -157,14 +157,14 @@ testCase('Source package', {
                         + '  2\n'
                         + '  3\n'
                   })
-                ,   '!function () {\n\n'
+                ,   '(function () {\n\n'
                   + '  var module = { exports: {} }, exports = module.exports;\n\n'
                   + '  provide("foobar", module.exports);\n\n'
                   + '  this is a test\n\n'
                   + '  1\n'
                   + '  2\n'
                   + '  3\n\n'
-                  + '}();'
+                  + '}());'
               )
             }
 
@@ -181,7 +181,7 @@ testCase('Source package', {
                         + '  2\n'
                         + '  3\n'
                   })
-                ,   '!function () {\n\n'
+                ,   '(function () {\n\n'
                   + '  var module = { exports: {} }, exports = module.exports;\n\n'
                   + '  main\n\n'
                   + '  source\n'
@@ -191,7 +191,7 @@ testCase('Source package', {
                   + '  1\n'
                   + '  2\n'
                   + '  3\n\n'
-                  + '}();'
+                  + '}());'
               )
             }
         }

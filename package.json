@@ -14,13 +14,13 @@
         "node": ">= 0.6.0"
     }
   , "dependencies": {
-        "npm": ">= 1.1.8"
-      , "colors": ">= 0.3.0"
-      , "uglify-js": ">= 0.0.1"
-      , "async": ">= 0.1.9"
+        "npm": ">= 1.1.16"
+      , "colors": ">= 0.6.0"
+      , "uglify-js": ">= 1.2.6"
+      , "async": ">= 0.1.18"
       , "hogan.js": ">= 2.0.0"
       , "archy": ">= 0.0.2"
-      , "colors-tmpl": ">= 0.0.2"
+      , "colors-tmpl": ">= 0.0.3"
       , "xregexp": ">= 1.5.3"
     }
   , "directories": {
@@ -30,7 +30,7 @@
   , "devDependencies": {
         "buster": ">= 0.4.6"
       , "rimraf": ">= 2.0.1"
-      , "jshint": ">= 0.5.9"
+      , "jshint": ">= 0.6.0"
     }
   , "bin": {
         "ender": "./bin/ender"

@@ -1,5 +1,5 @@
 {{^options.noop}}
-!function () {
+(function () {
 
   var module = { exports: {} }, exports = module.exports;
 {{#mainSource}}
@@ -16,4 +16,4 @@
 {{^enderSource}}
   $.ender(module.exports);
 {{/enderSource}}
-}();{{/options.noop}}{{#options.noop}}{{{mainSource.raw}}}{{/options.noop}}
+}());{{/options.noop}}{{#options.noop}}{{{mainSource.raw}}}{{/options.noop}}
