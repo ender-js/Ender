@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+require('../lib/main').exec(process.argv, function (err) {
+  process.exit(err ? 1 : 0)
+})
