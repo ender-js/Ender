@@ -177,7 +177,7 @@ buster.testCase('Build util', {
                         .withArgs(parents, p)
                         .callsArgWith(2, null, jsons[id])
                       packageUtilMock.expects('getDependenciesFromDirectory')
-                        .once()
+                        [/\//.test(id) ? 'never' : 'once']() // we DON'T want to read node_modules dir for path
                         .withArgs(parents, p)
                         .callsArgWith(2, null, directories[id])
                       setupExpectations(parents.concat([ p ]), setupTree[p])
@@ -188,7 +188,7 @@ buster.testCase('Build util', {
                         .withArgs(parents, p)
                         .callsArgWith(2, { code: 'ENOENT' })
                       packageUtilMock.expects('getDependenciesFromDirectory')
-                        .once()
+                        [/\//.test(id) ? 'never' : 'once']() // we DON'T want to read node_modules dir for path
                         .withArgs(parents, p)
                         .callsArgWith(2, { code: 'ENOENT' })
                     }
