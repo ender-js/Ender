@@ -152,15 +152,15 @@ buster.testCase('Repository (npm interface)', {
 
       , 'test open temp file error': function (done) {
           var fsMock = this.mock(fs)
-            , errArg = new Error('this is an error')
+            , errThrown = new Error('this is an error')
 
-          fsMock.expects('open').callsArgWith(3, errArg)
+          fsMock.expects('createWriteStream').throws(errThrown)
 
           repository.setup(function (err) {
             assert(err)
             assert(err instanceof FilesystemError)
-            assert.same(err.cause, errArg)
-            assert.same(err.message, errArg.message)
+            assert.same(err.cause, errThrown)
+            assert.same(err.message, errThrown.message)
             done()
           })
         }
