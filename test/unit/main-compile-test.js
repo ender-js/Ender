@@ -91,6 +91,30 @@ testCase('Compile', {
       this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
     }
 
+  , 'test compile level=simple': function (done) {
+      var args = { packages: [], level: 'simple' }
+        , expectedOutputFile = 'ender-app.js'
+        , expectedJavaCmd =
+              'java -jar '
+            + this.jarPath
+            + ' --compilation_level SIMPLE_OPTIMIZATIONS'
+            + ' --js=ender.js'
+            + ' --js_output_file=ender-app.js'
+      this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
+    }
+
+  , 'test compile level=whitespace': function (done) {
+      var args = { packages: [], level: 'whitespace' }
+        , expectedOutputFile = 'ender-app.js'
+        , expectedJavaCmd =
+              'java -jar '
+            + this.jarPath
+            + ' --compilation_level WHITESPACE_ONLY'
+            + ' --js=ender.js'
+            + ' --js_output_file=ender-app.js'
+      this.runTest(args, expectedOutputFile, expectedJavaCmd, done)
+    }
+
   , 'test complex compile': function (done) {
       // ender compile foo.js bar.js --externs bing.js bang.js --use foobar --output hoohaa
       var args = {
