@@ -1,0 +1,17 @@
+{
+  "name":"multiple_ender_builds"
+, "ender":[
+    {
+      "dependencies":{
+        "bean":"latest"
+      },
+      "output":"bean"
+    },
+    {
+      "dependencies":{
+        "kizzy":"latest"
+      },
+      "output":"kizzy"
+    }
+  ]
+}
