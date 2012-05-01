@@ -244,6 +244,37 @@ sink('ENDER - OUTPUT', function (test, ok, before, after) {
   });
 });
 
+sink('ENDER - OUTPUT - LOCAL PREFS', function (test, ok, before, after) {
+
+  after(function () {
+    O_O.removeAll(); //clear all spies after each test
+  });
+
+  test('exec: ender build bean', 5, function () {
+    fs.writeFile('./.ender.json', '{"output":"./js/bean"}', function (err) {
+      if (err) ok(false, 'error writing local preferences file .ender.json');
+      ok(true, '.ender.json was created');
+      fs.mkdir('./js', 0777, function () { //make js dir (swallow error if exists)
+        ender.exec('ender build bean -o ./js/bean', function () {
+          path.exists('./js/bean.js', function (exists) {
+            ok(exists, 'ender.js was created');
+          });
+          path.exists('./js/bean.min.js', function (exists) {
+            ok(exists, 'ender.min.js was created');
+          });
+          fs.readFile('./js/bean.js', 'utf-8', function (err, data) {
+            if (err) ok(false, 'error reading ender.js');
+            ok(new RegExp('--output ./js/bean').test(data), 'does not include ender-js');
+            fs.unlink('./.ender.json', function (err) {
+              ok(!err, '.ender.json was deleted');
+            });
+          });
+        });
+      });
+    });
+  });
+});
+
 sink('ENDER - NOOP', function (test, ok, before, after) {
 
   after(function () {
