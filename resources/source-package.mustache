@@ -4,14 +4,14 @@
   var module = { exports: {} }, exports = module.exports;
 {{#mainSource}}
 
-{{{indented}}}{{/mainSource}}
+{{{raw}}}{{/mainSource}}
   provide("{{packageName}}", module.exports);
 {{#options.sandbox}}
 
   window["{{packageName}}"] = module.exports;
 {{/options.sandbox}}{{#enderSource}}
 
-{{{indented}}}
+{{{raw}}}
 {{/enderSource}}
 {{^enderSource}}
   $.ender(module.exports);
