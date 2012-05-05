@@ -23,7 +23,6 @@
       , "colors-tmpl": ">= 0.0.3"
       , "xregexp": ">= 1.5.3"
       , "errno": ">= 0.0.1"
-      , "diff": ">= 1.0.3"
     }
   , "directories": {
         "lib": "./lib"
