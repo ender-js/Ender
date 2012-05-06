@@ -111,6 +111,7 @@ buster.assertions.add('sourceHasCopyrightComments', {
 
 var mktmpdir = function (callback) {
       var dir = util.tmpDir + '/ender_test_' + process.pid + '.' + (+new Date())
+
       fs.mkdir(dir, function (err) {
         callback(err, dir)
       })
@@ -122,34 +123,45 @@ var mktmpdir = function (callback) {
 
   , enderpath = path.resolve(__dirname, '../../bin/ender')
 
-  , runEnder = function (cmd, expectedFiles, dir, callback) {
+  , runEnder = function (cmd, files, dir, callback) {
+      if (Array.isArray(files)) files = { expectedFiles: files };
+
       var run = function (dir) {
-        childProcess.exec(
-            enderpath + ' ' + cmd
-          , { cwd: dir, env: process.env }
-          , function (err, stdout, stderr) {
-              async.map(
-                  expectedFiles
-                , function (f, callback) {
-                    f = path.join(dir, f)
-                    fs.stat(f, function (err, stats) {
-                      refute(err, f + ' exists [' + err + ']')
-                      if (err)
-                        return callback()
-                      assert(stats && stats.isFile(), f + ' is a file')
-                      assert(stats && stats.size > 0, f + ' is a non-zero size')
-                      fs.readFile(f, 'utf-8', callback)
-                    })
-                  }
-                , function (_err, fileContents) {
-                    callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
-                      rmtmpdir(dir, callback)
-                    })
-                  }
-              )
-            }
-        )
-      }
+          childProcess.exec(
+              enderpath + ' ' + cmd
+            , { cwd: dir, env: process.env }
+            , function (err, stdout, stderr) {
+                async.map(
+                    files.expectedFiles
+                  , function (f, callback) {
+                      f = path.join(dir, f)
+                      fs.stat(f, function (err, stats) {
+                        refute(err, f + ' exists [' + err + ']')
+                        if (err)
+                          return callback()
+                        assert(stats && stats.isFile(), f + ' is a file')
+                        assert(stats && stats.size > 0, f + ' is a non-zero size')
+                        fs.readFile(f, 'utf-8', callback)
+                      })
+                    }
+                  , function (_err, fileContents) {
+                      callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
+                        rmtmpdir(dir, callback)
+                      })
+                    }
+                )
+              }
+          )
+        }
+      , createFixtureFiles = function (dir, files, callback) {
+          async.forEach(
+              Object.keys(files)
+            , function (fileName, callback) {
+                fs.writeFile(path.join(dir, fileName), files[fileName], callback)
+              }
+            , callback
+          )
+        }
 
       if (typeof dir == 'function') {
         callback = dir
@@ -157,7 +169,10 @@ var mktmpdir = function (callback) {
           refute(err)
           if (err)
             return callback(err)
-          run(dir)
+
+          createFixtureFiles(dir, files.fixtureFiles || {}, function () {
+            run(dir)
+          })
         })
       } else
         run(dir)
@@ -174,8 +189,26 @@ var mktmpdir = function (callback) {
       })
     }
 
+  , fixturePackageJSON = function (properties) {
+      var json = {
+              "name": "fixture-package"
+            , "description": "A test package for ender functional tests."
+            , "version": "0.1.0"
+            , "authors": [ "John Doe <john@example.com>" ]
+            , "dependencies": {}
+            , "private": true
+          }
+
+      Object.keys(properties).forEach(function (key) {
+        json[key] = properties[key]
+      })
+
+      return JSON.stringify(json);
+    }
+
 module.exports = {
     enderpath: enderpath
+  , fixturePackageJSON: fixturePackageJSON
   , runEnder: runEnder
   , verifyNodeModulesDirectories: verifyNodeModulesDirectories
 }
