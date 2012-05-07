@@ -127,41 +127,41 @@ var mktmpdir = function (callback) {
       if (Array.isArray(files)) files = { expectedFiles: files };
 
       var run = function (dir) {
-          childProcess.exec(
-              enderpath + ' ' + cmd
-            , { cwd: dir, env: process.env }
-            , function (err, stdout, stderr) {
-                async.map(
-                    files.expectedFiles
-                  , function (f, callback) {
-                      f = path.join(dir, f)
-                      fs.stat(f, function (err, stats) {
-                        refute(err, f + ' exists [' + err + ']')
-                        if (err)
-                          return callback()
-                        assert(stats && stats.isFile(), f + ' is a file')
-                        assert(stats && stats.size > 0, f + ' is a non-zero size')
-                        fs.readFile(f, 'utf-8', callback)
-                      })
-                    }
-                  , function (_err, fileContents) {
-                      callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
-                        rmtmpdir(dir, callback)
-                      })
-                    }
-                )
-              }
-          )
-        }
-      , createFixtureFiles = function (dir, files, callback) {
-          async.forEach(
-              Object.keys(files)
-            , function (fileName, callback) {
-                fs.writeFile(path.join(dir, fileName), files[fileName], callback)
-              }
-            , callback
-          )
-        }
+            childProcess.exec(
+                enderpath + ' ' + cmd
+              , { cwd: dir, env: process.env }
+              , function (err, stdout, stderr) {
+                  async.map(
+                      files.expectedFiles
+                    , function (f, callback) {
+                        f = path.join(dir, f)
+                        fs.stat(f, function (err, stats) {
+                          refute(err, f + ' exists [' + err + ']')
+                          if (err)
+                            return callback()
+                          assert(stats && stats.isFile(), f + ' is a file')
+                          assert(stats && stats.size > 0, f + ' is a non-zero size')
+                          fs.readFile(f, 'utf-8', callback)
+                        })
+                      }
+                    , function (_err, fileContents) {
+                        callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
+                          rmtmpdir(dir, callback)
+                        })
+                      }
+                  )
+                }
+            )
+          }
+        , createFixtureFiles = function (dir, files, callback) {
+            async.forEach(
+                Object.keys(files)
+              , function (fileName, callback) {
+                  fs.writeFile(path.join(dir, fileName), files[fileName], callback)
+                }
+              , callback
+            )
+          }
 
       if (typeof dir == 'function') {
         callback = dir
