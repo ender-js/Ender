@@ -1,5 +1,5 @@
 var testCase = require('buster').testCase
-  , PackageDescriptor = require('../../lib/PackageDescriptor')
+  , PackageDescriptor = require('../../lib/package-descriptor')
 
 testCase('PackageDescriptor', {
       'test missing "ender" property': function () {
