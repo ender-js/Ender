@@ -174,14 +174,14 @@ so if we include bean at the top level we should see it once in our build file.
   , '`ender build ender-bootstrap-popover`': function (done) {
       var files = [ 'ender.js', 'ender.min.js' ]
       functionalCommon.runEnder(
-          'build ender-bootstrap-popover'
+          'build ender-bootstrap-popover@2.0.2'
         , files
         , function (err, dir, fileContents, stdout, stderr, callback) {
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js ender-bootstrap-popover')
-            assert.stdoutReportsBuildCommand(stdout, 'ender build ender-bootstrap-popover')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-js ender-bootstrap-popover@2.0.2')
+            assert.stdoutReportsBuildCommand(stdout, 'ender build ender-bootstrap-popover@2.0.2')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'ender-bootstrap-popover', 'stdout')
             assert.hasVersionedPackage(stdout, 'ender-bootstrap-base', 'stdout')
@@ -196,7 +196,7 @@ so if we include bean at the top level we should see it once in our build file.
             fileContents.forEach(function (contents, i) {
               assert.match(
                   contents
-                , /Build: ender build ender-bootstrap-popover$/m
+                , /Build: ender build ender-bootstrap-popover@2.0.2$/m
                 , files[i] + ' contains correct build command'
               )
               assert.sourceContainsProvideStatements(contents, 9, files[i])
