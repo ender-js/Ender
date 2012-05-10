@@ -370,6 +370,24 @@ testCase('Package util', {
             done()
           })
       }
+
+    , 'test filtering of .bin directory': function (done) {
+          var fsMock = this.mock(fs)
+            , pathMock = this.mock(path)
+            , packageName = 'apackage'
+            , parents = []
+            , resolvedDir = path.resolve('node_modules/apackage/node_modules')
+
+          pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
+
+          fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [ '.bin', 'some', 'other', 'modules' ])
+
+          packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
+            refute(err)
+            assert.equals(dependencies, [ 'some', 'other', 'modules' ])
+            done()
+          })
+        }
     }
 })
 
