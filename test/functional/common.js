@@ -39,6 +39,7 @@ var buster = require('buster')
 buster.assertions.add('sourceHasProvide', {
     assert: function (source, pkg, file) {
       var re = makeSourceProvideRegex(pkg)
+      source = source || ''
       this.times = source.split(re).length - 1
       return this.times == 1
     }
@@ -48,6 +49,7 @@ buster.assertions.add('sourceHasProvide', {
 buster.assertions.add('sourceHasStandardWrapFunction', {
     assert: function (source, pkg, file) {
       var re = new RegExp('\\s*\\}\\)?\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{')
+      source = source || ''
       this.times = source.split(re).length - 1
       return this.times == 1
     }
@@ -57,6 +59,7 @@ buster.assertions.add('sourceHasStandardWrapFunction', {
 buster.assertions.add('sourceContainsProvideStatements', {
     assert: function (source, times, file) {
       var re = makeSourceProvideRegex('[\\w\\-]+')
+      source = source || ''
       this.times = source.split(re).length - 1
       return this.times == times
     }
@@ -104,6 +107,7 @@ buster.assertions.add('stdoutReportsOutputSizes', {
 
 buster.assertions.add('sourceHasCopyrightComments', {
     assert: function (source, expectedComments, sourceName) {
+      source = source || ''
       return source.split(copyrightCommentRe).length - 1 == expectedComments
     }
   , assertMessage: '${2} has ${1} copyright comments'
