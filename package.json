@@ -38,6 +38,6 @@
     }
   , "preferGlobal": true
   , "scripts": {
-        "test": "make"
+        "test": "make alltests"
     }
 }
