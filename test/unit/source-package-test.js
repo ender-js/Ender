@@ -23,11 +23,11 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , path = require('path')
-  , async = require('async')
-  , SourcePackage = require('../../lib/source-package')
+var testCase        = require('buster').testCase
+  , fs              = require('fs')
+  , path            = require('path')
+  , async           = require('async')
+  , SourcePackage   = require('../../lib/source-package')
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , templateFiles = {
@@ -36,22 +36,34 @@ var testCase = require('buster').testCase
     }
   , templateFileContents
 
+require('glob')
+
 testCase('Source package', {
     'setUp': function (done) {
+
+      // a very hacky stub for glob, replace glob.Glob with a simple func that returns the first arg
+      // restore it in tearDown
+      var exp = require.cache[require.resolve('glob')].exports
+      this._oldGlob = exp.Glob
+      exp.Glob = function (f, opt, cb) {
+        console.log('GLOB', [ f ])
+        cb(null, [ f ])
+      }
+
       this.runAsStringTest = function (options, done) {
         // options: expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult
 
-        var fsMock = this.mock(fs)
+        var fsMock   = this.mock(fs)
           , tmplType = options.json.name == 'ender-js' ? 'root' : 'standard'
           , srcPkg
 
         options.expectedFileReads.forEach(function (file, index) {
           var exp = fsMock.expects('readFile')
-            .withArgs(
-                path.resolve(file)
-              , 'utf-8'
-            )
-          if (!options.readDelays)
+                .withArgs(
+                    path.resolve(file)
+                  , 'utf-8'
+                )
+            if (!options.readDelays)
             exp.callsArgWith(2, null, options.fileContents[index])
           else {
             setTimeout(function () {
@@ -122,6 +134,10 @@ testCase('Source package', {
         )
       } else
         done()
+    }
+
+  , 'tearDown': function () {
+      require.cache[require.resolve('glob')].exports.Glob = this._oldGlob
     }
 
     // test our internal methods, declared in setUp

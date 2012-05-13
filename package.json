@@ -3,41 +3,43 @@
   , "description": "Open Module JavaScript Framework"
   , "version": "0.9.1-dev"
   , "authors": [
-        "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
-      , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
-      , "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
+        "Jacob Thornton @fat <jacob@twitter.com> (https://github.com/fat)"
+      , "Dustin Diaz @ded <dustin@obvious.com> (https://github.com/ded)"
+      , "Rod Vagg @rvagg <rod@vagg.org> (https://github.com/rvagg)"
     ]
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
   , "homepage": "https://ender.no.de"
   , "engines": {
-        "node": ">= 0.6.0"
+        "node"        : ">= 0.6.0"
     }
   , "dependencies": {
-        "npm": ">= 1.1.16"
-      , "colors": ">= 0.6.0"
-      , "uglify-js": ">= 1.2.6"
-      , "async": ">= 0.1.18"
-      , "hogan.js": ">= 2.0.0"
-      , "archy": ">= 0.0.2"
-      , "colors-tmpl": ">= 0.0.3"
-      , "xregexp": ">= 1.5.3"
-      , "errno": ">= 0.0.1"
+        "npm"         : ">= 1.1.16"
+      , "colors"      : ">= 0.6.0"
+      , "uglify-js"   : ">= 1.2.6"
+      , "async"       : ">= 0.1.18"
+      , "hogan.js"    : ">= 2.0.0"
+      , "archy"       : ">= 0.0.2"
+      , "colors-tmpl" : ">= 0.0.3"
+      , "xregexp"     : ">= 1.5.3"
+      , "errno"       : ">= 0.0.1"
+      , "glob"        : ">= 3.1.9"
     }
   , "directories": {
-        "lib": "./lib"
-      , "bin": "./bin"
+        "lib"         : "./lib"
+      , "bin"         : "./bin"
     }
   , "devDependencies": {
-        "buster": ">= 0.4.6"
-      , "rimraf": ">= 2.0.1"
-      , "jshint": ">= 0.6.0"
+        "buster"      : ">= 0.4.6"
+      , "rimraf"      : ">= 2.0.1"
+      , "jshint"      : ">= 0.6.0"
+      , "mkfiletree"  : ">= 0.0.0"
     }
   , "bin": {
-        "ender": "./bin/ender"
+        "ender"       : "./bin/ender"
     }
   , "preferGlobal": true
   , "scripts": {
-        "test": "make alltests"
+        "test"        : "make alltests"
     }
 }
