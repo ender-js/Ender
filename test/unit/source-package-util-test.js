@@ -36,7 +36,7 @@ testCase('Source package util', {
       mkfiletree.cleanUp(done)
     }
 
-  , 'loadFilesAsString': {
+  , 'loadFiles': {
         // note: we expect globs to return a sorted list of files (dirname(s) included)
 
         'test single file with exact name': function (done) {
@@ -45,9 +45,12 @@ testCase('Source package util', {
             , { 'foo.js': 'fooish!' }
             , function (err, dir) {
                 refute(err)
-                sourcePackageUtil.loadFilesAsString(dir, [ 'foo.js' ], function (err, contents) {
+                sourcePackageUtil.loadFiles(dir, [ 'foo.js' ], function (err, contents) {
                   refute(err)
-                  assert.equals(contents, 'fooish!')
+                  assert.equals(
+                      contents
+                    , [ { file: path.join(dir, 'foo.js'), contents: 'fooish!' } ]
+                  )
                   done()
                 })
               }
@@ -60,9 +63,12 @@ testCase('Source package util', {
             , { 'foo.js': 'fooish!' }
             , function (err, dir) {
                 refute(err)
-                sourcePackageUtil.loadFilesAsString(dir, [ '**/*.js' ], function (err, contents) {
+                sourcePackageUtil.loadFiles(dir, [ '**/*.js' ], function (err, contents) {
                   refute(err)
-                  assert.equals(contents, 'fooish!')
+                  assert.equals(
+                      contents
+                    , [ { file: path.join(dir, 'foo.js'), contents: 'fooish!' } ]
+                  )
                   done()
                 })
               }
@@ -83,22 +89,23 @@ testCase('Source package util', {
             , function (err, dir) {
                 refute(err)
 
-                sourcePackageUtil.loadFilesAsString(dir, [ '**/*.js' ], function (err, contents) {
+                sourcePackageUtil.loadFiles(dir, [ '**/*.js' ], function (err, contents) {
                   refute(err)
                   assert.equals(
                       contents
-                    ,   'bang!\n\n'
-                      + 'baz!\n\n'
-                      + 'boo!!\n\n'
-                      + 'boo!!!\n\n'
-                      + 'fooish!'
+                    , [
+                          { file: path.join(dir, 'bar/bang.js'), contents: 'bang!' }
+                        , { file: path.join(dir, 'bar/baz.js'), contents: 'baz!' }
+                        , { file: path.join(dir, 'bar/boo/1.js'), contents: 'boo!!' }
+                        , { file: path.join(dir, 'bar/boo/2.js'), contents: 'boo!!!' }
+                        , { file: path.join(dir, 'foo.js'), contents: 'fooish!' }
+                      ]
                   )
                   done()
                 })
               }
           )
         }
-
 
       , 'test lots of files, cherry pick specifics': function (done) {
           mkfiletree.makeTemp(
@@ -114,14 +121,16 @@ testCase('Source package util', {
             , function (err, dir) {
                 refute(err)
 
-                sourcePackageUtil.loadFilesAsString(dir, [ 'foo.js', './bar/bang.js', '/bar/boo/2.js', 'bar/baz.js' ], function (err, contents) {
+                sourcePackageUtil.loadFiles(dir, [ 'foo.js', './bar/bang.js', '/bar/boo/2.js', 'bar/baz.js' ], function (err, contents) {
                   refute(err)
                   assert.equals(
                       contents
-                    ,   'fooish!\n\n'
-                      + 'bang!\n\n'
-                      + 'boo!!!\n\n'
-                      + 'baz!'
+                    , [
+                          { file: path.join(dir, 'foo.js'), contents: 'fooish!' }
+                        , { file: path.join(dir, 'bar/bang.js'), contents: 'bang!' }
+                        , { file: path.join(dir, 'bar/boo/2.js'), contents: 'boo!!!' }
+                        , { file: path.join(dir, 'bar/baz.js'), contents: 'baz!' }
+                      ]
                   )
                   done()
                 })
@@ -143,12 +152,14 @@ testCase('Source package util', {
             , function (err, dir) {
                 refute(err)
 
-                sourcePackageUtil.loadFilesAsString(dir, [ '*.js', 'bar/baz.js' ], function (err, contents) {
+                sourcePackageUtil.loadFiles(dir, [ '*.js', 'bar/baz.js' ], function (err, contents) {
                   refute(err)
                   assert.equals(
                       contents
-                    ,   'fooish!\n\n'
-                      + 'baz!'
+                    , [
+                          { file: path.join(dir, 'foo.js'), contents: 'fooish!' }
+                        , { file: path.join(dir, 'bar/baz.js'), contents: 'baz!' }
+                      ]
                   )
                   done()
                 })
@@ -170,13 +181,14 @@ testCase('Source package util', {
             , function (err, dir) {
                 refute(err)
 
-                sourcePackageUtil.loadFilesAsString(dir, [ '*/*/*.js' ], function (err, contents) {
+                sourcePackageUtil.loadFiles(dir, [ '*/*/*.js' ], function (err, contents) {
                   refute(err)
                   assert.equals(
                       contents
-                    ,
-                        'boo!!\n\n'
-                      + 'boo!!!'
+                    , [
+                          { file: path.join(dir, 'bar/boo/1.js'), contents: 'boo!!' }
+                        , { file: path.join(dir, 'bar/boo/2.js'), contents: 'boo!!!' }
+                      ]
                   )
                   done()
                 })
