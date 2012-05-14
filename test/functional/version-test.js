@@ -48,7 +48,7 @@ testCase('Functional: version', {
 
           this.output.forEach(function (str) {
             if (/^Active /.test(str))
-              actualVersionString = str.replace(/[^\w\:\s\.]/, '')
+              actualVersionString = str.replace(/[^\w\:\s\.\-]/, '')
           }.bind(this))
 
           assert.equals('Active version: v' + expectedVersion, actualVersionString , 'printed correct version string')
