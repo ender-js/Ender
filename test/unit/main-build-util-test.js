@@ -480,8 +480,8 @@ buster.testCase('Build util', {
         'no dependencies': {
             'setUp': function () {
               this.originalTree = {
-                      'pkg1': { dependencies: {}, parents: [ 'foo' ] }
-                    , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
+                  'pkg1': { dependencies: {}, parents: [ 'foo' ] }
+                , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
               }
               this.callSpy = this.spy()
 
@@ -797,6 +797,191 @@ buster.testCase('Build util', {
             }
         }
     }
+
+  , 'findMissingDependencies': {
+        'test no dependencies': function () {
+          var originalTree = {
+                  'pkg1': { dependencies: {}, parents: [ 'foo' ] }
+                , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
+              }
+            , expected     = []
+            , actual       = buildUtil.findMissingDependencies({}, Object.keys(originalTree), originalTree)
+
+          assert.equals(actual, expected)
+        }
+
+      , 'simple dependencies (no missing)': function () {
+          var originalTree = {
+                  'apkg-2': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-1': {
+                              parents: [ 'apkg-2' ]
+                            , dependencies: {}
+                          }
+                      }
+                  }
+                , 'somepkg-5': {
+                      parents: []
+                    , dependencies: {
+                          'foo-4': {
+                              parents: [ 'somepkg-5' ]
+                            , dependencies: {
+                                'bar-3': {
+                                    parents: [ 'somepkg-5', 'foo-4' ]
+                                  , dependencies: {}
+                                }
+                              }
+                          }
+                      }
+                  }
+                , 'apkg-7': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-6': {
+                              parents: [ 'apkg-7' ]
+                            , dependencies: {}
+                          }
+                      }
+                  }
+                }
+            , expected     = []
+            , actual       = buildUtil.findMissingDependencies({}, Object.keys(originalTree), originalTree)
+
+          assert.equals(actual, expected)
+        }
+
+      , 'simple dependencies (with missing)': {
+            'setUp': function () {
+              this.originalTree = {
+                  'apkg-2': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-1': {
+                              parents: [ 'apkg-2' ]
+                            , dependencies: {
+                                  'memissing': 'missing'
+                              }
+                          }
+                      }
+                  }
+                , 'somepkg-5': {
+                      parents: []
+                    , dependencies: {
+                          'foo-4': {
+                              parents: [ 'somepkg-5' ]
+                            , dependencies: {
+                                  'bar-3': {
+                                      parents: [ 'somepkg-5', 'foo-4' ]
+                                    , dependencies: {}
+                                  }
+                                , 'argh': 'missing'
+                              }
+                          }
+                      }
+                  }
+                , 'apkg-7': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-6': {
+                              parents: [ 'apkg-7' ]
+                            , dependencies: {}
+                          }
+                      }
+                  }
+                }
+            }
+
+          , 'all root packages': function () {
+              var expected     = [ 'memissing', 'argh' ]
+                , actual       = buildUtil.findMissingDependencies({}, Object.keys(this.originalTree), this.originalTree)
+
+              assert.equals(actual, expected)
+            }
+
+          , 'not all root packages': function () {
+              var expected     = [ 'memissing' ]
+                , actual       = buildUtil.findMissingDependencies({}, [ 'apkg-2', 'apkg-7' ], this.originalTree)
+
+              assert.equals(actual, expected)
+            }
+
+          , 'only complete root package': function () {
+              var expected     = [ ]
+                , actual       = buildUtil.findMissingDependencies({}, [ 'apkg-7' ], this.originalTree)
+
+              assert.equals(actual, expected)
+            }
+        }
+
+      , 'missing deps exist in other branches': {
+            'setUp': function () {
+              this.originalTree = {
+                  'mypkg-1': 'missing'
+                , 'apkg-2': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-1': {
+                              parents: [ 'apkg-2' ]
+                            , dependencies: {
+                                  'memissing': 'missing'
+                              }
+                          }
+                      }
+                  }
+                , 'somepkg-5': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-6': 'missing'
+                        , 'foo-4': {
+                              parents: [ 'somepkg-5' ]
+                            , dependencies: {
+                                  'bar-3': {
+                                      parents: [ 'somepkg-5', 'foo-4' ]
+                                    , dependencies: {}
+                                  }
+                                , 'argh': 'missing'
+                              }
+                          }
+                      }
+                  }
+                , 'apkg-7': {
+                      parents: []
+                    , dependencies: {
+                          'mypkg-6': {
+                              parents: [ 'apkg-7' ]
+                            , dependencies: {}
+                          }
+                        , 'apkg-2': 'missing'
+                      }
+                  }
+              }
+            }
+
+          , 'all root packages': function () {
+              var expected     = [ 'memissing', 'argh' ]
+                , actual       = buildUtil.findMissingDependencies({}, Object.keys(this.originalTree), this.originalTree)
+
+              assert.equals(actual, expected)
+            }
+
+          , 'not all root packages': function () {
+              var expected     = [ 'memissing' ]
+                , actual       = buildUtil.findMissingDependencies({}, [ 'apkg-2', 'apkg-7' ], this.originalTree)
+
+              assert.equals(actual, expected)
+            }
+
+          , 'single root package': function () {
+              // we're testing the ability to reach across the tree to find missing deps
+              var expected     = []
+                , actual       = buildUtil.findMissingDependencies({}, [ 'apkg-7' ], this.originalTree)
+
+              assert.equals(actual, expected)
+            }
+        }
+    }
+
 
   , 'localizePackageList': {
       'test leaves standard package list alone': function () {
