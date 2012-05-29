@@ -315,6 +315,8 @@ buster.testCase('Repository (npm interface)', {
           assert(true) // required, buster issue #62
         }
 
+        // disabled as the '.' special case has been moved into the main-build logic instead
+        /*
       , 'test install() calls npm.commands.install() twice if "." package is specified': function (done) {
           var npmMock = this.mock(this.npm)
             , npmCommandsMock = this.mock(this.npmCommands)
@@ -333,6 +335,7 @@ buster.testCase('Repository (npm interface)', {
 
           assert(true) // required, buster issue #62
         }
+        */
 
       , 'test npm.commands.install error': function (done) {
           var npmMock = this.mock(this.npm)

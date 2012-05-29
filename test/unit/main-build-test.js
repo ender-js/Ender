@@ -71,7 +71,7 @@ testCase('Build', {
         , writeMock = this.mock(write)
 
         , optionsArg = { options: 1 }
-        , packagesArg = { packages: 1 }
+        , packagesArg = [ 'foobarbang' ]
         , localizedArg = [ 'foobar' ]
         , installedArg = [ { installed: 1 } ]
         , npmTreeArg = { tree: 1 }
@@ -85,13 +85,21 @@ testCase('Build', {
       outMock.expects('buildInit').once()
       mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
       mockRepository.expects('setup').once().callsArg(0)
+      mockBuildUtil.expects('constructDependencyTree')
+        .twice()
+        .withArgs(packagesArg)
+        .callsArgWith(1, null, depTreeArg)
+      mockBuildUtil.expects('findMissingDependencies')
+        .once()
+        .withExactArgs(optionsArg, packagesArg, depTreeArg)
+        .returns(packagesArg)
       mockRepository
         .expects('install')
+        .withArgs(packagesArg)
         .once()
-        .callsArgWith(1, null, [ { installed: installedArg, tree: npmTreeArg, pretty: prettyArg } ])
+        .callsArgWith(1, null, { installed: installedArg, tree: npmTreeArg, pretty: prettyArg })
       mockRepository.expects('packup').once()
-      outMock.expects('installedFromRepository').once().withArgs(installedArg, npmTreeArg, prettyArg)
-      mockBuildUtil.expects('constructDependencyTree').once().withArgs(packagesArg).callsArgWith(1, null, depTreeArg)
+      outMock.expects('installedFromRepository').once().withArgs(packagesArg.length)
       SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)
       mockBuildUtil.expects('localizePackageList').withExactArgs(packagesArg, depTreeArg).returns(localizedArg)
       mockBuildUtil
