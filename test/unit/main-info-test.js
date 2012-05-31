@@ -27,7 +27,7 @@ var testCase = require('buster').testCase
   , mainInfo = require('../../lib/main-info')
   , mainInfoOut = require('../../lib/output/main-info-output').create()
   , mainInfoUtil = require('../../lib/main-info-util')
-  , mainBuildUtil = require('../../lib/main-build-util')
+  , DependencyTree = require('../../lib/dependency-tree')
   , SourceBuild = require('../../lib/source-build')
 
 testCase('Info', {
@@ -35,7 +35,7 @@ testCase('Info', {
       this.runTest = function (options, expectedFilename, done) {
         var mainInfoOutMock = this.mock(mainInfoOut)
           , mainInfoUtilMock = this.mock(mainInfoUtil)
-          , mainBuildUtilMock = this.mock(mainBuildUtil)
+          , dependencyTreeMock = this.mock(DependencyTree)
           , packagesArg = { packages: 1 }
           , optionsPackagesArg = { optionsPackages: 1 }
           , sizesArg = { sizes: 1 }
@@ -53,13 +53,13 @@ testCase('Info', {
           .once()
           .withArgs(expectedFilename)
           .callsArgWith(1, null, contextArg)
-        mainBuildUtilMock
-          .expects('constructDependencyTree')
+        dependencyTreeMock
+          .expects('generate')
           .once()
-          .withArgs(optionsPackagesArg)
+          .withArgs(contextArg.options, optionsPackagesArg)
             // important we use packages from context->options->packages which is the command-line packages
             // and not context->packages which is the full list of packages in the build
-          .callsArgWith(1, null, treeArg)
+          .callsArgWith(2, null, treeArg)
         mainInfoUtilMock
           .expects('buildArchyTree')
           .once()

@@ -99,12 +99,10 @@ testCase('Info util', {
     // generates a tree that can be turned into nice output, not fully `archy`
     // compatible yet but can be easily transformed by the output routine
   , 'test generateArchyTree': function () {
-      var mainBuildUtilMock = this.mock(mainBuildUtil)
-        , optionsArg = { options: 1 }
+      var optionsArg = { options: 1 }
         , packagesArg = { packages: 1 }
         , treeArg = { tree: 1 }
         , localPackagesArg = { localPackages: 1 }
-        , forEachExpectation
         , forEachCallback
         , result
         , expectedResult = {
@@ -165,22 +163,16 @@ testCase('Info util', {
               ]
           }
 
-      mainBuildUtilMock
-        .expects('localizePackageList')
-        .once()
-        .withExactArgs(packagesArg, treeArg)
-        .returns(localPackagesArg)
+      treeArg.localizePackageList = this.stub().returns(localPackagesArg)
+      treeArg.forEachOrderedDependency = this.spy()
 
-      forEachExpectation = mainBuildUtilMock
-        .expects('forEachOrderedDependency')
-        .once()
-        .withArgs(optionsArg, localPackagesArg, treeArg)
 
       result = mainInfoUtil.buildArchyTree(optionsArg, packagesArg, treeArg)
 
-      mainBuildUtilMock.verify()
+      assert(treeArg.forEachOrderedDependency.calledWith(localPackagesArg))
+      assert(treeArg.forEachOrderedDependency.calledOnce)
 
-      forEachCallback = forEachExpectation.lastCall.args[3]
+      forEachCallback = treeArg.forEachOrderedDependency.lastCall.args[1]
 
       forEachCallback(
           'foobar'

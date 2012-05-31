@@ -46,7 +46,6 @@ testCase('Source package', {
       var exp = require.cache[require.resolve('glob')].exports
       this._oldGlob = exp.Glob
       exp.Glob = function (f, opt, cb) {
-        console.log('GLOB', [ f ])
         cb(null, [ f ])
       }
 

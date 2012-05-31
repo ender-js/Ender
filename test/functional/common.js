@@ -86,9 +86,9 @@ buster.assertions.add('hasVersionedPackage', {
 
 buster.assertions.add('stdoutRefersToNPMPackages', {
     assert: function (stdout, packages) {
-      return new RegExp('npm.*"' + packages + '"').test(stdout)
+      return new RegExp('packages: "' + packages + '"').test(stdout)
     }
-  , assertMessage: 'stdout refers to "${1}" from npm'
+  , assertMessage: 'stdout refers to \'packages: "${1}"\''
 })
 
 buster.assertions.add('stdoutReportsBuildCommand', {

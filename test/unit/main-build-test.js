@@ -23,90 +23,55 @@
  */
 
 
-var testCase = require('buster').testCase
-  , buildUtil = require('../../lib/main-build-util')
-  , util = require('../../lib/util')
-  , repository = require('../../lib/repository')
+var testCase      = require('buster').testCase
+  , buildUtil     = require('../../lib/main-build-util')
+  , install       = require('../../lib/install')
+  , util          = require('../../lib/util')
   , SourcePackage = require('../../lib/source-package')
-  , SourceBuild = require('../../lib/source-build')
-  , build = require('../../lib/main-build')
-  , buildOutput = require('../../lib/output/main-build-output').create()
-  , info = require('../../lib/main-info')
-  , write = require('../../lib/write')
+  , SourceBuild   = require('../../lib/source-build')
+  , build         = require('../../lib/main-build')
+  , buildOutput   = require('../../lib/output/main-build-output').create()
+  , info          = require('../../lib/main-info')
+  , write         = require('../../lib/write')
 
 testCase('Build', {
-    'test exec() calls setup(), install() and packup() on repository': function (done) {
-      var mock = this.mock(repository)
-        , mockUtil = this.mock(util)
-
-      mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
-
-      mock.expects('setup').once().callsArg(0)
-      var installExpectation = mock.expects('install').once().callsArgWith(1, 'err') // err shortcircuits
-      mock.expects('packup').once()
-
-      build.exec({ packages: [ 'package' ] }, buildOutput, function (err) {
-        assert.equals(err, 'err')
-        assert.equals(installExpectation.args[0][0], [ 'ender-js', 'package' ])
-        assert.isFunction(installExpectation.args[0][1]) // internal 'handle()' method
-        done()
-      })
-    }
-
     // OK, this is a bit of a mess, more of an integration test, but it tests the ful
     // build process and that it calls everything we expect it to
-  , 'test standard main-build interaction': function (done) {
-      var mockRepository = this.mock(repository)
-        , mockUtil = this.mock(util)
-        , mockBuildUtil = this.mock(buildUtil)
-        , mockInfo = this.mock(info)
-        , out = require('../../lib/output/main-build-output').create(1)
-        , outMock = this.mock(out)
-        , sourcePackage = SourcePackage.create()
-        //, sourcePackageMock = this.mock(sourcePackage)
+    'test standard main-build interaction': function (done) {
+      var mockUtil          = this.mock(util)
+        , mockBuildUtil     = this.mock(buildUtil)
+        , mockInstall       = this.mock(install)
+        , mockInfo          = this.mock(info)
+        , out               = require('../../lib/output/main-build-output').create(1)
+        , outMock           = this.mock(out)
+        , sourcePackage     = SourcePackage.create()
         , SourcePackageMock = this.mock(SourcePackage)
-        , sourceBuild = SourceBuild.create()
-        , sourceBuildMock = this.mock(sourceBuild)
-        , SourceBuildMock = this.mock(SourceBuild)
-        , writeMock = this.mock(write)
+        , sourceBuild       = SourceBuild.create()
+        , sourceBuildMock   = this.mock(sourceBuild)
+        , SourceBuildMock   = this.mock(SourceBuild)
+        , writeMock         = this.mock(write)
 
-        , optionsArg = { options: 1 }
-        , packagesArg = [ 'foobarbang' ]
-        , localizedArg = [ 'foobar' ]
-        , installedArg = [ { installed: 1 } ]
-        , npmTreeArg = { tree: 1 }
-        , prettyArg = { pretty: 1 }
-        , depTreeArg = { depTree: 1 }
-        , packageNameArg = { packageName: 1 }
-        , parentsArg = { parents: 1 }
-        , dataArg = { packageJSON: { packageJSON: 1, name: 'foobar' } }
+        , optionsArg           = { options: 1 }
+        , packagesArg          = [ 'foobarbang' ]
+        , installedPackagesArg = [ 1, 2, 3 ]
+        , dependencyTreeArg    = { dependencyTree: 1 }
+        , localizedArg         = [ 'foobar' ]
+        , packageNameArg       = { packageName: 1 }
+        , parentsArg           = { parents: 1 }
+        , dataArg              = { packageJSON: { packageJSON: 1, name: 'foobar' } }
 
       mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
-      mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
-      mockRepository.expects('setup').once().callsArg(0)
-      mockBuildUtil.expects('constructDependencyTree')
-        .twice()
-        .withArgs(packagesArg)
-        .callsArgWith(1, null, depTreeArg)
-      mockBuildUtil.expects('findMissingDependencies')
+      mockInstall
+        .expects('installPackages')
         .once()
-        .withExactArgs(optionsArg, packagesArg, depTreeArg)
-        .returns(packagesArg)
-      mockRepository
-        .expects('install')
-        .withArgs(packagesArg)
-        .once()
-        .callsArgWith(1, null, { installed: installedArg, tree: npmTreeArg, pretty: prettyArg })
-      mockRepository.expects('packup').once()
-      outMock.expects('installedFromRepository').once().withArgs(packagesArg.length)
+        .withArgs(optionsArg, packagesArg)
+        .callsArgWith(2, null, installedPackagesArg, dependencyTreeArg)
+      outMock.expects('installedFromRepository').once().withArgs(installedPackagesArg.length)
       SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)
-      mockBuildUtil.expects('localizePackageList').withExactArgs(packagesArg, depTreeArg).returns(localizedArg)
-      mockBuildUtil
-        .expects('forEachUniqueOrderedDependency')
-        .once()
-        .withArgs(optionsArg, localizedArg, depTreeArg)
-        .callsArgWith(3, packageNameArg, parentsArg, dataArg)
+      dependencyTreeArg.localizePackageList = this.stub().returns(localizedArg)
+      mockUtil.expects('getRootPackageName').once().withExactArgs(optionsArg).returns(localizedArg)
+      dependencyTreeArg.forEachUniqueOrderedDependency = this.stub()
       SourcePackageMock
         .expects('create')
         .once()
@@ -118,11 +83,15 @@ testCase('Build', {
       mockInfo
         .expects('generateAndPrint')
         .once()
-        .withArgs(optionsArg, out, 'ender.js', optionsArg, localizedArg, depTreeArg)
+        .withArgs(optionsArg, out, 'ender.js', optionsArg, localizedArg, dependencyTreeArg)
         .callsArg(6)
 
       // execute
       build.exec(optionsArg, out, done)
+
+      assert(dependencyTreeArg.forEachUniqueOrderedDependency.calledOnce)
+      assert(dependencyTreeArg.forEachUniqueOrderedDependency.calledWith(localizedArg))
+      dependencyTreeArg.forEachUniqueOrderedDependency.lastCall.args[1](packageNameArg, parentsArg, dataArg)
 
       assert(true) // required, buster bug
     }
