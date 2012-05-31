@@ -221,7 +221,7 @@ testCase('Package util', {
             // includes reference to filename:
             assert.match(
                 err.message
-              , new RegExp(xregexp.escape(path.join('node_modules', 'whatevs', 'package.json')))
+              , new RegExp(xregexp.XRegExp.escape(path.join('node_modules', 'whatevs', 'package.json')))
             )
             done()
           })

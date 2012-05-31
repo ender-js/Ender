@@ -31,11 +31,11 @@ var buster = require('buster')
 buster.testCase('Minify', {
     'test basic minification': function (done) {
       var original = 'function foobar () { var biglongvar = \'str\'; return biglongvar + \'str\'; }\n\n'
-        , expected = 'function foobar(){var a="str";return a+"str"}'
+        , expected = /^function foobar\(\)\{var ([a-z])="str";return \1\+"str"\}$/
 
       minify.minify(original, function (err, actual) {
         refute(err)
-        assert.equals(actual, expected)
+        assert.match(actual, expected)
         done()
       })
     }
@@ -62,18 +62,11 @@ buster.testCase('Minify', {
             + ' */\n\n'
             + '!function foobar2 () { var biglongvar = \'str\'; return biglongvar + \'str\'; }();'
          , expected =
-              '/*!\n'
-            + ' * this is a copyright block\n'
-            + ' */\n'
-            + '!function(){var b="str";return b+"str"}(),\n'
-            + '/*!\n'
-            + ' * this is another copyright block\n'
-            + ' */\n'
-            + '!function(){var b="str";return b+"str"}()'
+              /^\/\*!\n \* this is a copyright block\n \*\/\n;?!function\(\)\{var ([a-z])="str";return \1\+"str"\}\(\),\n\/\*!\n \* this is another copyright block\n \*\/\n!function\(\)\{var ([a-z])="str";return \2\+"str"\}\(\)$/
 
       minify.minify(original, function (err, actual) {
         refute(err)
-        assert.equals(actual, expected)
+        assert.match(actual, expected)
         done()
       })
     }

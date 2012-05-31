@@ -74,7 +74,7 @@ testCase('Version', {
         assert(err.cause)
         assert.match(err.message, /Unexpected token/)
         // includes reference to filename:
-        assert.match(err.message, new RegExp(xregexp.escape(path.resolve(__dirname, '../../package.json'))))
+        assert.match(err.message, new RegExp(xregexp.XRegExp.escape(path.resolve(__dirname, '../../package.json'))))
         done()
       })
     }
