@@ -35,8 +35,9 @@ testCase('Functional: refresh', {
       this.timeout = 30000
       assert.match.message = '${2}'
 
-      this.runTest = function (use, done) {
+      this.runTest = function (use, rmdir, done) {
         var files = [ (use || 'ender') + '.js', (use || 'ender') + '.min.js' ]
+          , firstQweryTs
           , testBuild = function (callback, err, dir, fileContents, stdout, stderr) {
               refute(err)
               refute(stderr)
@@ -80,7 +81,15 @@ testCase('Functional: refresh', {
               )
             }
           , function (dir, callback) {
-              rimraf(path.join(dir, 'node_modules'), callback.bind(null, dir))
+              fs.stat(path.join(dir, 'node_modules', 'qwery', 'qwery.js' ), function (err, stat) {
+                if (err) return callback(err)
+                firstQweryTs = stat.ctime
+                callback(null, dir)
+              })
+            }
+          , function (dir, callback) {
+              if (rmdir) rimraf(path.join(dir, 'node_modules'), callback.bind(null, dir))
+              else       callback(null, dir)
             }
           , function (dir, callback) {
               functionalCommon.runEnder(
@@ -90,16 +99,28 @@ testCase('Functional: refresh', {
                 , testBuild.bind(null, callback)
               )
             }
+          , function (dir, callback) {
+              fs.stat(path.join(dir, 'node_modules', 'qwery', 'qwery.js' ), function (err, stat) {
+                if (err) return callback(err)
+                assert(stat.ctime.getTime() > firstQweryTs.getTime(), 'qwery was reinstalled')
+                callback(null)
+              })
+            }
           ], done
         )
       }
     }
 
   , '`ender build qwery bean; ender refresh`': function (done) {
-      this.runTest(false, done)
+      this.runTest(false, true, done)
     }
 
   , '`ender build qwery bean --output foobar; ender refresh --use foobar`': function (done) {
-      this.runTest('foobar', done)
+      this.runTest('foobar', true, done)
+    }
+
+  , '`ender build qwery bean; ender refresh` (don\'t clear node_modules)': function (done) {
+      // this is to test that --force-install is used
+      this.runTest(false, false, done)
     }
 })

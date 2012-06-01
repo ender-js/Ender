@@ -1,10 +1,10 @@
 {yellow}- compile:{/yellow}
-  + compiles your application with your ender build using the Google Closure Compiler
+  + compiles your application with your Ender build using the Google Closure Compiler
   + supply any additional JavaScript files to be included in the compilation, your ender.js file will also be included
   + your compiled application will be written to ender-app.js
   + example: {cyan}$ ender compile header.js footer.js app.js{/cyan}
   {red}+ options:{/red}
-  - {yellow}--use{/yellow} (or {yellow}-u{/yellow}) target a specific ender package (without use, ender defaults to local ender.js)
+  - {yellow}--use{/yellow} (or {yellow}-u{/yellow}) target a specific Ender package (without use, Ender defaults to local ender.js)
     + example: {cyan}$ ender compile app.js -u myenderbuild.js{/cyan}
   - {yellow}--output{/yellow} (or {yellow}-o{/yellow}) write the compiled file to somewhere other than ender-app.js
     + example: {cyan}$ ender compile app.js -o myapp.js{/cyan}
@@ -12,3 +12,4 @@
     + example: {cyan}$ ender compile header.js footer.js app.js --externs externs1.js externs2.js{/cyan}
   - {yellow}--level <simple|advanced|whitespace>{/yellow} pick an optimization level for Closure Compiler (defaults to {yellow}advanced{/yellow})
     + example: {cyan}$ ender compile app.js --level simple{/cyan}
+  - {yellow}--quiet{/yellow} suppress printing of non-error or warning messages to stdout

@@ -109,7 +109,7 @@ buster.testCase('Args parser', {
 
       , 'test parse returns expected object (-- long form)': function () {
           var actual = argsParse.parse(buildargs(
-                'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM'
+                'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM --quiet --force-install'
               ))
           assert.equals(
               actual
@@ -127,6 +127,8 @@ buster.testCase('Args parser', {
                 , debug: true
                 , externs: [ 'what', 'tha' ]
                 , 'client-lib': 'BOOM'
+                , quiet: true
+                , 'force-install': true
               }
           )
         }
@@ -282,10 +284,10 @@ buster.testCase('Args parser', {
           var ctx = argsParse.toContextString(
                 argsParse.parse(
                   buildargs(
-                    'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM'
+                    'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM --quiet --force-install'
                   )))
           assert(ctx)
-          assert.equals(ctx.split(' ').length, 24)
+          assert.equals(ctx.split(' ').length, 26)
           ctx += ' ' // for convenience so we can match spaces around each element, even at the end
           assert.match(ctx, /^build fee fie foe fum /)
           assert.match(ctx, / --output foobar /)
@@ -299,6 +301,8 @@ buster.testCase('Args parser', {
           assert.match(ctx, / --debug /)
           assert.match(ctx, / --externs what tha /)
           assert.match(ctx, / --client-lib BOOM /)
+          assert.match(ctx, / --quiet /)
+          assert.match(ctx, / --force-install /)
         }
     }
 })

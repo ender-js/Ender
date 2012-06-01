@@ -38,7 +38,7 @@ testCase('Install', {
       this.mockDependencyTree = this.mock(DependencyTree)
 
       this.optionsArg         = { options: 1 }
-      this.packagesArg        = { packages: 1, length: 1 }
+      this.packagesArg        = [ 'yee', 'haw' ] // length 2
 
       this.mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
       this.mockRepository.expects('setup').once().callsArg(0)
@@ -86,7 +86,7 @@ testCase('Install', {
     }
 
   , 'test basic one package install, already available': function (done) {
-      var filteredPackagesArg        = { filteredPackages: 1, length: 1 }
+      var filteredPackagesArg        = { filteredPackages: 1, length: this.packagesArg.length }
         , filteredMissingPackagesArg = [] // length 0, nothing to install
         , dependencyTreeArg          = { dependencyArg : 1 }
         , missingDependenciesArg     = [ 'missing' ]
@@ -107,7 +107,7 @@ testCase('Install', {
     }
 
   , 'test one package install, not available': function (done) {
-      var filteredPackagesArg         = { filteredPackages: 1, length: 1 }
+      var filteredPackagesArg         = { filteredPackages: 1, length: this.packagesArg.length }
         , dependencyTreeArg           = { dependencyArg : 1 }
         , missingDependenciesArg      = [ 'missing1' ]
         , pathDependenciesArg         = [ 'path1' ]
@@ -139,7 +139,7 @@ testCase('Install', {
     }
 
   , 'test multi package install, multi install loops required': function (done) {
-      var filteredPackagesArg         = { filteredPackages: 1, length: 1 }
+      var filteredPackagesArg         = { filteredPackages: 1, length: this.packagesArg.length }
         , dependencyTreeArg           = { dependencyArg : 1 }
         , missingDependenciesArg      = [ 'missing1' ]
         , pathDependenciesArg         = [ 'path1' ]
@@ -193,7 +193,7 @@ testCase('Install', {
     }
 
   , 'test multi package install, should only install the same package once': function (done) {
-      var filteredPackagesArg         = { filteredPackages: 1, length: 1 }
+      var filteredPackagesArg         = { filteredPackages: 1, length: this.packagesArg.length }
         , dependencyTreeArg           = { dependencyArg : 1 }
         , missingDependenciesArg      = [ 'missing1' ]
         , pathDependenciesArg         = [ 'path1' ]
@@ -248,4 +248,44 @@ testCase('Install', {
         done()
       })
     }
+
+
+  , 'test force-install': function (done) {
+      var filteredPackagesArg         = [ 'yee', 'haw' ]
+        , resultArg                   = { result: 1 }
+        , dependencyTreeArg           = { dependencyArg : 1 }
+        , missingDependenciesArg      = [ 'missing1' ]
+        , pathDependenciesArg         = [ 'path1' ]
+        , filteredMissingPackagesArg  = [ 'foo' ] // length 1, install 1 package
+        , resultArg2                  = { result: 2 }
+        , dependencyTreeArg2          = { dependencyArg2 : 1 }
+        , missingDependenciesArg2     = [ 'missing2' ]
+        , pathDependenciesArg2        = [ 'path2' ]
+        , filteredMissingPackagesArg2 = [] // length 0, nothing to install
+
+      this.optionsArg  = { 'force-install': true }
+      this.packagesArg = [ 'yee', 'haw' ]
+
+      this.expectFilterPackagesWithoutCwd(this.packagesArg, filteredPackagesArg)
+      this.expectRepositoryInstall(filteredPackagesArg, resultArg)
+
+      this.expectGenerate(dependencyTreeArg)
+      this.expectFindMissingDependencies(dependencyTreeArg, missingDependenciesArg)
+      this.expectFindPathDependencies(dependencyTreeArg, pathDependenciesArg)
+      this.expectFilterPackagesWithoutCwd(missingDependenciesArg.concat(pathDependenciesArg), filteredMissingPackagesArg)
+      this.expectRepositoryInstall(filteredMissingPackagesArg, resultArg2)
+
+      this.expectGenerate(dependencyTreeArg2)
+      this.expectFindMissingDependencies(dependencyTreeArg2, missingDependenciesArg2)
+      this.expectFindPathDependencies(dependencyTreeArg2, pathDependenciesArg2)
+      this.expectFilterPackagesWithoutCwd(missingDependenciesArg2.concat(pathDependenciesArg2), filteredMissingPackagesArg2)
+
+      install.installPackages(this.optionsArg, this.packagesArg, function (err, results, dependencyTree) {
+        refute(err)
+        assert.equals(results, [ resultArg, resultArg2 ])
+        assert.same(dependencyTree, dependencyTreeArg2)
+        done()
+      })
+    }
+
 })
