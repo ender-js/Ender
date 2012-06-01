@@ -32,7 +32,7 @@ testCase('PackageDescriptor', {
         this.runTest(
             {
                 name: 'foobar!'
-              , ender: { ender: 'yohoho' }
+              , ender: { bridge: 'yohoho' }
             }
           , 'ender'
           , 'yohoho'
@@ -52,11 +52,11 @@ testCase('PackageDescriptor', {
           , 'yohoho'
         )
       }
-    , 'test ender override "ender" property with "overlay->ender"': function () {
+    , 'test ender override "ender" property with "overlay->bridge"': function () {
         this.runTest(
             {
                 ender: 'foobar!'
-              , overlay: { ender: { ender: 'yohoho' } }
+              , overlay: { ender: { bridge: 'yohoho' } }
             }
           , 'ender'
           , 'yohoho'
@@ -185,7 +185,7 @@ testCase('PackageDescriptor', {
           , [ true, false ]
         )
       }
-    , 'test "ender" gets preference over "override->ender"': function () {
+    , 'test "ender" gets preference over "overlay->ender"': function () {
         var expectedMain = [ 'wha?' ]
         this.runTest(
             {
