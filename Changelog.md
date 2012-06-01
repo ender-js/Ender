@@ -10,6 +10,7 @@
   * fix dupe dir scanning for dependency tree construction
   * add Contributors file
   * add Changelog.md file
+  * --level (-l) of whitespace|simple|advanced to pass to Closure compiler
 
 0.9.x-dev (1.0-wip)
 ===================
