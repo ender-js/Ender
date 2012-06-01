@@ -9,3 +9,6 @@ functionaltests:
 	@./node_modules/.bin/buster-test -g functional
 
 alltests: unittests functionaltests
+
+contributors:
+	git summary | grep -P '^\s+\d' > Contributors
