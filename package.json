@@ -42,4 +42,8 @@
   , "scripts": {
         "test"        : "make alltests"
     }
+  , "repository": {
+        "type"        : "git"
+      , "url"         : "https://github.com/ender-js/Ender.git"
+    }
 }
