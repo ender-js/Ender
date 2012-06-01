@@ -6,7 +6,7 @@ The main entry point of the application is `exec()` in *main.js*. This is used b
 
 Each main main-X module has an `exec()` method that is called by *main.js* with the parsed commandline arguments, an 'output' object and a callback. The 'output' object is constructed by the corresponding output/main-X-output module and is responsible for all stdout for that command. Nothing is printed to stdout except by the objects available in the *output/* directory. This separation should allow for alternative front-ends to be applied to Ender and other creative uses of Ender via the API.
 
-All interaction with npm occurs through *repository.js*, knowledge of npm is completely partitioned from the rest of the application.
+All interaction with npm occurs through *repository.js*, knowledge of npm is completely partitioned from the rest of the application. *install.js* handles all the special logic to decide which packages need to be installed via npm.
 
 Utilities for dealing with Node packages are kept in *package-util.js* (i.e. anything to do with 'node_modules' or 'package.json').
 
