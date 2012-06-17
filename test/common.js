@@ -22,6 +22,11 @@
  * SOFTWARE.
  */
 
+//FIXME: remove this after 0.8 available on travis
+!('exists' in require('fs')) && (function () {
+  require('fs').exists     = require('path').exists
+  require('fs').existsSync = require('path').existsSync
+}())
 
 var buster = require('buster')
 
