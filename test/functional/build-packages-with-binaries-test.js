@@ -42,34 +42,34 @@ testCase('Functional: build packages which contain binaries', {
      * directory `node_modules/tax/node_moules/.bin` (which contains
      * the jshint binary) was regarded as a dependeny of tax.
      */
-  , '`ender build tax@0.0.1`': function (done) {
+  , '`ender build tracer-bullet@0.0.0 long-stack-traces@0.1.2`': function (done) {
       var files = [ 'ender.js', 'ender.min.js' ]
       functionalCommon.runEnder(
-          'build tax@0.0.1'
+          'build tracer-bullet@0.0.0 long-stack-traces@0.1.2'
         , files
         , function (err, dir, fileContents, stdout, stderr, callback) {
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js tax@0.0.1')
-            assert.stdoutReportsBuildCommand(stdout, 'ender build tax@0.0.1')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-js tracer-bullet@0.0.0 long-stack-traces@0.1.2')
+            assert.stdoutReportsBuildCommand(stdout, 'ender build tracer-bullet@0.0.0 long-stack-traces@0.1.2')
             assert.stdoutReportsOutputSizes(stdout)
-            assert.hasVersionedPackage(stdout, 'tax', 'stdout')
-            assert.hasVersionedPackage(stdout, 'jshint', 'stdout')
+            assert.hasVersionedPackage(stdout, 'tracer-bullet', 'stdout')
+            assert.hasVersionedPackage(stdout, 'long-stack-traces', 'stdout')
 
             fileContents.forEach(function (contents, i) {
               assert.match(
                   contents
-                , /Build: ender build tax@0.0.1$/m
+                , /Build: ender build tracer-bullet@0.0.0 long-stack-traces@0.1.2$/m
                 , files[i] + ' contains correct build command'
               )
-              assert.sourceHasProvide(contents, 'tax', files[i])
-              assert.sourceHasProvide(contents, 'jshint', files[i])
+              assert.sourceHasProvide(contents, 'tracer-bullet', files[i])
+              assert.sourceHasProvide(contents, 'long-stack-traces', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js tax'.split(' ')
+              , 'ender-js tracer-bullet long-stack-traces .bin'.split(' ')
               , callback.bind(null, done)
             )
         })
