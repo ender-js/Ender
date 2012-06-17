@@ -23,51 +23,88 @@
  */
 
 
-var buster = require('buster')
-  , assert = buster.assert
-  , minify = require('../../lib/minify')
+var buster      = require('buster')
+  , assert      = buster.assert
+  , minify      = require('../../lib/minify')
+  , enderMinify = require('ender-minify')
   , MinifyError = require('../../lib/errors').MinifyError
 
 buster.testCase('Minify', {
-    'test basic minification': function (done) {
-      var original = 'function foobar () { var biglongvar = \'str\'; return biglongvar + \'str\'; }\n\n'
-        , expected = /^function foobar\(\)\{var ([a-z])="str";return \1\+"str"\}$/
+    'setUp': function () {
+      this.mockEnderMinify = this.mock(enderMinify)
+      this.sourceArg       = { source: 1 }
+      this.resultArg       = { result: 1 }
 
-      minify.minify(original, function (err, actual) {
-        refute(err)
-        assert.match(actual, expected)
-        done()
-      })
+      this.expectMinify    = function (minifier, expectedOptions) {
+        this.mockEnderMinify
+          .expects('minify')
+          .once()
+          .withArgs(minifier, this.sourceArg, expectedOptions)
+          .callsArgWith(3, null, this.resultArg)
+      }.bind(this)
+
+      this.runTest         = function (parsedArgs, done) {
+        minify.minify(parsedArgs, this.sourceArg, function (err, result) {
+          refute(err)
+          assert.same(result, this.resultArg)
+          done()
+        }.bind(this))
+      }.bind(this)
     }
 
-  , 'test minification syntax error': function (done) {
-      minify.minify('this is not javascript!', function (err, output) {
-        refute(output)
-        assert(err)
-        assert(err instanceof MinifyError)
-        assert(err.cause)
-        assert.isString(err.message)
-        done()
-      })
+  , 'test basic minify, default to uglify': function (done) {
+      var parsedArgs      = { foo: 'bar' } // shouldn't see this come through
+        , expectedOptions = {}
+
+      this.expectMinify('uglify', expectedOptions)
+      this.runTest(parsedArgs, done)
     }
 
-  , 'test minifier ignores copyright comment blocks': function (done) {
-      var original =
-              '/*!\n'
-            + ' * this is a copyright block\n'
-            + ' */\n'
-            + '!function foobar () { var biglongvar = \'str\'; return biglongvar + \'str\'; }();\n\n'
-            + '/*!\n'
-            + ' * this is another copyright block\n'
-            + ' */\n\n'
-            + '!function foobar2 () { var biglongvar = \'str\'; return biglongvar + \'str\'; }();'
-         , expected =
-              /^\/\*!\n \* this is a copyright block\n \*\/\n;?!function\(\)\{var ([a-z])="str";return \1\+"str"\}\(\),\n\/\*!\n \* this is another copyright block\n \*\/\n!function\(\)\{var ([a-z])="str";return \2\+"str"\}\(\)$/
+  , 'test closure default options': function (done) {
+      var parsedArgs      = { foo: 'bar', minifier: 'closure' }
+        , expectedOptions = {}
 
-      minify.minify(original, function (err, actual) {
-        refute(err)
-        assert.match(actual, expected)
-        done()
-      })
+      this.expectMinify('closure', expectedOptions)
+      this.runTest(parsedArgs, done)
+    }
+
+  , 'test closure level option (whitespace)': function (done) {
+      var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'whitespace' }
+        , expectedOptions = { level: 'whitespace' }
+
+      this.expectMinify('closure', expectedOptions)
+      this.runTest(parsedArgs, done)
+    }
+
+  , 'test closure level option (simple)': function (done) {
+      var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'simple' }
+        , expectedOptions = { level: 'simple' }
+
+      this.expectMinify('closure', expectedOptions)
+      this.runTest(parsedArgs, done)
+    }
+
+  , 'test closure level option (advanced)': function (done) {
+      var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'advanced' }
+        , expectedOptions = { level: 'advanced' }
+
+      this.expectMinify('closure', expectedOptions)
+      this.runTest(parsedArgs, done)
+    }
+
+  , 'test closure externs option': function (done) {
+      var parsedArgs      = { foo: 'bar', minifier: 'closure', externs: [ 'bing', 'bang' ] }
+        , expectedOptions = { externs: [ 'bing', 'bang' ] }
+
+      this.expectMinify('closure', expectedOptions)
+      this.runTest(parsedArgs, done)
+    }
+
+  , 'test closure level and externs options': function (done) {
+      var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'advanced', externs: [ 'woo', 'hoo' ] }
+        , expectedOptions = { level: 'advanced', externs: [ 'woo', 'hoo' ] }
+
+      this.expectMinify('closure', expectedOptions)
+      this.runTest(parsedArgs, done)
     }
 })

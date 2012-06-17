@@ -109,26 +109,27 @@ buster.testCase('Args parser', {
 
       , 'test parse returns expected object (-- long form)': function () {
           var actual = argsParse.parse(buildargs(
-                'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM --quiet --force-install'
+                'build fee fie foe fum --output foobar --use yeehaw --max 10 --sandbox foo bar --noop --silent --help --sans --debug --externs what tha --client-lib BOOM --quiet --force-install --minifier none'
               ))
           assert.equals(
               actual
             , {
-                  main: 'build'
-                , packages: [ 'fee', 'fie', 'foe', 'fum' ]
-                , output: 'foobar'
-                , use: 'yeehaw'
-                , max: 10
-                , sandbox: [ 'foo', 'bar' ]
-                , noop: true
-                , silent: true
-                , help: true
-                , sans: true
-                , debug: true
-                , externs: [ 'what', 'tha' ]
-                , 'client-lib': 'BOOM'
-                , quiet: true
-                , 'force-install': true
+                  main            : 'build'
+                , packages        : [ 'fee', 'fie', 'foe', 'fum' ]
+                , output          : 'foobar'
+                , use             : 'yeehaw'
+                , max             : 10
+                , sandbox         : [ 'foo', 'bar' ]
+                , noop            : true
+                , silent          : true
+                , help            : true
+                , sans            : true
+                , debug           : true
+                , externs         : [ 'what', 'tha' ]
+                , 'client-lib'    : 'BOOM'
+                , quiet           : true
+                , 'force-install' : true
+                , 'minifier'      : 'none'
               }
           )
         }
@@ -138,13 +139,13 @@ buster.testCase('Args parser', {
           assert.equals(
               actual
             , {
-                  main: 'build'
-                , packages: [ 'fee', 'fie', 'foe', 'fum' ]
-                , output: 'foobar'
-                , use: 'yeehaw'
-                , noop: true
-                , silent: true
-                , help: true
+                  main      : 'build'
+                , packages  : [ 'fee', 'fie', 'foe', 'fum' ]
+                , output    : 'foobar'
+                , use       : 'yeehaw'
+                , noop      : true
+                , silent    : true
+                , help      : true
               }
           )
         }

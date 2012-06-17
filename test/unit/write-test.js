@@ -53,6 +53,22 @@ buster.testCase('Write', {
       })
     }
 
+  , 'test write with --minifier none': function (done) {
+      var sourceBuild = SourceBuild.create()
+        , mockFs = this.mock(fs)
+        , mockSourceBuild = this.mock(sourceBuild)
+        , sourceArg = 'source contents'
+        , fileArg = 'ender.js'
+
+      mockSourceBuild.expects('asString').once().withArgs({ type: 'plain' }).callsArgWith(1, null, sourceArg)
+      mockFs.expects('writeFile').once().withArgs(fileArg, sourceArg, 'utf-8').callsArg(3)
+
+      write.write({ minifier: 'none' }, sourceBuild, buildOutput, function (err) {
+        refute(err)
+        done()
+      })
+    }
+
   , 'test fs error': function (done) {
       var sourceBuild = SourceBuild.create()
         , mockFs = this.mock(fs)

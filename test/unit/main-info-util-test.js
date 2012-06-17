@@ -36,24 +36,41 @@ var testCase = require('buster').testCase
 
 testCase('Info util', {
     'test sizes': function (done) {
-      var fsMock = this.mock(fs)
-        , zlibMock = this.mock(zlib)
-        , minifyMock = this.mock(minify)
-        , filenameArg = { filename: 1 }
-        , fileContentsArg = { fileContents: 1, length: _i++ }
+      var fsMock            = this.mock(fs)
+        , zlibMock          = this.mock(zlib)
+        , minifyMock        = this.mock(minify)
+        , filenameArg       = { filename: 1 }
+        , optionsArg        = { options: 1 }
+        , fileContentsArg   = { fileContents: 1, length: _i++ }
         , minifyContentsArg = { minifyContents: 1, length: _i++ }
-        , gzipContentsArg = { gzipContents: 1, length: _i++ }
-        , expectedSizes = {
-              raw: fileContentsArg.length
-            , minify: minifyContentsArg.length
-            , gzip: gzipContentsArg.length
+        , gzipContentsArg   = { gzipContents: 1, length: _i++ }
+        , expectedSizes     = {
+              raw     : fileContentsArg.length
+            , minify  : minifyContentsArg.length
+            , gzip    : gzipContentsArg.length
           }
 
       fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, null, fileContentsArg)
-      minifyMock.expects('minify').once().withArgs(fileContentsArg).callsArgWith(1, null, minifyContentsArg)
+      minifyMock.expects('minify').once().withArgs(optionsArg, fileContentsArg).callsArgWith(2, null, minifyContentsArg)
       zlibMock.expects('gzip').once().withArgs(minifyContentsArg).callsArgWith(1, null, gzipContentsArg)
 
-      mainInfoUtil.sizes(filenameArg, function (err, sizes) {
+      mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
+        refute(err)
+        assert.equals(sizes, expectedSizes)
+        done()
+      })
+    }
+
+  , 'test sizes with --minifier none': function (done) {
+      var fsMock            = this.mock(fs)
+        , filenameArg       = { filename: 1 }
+        , optionsArg        = { minifier: 'none' }
+        , fileContentsArg   = { fileContents: 1, length: _i++ }
+        , expectedSizes     = { raw: fileContentsArg.length }
+
+      fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, null, fileContentsArg)
+
+      mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
         refute(err)
         assert.equals(sizes, expectedSizes)
         done()
@@ -61,13 +78,14 @@ testCase('Info util', {
     }
 
   , 'test sizes fs error': function (done) {
-      var fsMock = this.mock(fs)
+      var fsMock      = this.mock(fs)
         , filenameArg = { filename: 1 }
-        , errArg = new Error('this is an error')
+        , optionsArg  = { options: 1 }
+        , errArg      = new Error('this is an error')
 
       fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, errArg)
 
-      mainInfoUtil.sizes(filenameArg, function (err, sizes) {
+      mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
         assert(err)
         refute(sizes)
         assert(err instanceof FilesystemError)
@@ -79,9 +97,9 @@ testCase('Info util', {
 
   , 'test parseContest': function (done) {
       var sourceBuildMock = this.mock(SourceBuild)
-          , optionsArg = { options: 1 }
-          , packagesArg = { packages: 1 }
-          , filenameArg = { filename: 1 }
+          , optionsArg    = { options: 1 }
+          , packagesArg   = { packages: 1 }
+          , filenameArg   = { filename: 1 }
 
       sourceBuildMock
         .expects('parseContext')
@@ -99,13 +117,13 @@ testCase('Info util', {
     // generates a tree that can be turned into nice output, not fully `archy`
     // compatible yet but can be easily transformed by the output routine
   , 'test generateArchyTree': function () {
-      var optionsArg = { options: 1 }
-        , packagesArg = { packages: 1 }
-        , treeArg = { tree: 1 }
-        , localPackagesArg = { localPackages: 1 }
+      var optionsArg        = { options: 1 }
+        , packagesArg       = { packages: 1 }
+        , treeArg           = { tree: 1 }
+        , localPackagesArg  = { localPackages: 1 }
         , forEachCallback
         , result
-        , expectedResult = {
+        , expectedResult    = {
               label: 'Active packages:'
             , nodes: [
                   {

@@ -114,7 +114,7 @@ testCase('Source build', {
       srcBuild.addPackage(pkg2)
       srcBuild.addPackage(pkg3)
 
-      mockMinify.expects('minify').once().withArgs(plainSource).callsArgWith(1, null, minifiedSource)
+      mockMinify.expects('minify').once().withArgs(optionsArg, plainSource).callsArgWith(2, null, minifiedSource)
 
       srcBuild.asString({ type: 'minified' }, function (err, actual) {
         refute(err)
