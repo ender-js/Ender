@@ -27,11 +27,23 @@ var testCase          = require('buster').testCase
   , fs                = require('fs')
   , async             = require('async')
   , path              = require('path')
+  , childProcess      = require('child_process')
   , xregexp           = require('xregexp').XRegExp
   , functionalCommon  = require('./common')
 
 testCase('Functional: minify', {
-    'ender build qwery bonzo bean --minifier <all>': function (done) {
+    'setUp': function (done) {
+      childProcess.exec('java -version', function (err) {
+        this.javaAvailable = !err
+        if (err) {
+          require('colors')
+          console.log('\nWARNING: java not available on this system, can\'t test Closure'.magenta.bold.inverse)
+        }
+        done()
+      }.bind(this))
+    }
+
+  , 'ender build qwery bonzo bean --minifier <all>': function (done) {
       this.timeout = 60000
       assert.match.message = '${2}'
 
@@ -55,19 +67,23 @@ testCase('Functional: minify', {
               )
             }
           }
+        , jobs = {
+              'none'   : mkbuild('none --output none', [ 'none.js' ])
+            , 'uglify' : mkbuild('uglify --output uglify', [ 'uglify.js', 'uglify.min.js' ])
+          }
+
+      if (this.javaAvailable) {
+        jobs['closure-w'] = mkbuild('closure --level whitespace --output closure-w', [ 'closure-w.js', 'closure-w.min.js' ])
+        jobs['closure-s'] = mkbuild('closure --level simple --output closure-s', [ 'closure-s.js', 'closure-s.min.js' ])
+        jobs['closure-a'] = mkbuild('closure --level advanced --output closure-a', [ 'closure-a.js', 'closure-a.min.js' ])
+      }
 
       async.parallel(
-          {
-              'none'      : mkbuild('none --output none', [ 'none.js' ])
-            , 'uglify'    : mkbuild('uglify --output uglify', [ 'uglify.js', 'uglify.min.js' ])
-            , 'closure-w' : mkbuild('closure --level whitespace --output closure-w', [ 'closure-w.js', 'closure-w.min.js' ])
-            , 'closure-s' : mkbuild('closure --level simple --output closure-s', [ 'closure-s.js', 'closure-s.min.js' ])
-            , 'closure-a' : mkbuild('closure --level advanced --output closure-a', [ 'closure-a.js', 'closure-a.min.js' ])
-          }
+          jobs
         , function (err, data) {
             refute(err)
 
-            'none uglify closure-w closure-s closure-a'.split(' ').forEach(function (build) {
+            Object.keys(jobs).forEach(function (build) {
               refute(data[build].stderr, build + ': ' + data[build].stderr)
 
               assert.stdoutRefersToNPMPackages(data[build].stdout, 'ender-js qwery bonzo bean')
@@ -94,27 +110,31 @@ testCase('Functional: minify', {
 
             // non minified files should be roughly the same size, give or take a bit due to build cmd at the top
             assert.equals(data.none.fileContents[0].length, data.uglify.fileContents[0].length - 4)
-            assert.equals(data.none.fileContents[0].length, data['closure-w'].fileContents[0].length - 27)
-            assert.equals(data.none.fileContents[0].length, data['closure-s'].fileContents[0].length - 23)
-            assert.equals(data.none.fileContents[0].length, data['closure-a'].fileContents[0].length - 25)
+            if (this.javaAvailable) {
+              assert.equals(data.none.fileContents[0].length, data['closure-w'].fileContents[0].length - 27)
+              assert.equals(data.none.fileContents[0].length, data['closure-s'].fileContents[0].length - 23)
+              assert.equals(data.none.fileContents[0].length, data['closure-a'].fileContents[0].length - 25)
+            }
 
             // lets shoot for at least 60% compression
             assert(data.uglify.fileContents[1].length < data.uglify.fileContents[0].length * 0.6)
-            assert(data['closure-w'].fileContents[1].length < data['closure-w'].fileContents[0].length * 0.6)
-            assert(data['closure-s'].fileContents[1].length < data['closure-s'].fileContents[0].length * 0.6)
-            assert(data['closure-a'].fileContents[1].length < data['closure-a'].fileContents[0].length * 0.6)
+            if (this.javaAvailable) {
+              assert(data['closure-w'].fileContents[1].length < data['closure-w'].fileContents[0].length * 0.6)
+              assert(data['closure-s'].fileContents[1].length < data['closure-s'].fileContents[0].length * 0.6)
+              assert(data['closure-a'].fileContents[1].length < data['closure-a'].fileContents[0].length * 0.6)
 
-            // closure simple should be at least 90% the size of closure whitespace
-            assert(data['closure-s'].fileContents[1].length < data['closure-w'].fileContents[1].length * 0.9)
-            // closure advanced should be at least 90% the size of closure simple
-            assert(data['closure-a'].fileContents[1].length < data['closure-s'].fileContents[1].length * 0.9)
+              // closure simple should be at least 90% the size of closure whitespace
+              assert(data['closure-s'].fileContents[1].length < data['closure-w'].fileContents[1].length * 0.9)
+              // closure advanced should be at least 90% the size of closure simple
+              assert(data['closure-a'].fileContents[1].length < data['closure-s'].fileContents[1].length * 0.9)
+            }
 
             // shouldn't make a .min.js for none
             fs.exists(path.join(data.none.dir, 'none.min.js'), function (exists) {
               refute(exists, 'no minified file for --minifier none')
               done()
             })
-          }
+          }.bind(this)
       )
     }
 })
