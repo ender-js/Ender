@@ -348,8 +348,16 @@ buster.testCase('Dependency tree', {
         'no dependencies': {
             'setUp': function () {
               this.originalTree = DependencyTree.create({}, {
-                  'pkg1': { dependencies: {}, parents: [ 'foo' ] }
-                , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
+                  'pkg1': {
+                      dependencies: {}
+                    , packageJSON: { name: 'pkg1' }
+                    , parents: [ 'foo' ]
+                  }
+                , 'some/path/to/pkg2': {
+                      dependencies: {}
+                    , packageJSON: { name: 'pkg2' }
+                    , parents: [ 'foo', 'bar' ]
+                  }
               })
               this.callSpy = this.spy()
 
@@ -381,21 +389,26 @@ buster.testCase('Dependency tree', {
               this.originalTree = DependencyTree.create({}, {
                   'apkg-2': {
                       parents: []
+                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                     , dependencies: {
                           'mypkg-1': {
                               parents: [ 'apkg-2' ]
+                            , packageJSON: { name: 'mypkg-1' }
                             , dependencies: {}
                           }
                       }
                   }
                 , 'somepkg-5': {
                       parents: []
+                    , packageJSON: { name: 'somepkg-5', dependencies: { 'foo-4': '*' } }
                     , dependencies: {
                           'foo-4': {
                               parents: [ 'somepkg-5' ]
+                            , packageJSON: { name: 'foo-4', dependencies: { 'bar-3': '*' } }
                             , dependencies: {
                                 'bar-3': {
                                     parents: [ 'somepkg-5', 'foo-4' ]
+                                  , packageJSON: { name: 'bar-3' }
                                   , dependencies: {}
                                 }
                               }
@@ -404,9 +417,11 @@ buster.testCase('Dependency tree', {
                   }
                 , 'apkg-7': {
                       parents: []
+                    , packageJSON: { name: 'apkg-7', dependencies: { 'mypkg-6': '*' } }
                     , dependencies: {
                           'mypkg-6': {
                               parents: [ 'apkg-7' ]
+                            , packageJSON: { name: 'mypkg-6' }
                             , dependencies: {}
                           }
                       }
@@ -443,20 +458,32 @@ buster.testCase('Dependency tree', {
               this.originalTree = DependencyTree.create({}, {
                   'apkg-3': {
                       parents: []
+                    , packageJSON: { name: 'apkg-3', dependencies: { 'mypkg-2': '*' } }
                     , dependencies: {
                           'mypkg-2': {
                               parents: [ 'apkg-3' ]
+                            , packageJSON: { name: 'mypkg-2' }
                             , dependencies: {}
                           }
                       }
                   }
-                , 'somepkg-4': { parents: [], dependencies: {} }
-                , 'ender-js': { parents: [], dependencies: {} } // it should spit this out first
+                , 'somepkg-4': {
+                      parents: []
+                    , packageJSON: { name: 'somepkg-4' }
+                    , dependencies: {}
+                  }
+                , 'ender-js': {
+                      parents: []
+                    , packageJSON: { name: 'ender-js' }
+                    , dependencies: {}
+                  } // it should spit this out first
                 , 'apkg-6': {
                       parents: []
+                    , packageJSON: { name: 'apkg-6', dependencies: { 'mypkg-5': '*' } }
                     , dependencies: {
                           'mypkg-5': {
                               parents: [ 'apkg-6' ]
+                            , packageJSON: { name: 'mypkg-5' }
                             , dependencies: {}
                           }
                       }
@@ -497,24 +524,30 @@ buster.testCase('Dependency tree', {
               this.originalTree = DependencyTree.create({}, {
                   'apkg-6': {
                       parents: []
+                    , packageJSON: { name: 'apkg-6', dependencies: { 'mypkg-5': '*' } }
                     , dependencies: {
                           'mypkg-5': {
                               parents: [ 'apkg-6' ]
+                            , packageJSON: { name: 'mypkg-5', dependencies: { 'apkg-2': '*', 'apkg-4': '*' } }
                             , dependencies: {
                                   'apkg-2': {
                                       parents: [ 'apkg-6', 'mypkg-5' ]
+                                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                                     , dependencies: {
                                           'mypkg-1': {
                                               parents: [ 'apkg-6', 'mypkg-5', 'apkg-2' ]
+                                            , packageJSON: { name: 'mypkg-1' }
                                             , dependencies: {}
                                           }
                                       }
                                   }
                                 , 'apkg-4': {
                                       parents: [ 'apkg-6', 'mypkg-5' ]
+                                    , packageJSON: { name: 'apkg-4', dependencies: { 'mypkg-3': '*' } }
                                     , dependencies: {
                                           'mypkg-3': {
                                               parents: [ 'apkg-6', 'mypkg-5', 'apkg-4' ]
+                                            , packageJSON: { name: 'mypkg-3' }
                                             , dependencies: {}
                                           }
                                       }
@@ -525,33 +558,40 @@ buster.testCase('Dependency tree', {
                   }
                 , 'somepkg-9': {
                       parents: []
+                    , packageJSON: { name: 'somepkg-9', dependencies: { 'foo-8': '*', 'mypkg-3': '*' } }
                     , dependencies: {
                           'foo-8': {
                               parents: [ 'somepkg-9' ]
+                            , packageJSON: { name: 'foo-8', dependencies: { 'bar-7': '*' } }
                             , dependencies: {
                                 'bar-7': {
                                     parents: [ 'somepkg-9', 'foo-8' ]
+                                  , packageJSON: { name: 'bar-7' }
                                   , dependencies: {}
                                 }
                               }
                           }
                         , 'mypkg-3': {
                               parents: [ 'somepkg-9' ]
+                            , packageJSON: { name: 'mypkg-3' }
                             , dependencies: {}
                           }
                       }
                   }
                 , 'apkg-2': {
                       parents: []
+                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                     , dependencies: {
                           'mypkg-1': {
                               parents: [ 'apkg-2' ]
+                            , packageJSON: { name: 'mypkg-1' }
                             , dependencies: {}
                           }
                       }
                   }
                 , 'lastpkg-10': {
                       parents: []
+                    , packageJSON: { name: 'lastpkg-10' }
                     , dependencies: {}
                   }
               })
@@ -608,21 +648,26 @@ buster.testCase('Dependency tree', {
               this.originalTree = DependencyTree.create({}, {
                   'apkg-2': {
                       parents: []
+                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                     , dependencies: {
                           'mypkg-1': {
                               parents: [ 'apkg-2' ]
+                            , packageJSON: { name: 'mypkg-1' }
                             , dependencies: {}
                           }
                       }
                   }
                 , 'somepkg-5': {
                       parents: []
+                    , packageJSON: { name: 'somepkg-5', dependencies: { 'foo-4': '*' } }
                     , dependencies: {
                           'foo-4': {
                               parents: [ 'somepkg-5' ]
+                            , packageJSON: { name: 'foo-4', dependencies: { 'bar-3': '*' } }
                             , dependencies: {
                                 'bar-3': {
                                     parents: [ 'somepkg-5', 'foo-4' ]
+                                  , packageJSON: { name: 'bar-3' }
                                   , dependencies: {}
                                 }
                               }
@@ -631,9 +676,11 @@ buster.testCase('Dependency tree', {
                   }
                 , 'apkg-7': {
                       parents: []
+                    , packageJSON: { name: 'apkg-7', dependencies: { 'mypkg-6': '*' } }
                     , dependencies: {
                           'mypkg-6': {
                               parents: [ 'apkg-7' ]
+                            , packageJSON: { name: 'mypkg-6' }
                             , dependencies: {}
                           }
                       }

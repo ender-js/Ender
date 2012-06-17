@@ -33,7 +33,7 @@ var buster = require('buster')
   , copyrightCommentRe = /\/\*![\s\S]*?\*\//g
 
   , makeSourceProvideRegex = function (pkg) {
-      return RegExp('[;, ]provide\\("' + pkg + '", ?\\w+\\.exports\\)[;,]')
+      return RegExp('[;, ]provide\\("' + pkg + '",[\\s\\n]*?\\w+\\.exports\\)[;,]')
     }
 
 buster.assertions.add('sourceHasProvide', {
@@ -114,7 +114,7 @@ buster.assertions.add('sourceHasCopyrightComments', {
 })
 
 var mktmpdir = function (callback) {
-      var dir = util.tmpDir + '/ender_test_' + process.pid + '.' + (+new Date())
+      var dir = util.tmpDir + '/ender_test_' + process.pid + '.' + (+new Date()) + '.' + Math.round(Math.random() * 1000)
 
       fs.mkdir(dir, function (err) {
         callback(err, dir)
@@ -129,33 +129,50 @@ var mktmpdir = function (callback) {
 
   , runEnder = function (cmd, files, dir, callback) {
       if (Array.isArray(files)) files = { expectedFiles: files };
-
       var run = function (dir) {
-            childProcess.exec(
-                enderpath + ' ' + cmd
-              , { cwd: dir, env: process.env }
-              , function (err, stdout, stderr) {
-                  async.map(
-                      files.expectedFiles
-                    , function (f, callback) {
-                        f = path.join(dir, f)
-                        fs.stat(f, function (err, stats) {
-                          refute(err, f + ' exists [' + err + ']')
-                          if (err)
-                            return callback()
-                          assert(stats && stats.isFile(), f + ' is a file')
-                          assert(stats && stats.size > 0, f + ' is a non-zero size')
-                          fs.readFile(f, 'utf-8', callback)
-                        })
-                      }
-                    , function (_err, fileContents) {
-                        callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
-                          rmtmpdir(dir, callback)
-                        })
-                      }
-                  )
-                }
-            )
+            var child = childProcess.spawn(
+                    enderpath
+                  , cmd.split(' ')
+                  , { cwd: dir, env: process.env }
+                )
+              , stdout = ''
+              , stderr = ''
+
+            child.stdout.on('data', function (data) {
+              stdout += data.toString('utf-8')
+            })
+            child.stderr.on('data', function (data) {
+              stderr += data.toString('utf-8')
+            })
+
+            child.on('exit', function (code, signal) {
+              var err
+              if (code !== 0) {
+                err = new Error('Child process exited on signal: ' + signal)
+                err.stderr = stderr
+                return callback(err)
+              }
+
+              async.map(
+                  files.expectedFiles
+                , function (f, callback) {
+                    f = path.join(dir, f)
+                    fs.stat(f, function (err, stats) {
+                      refute(err, f + ' exists [' + err + ']')
+                      if (err)
+                        return callback()
+                      assert(stats && stats.isFile(), f + ' is a file')
+                      assert(stats && stats.size > 0, f + ' is a non-zero size')
+                      fs.readFile(f, 'utf-8', callback)
+                    })
+                  }
+                , function (_err, fileContents) {
+                    callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
+                      rmtmpdir(dir, callback)
+                    })
+                  }
+              )
+            })
           }
         , createFixtureFiles = function (dir, files, callback) {
             async.forEach(
@@ -173,7 +190,6 @@ var mktmpdir = function (callback) {
           refute(err)
           if (err)
             return callback(err)
-
           createFixtureFiles(dir, files.fixtureFiles || {}, function () {
             run(dir)
           })

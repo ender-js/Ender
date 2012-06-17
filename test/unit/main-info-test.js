@@ -33,21 +33,21 @@ var testCase = require('buster').testCase
 testCase('Info', {
     'setUp': function () {
       this.runTest = function (options, expectedFilename, done) {
-        var mainInfoOutMock = this.mock(mainInfoOut)
-          , mainInfoUtilMock = this.mock(mainInfoUtil)
-          , dependencyTreeMock = this.mock(DependencyTree)
-          , packagesArg = { packages: 1 }
-          , optionsPackagesArg = { optionsPackages: 1 }
-          , sizesArg = { sizes: 1 }
-          , contextArg = { options: { packages: optionsPackagesArg }, packages: packagesArg }
-          , treeArg = { tree: 1 }
-          , archyTreeArg = { archyTree: 1 }
+        var mainInfoOutMock     = this.mock(mainInfoOut)
+          , mainInfoUtilMock    = this.mock(mainInfoUtil)
+          , dependencyTreeMock  = this.mock(DependencyTree)
+          , packagesArg         = { packages: 1 }
+          , optionsPackagesArg  = { optionsPackages: 1 }
+          , sizesArg            = { sizes: 1 }
+          , contextArg          = { options: { packages: optionsPackagesArg }, packages: packagesArg }
+          , treeArg             = { tree: 1 }
+          , archyTreeArg        = { archyTree: 1 }
 
         mainInfoUtilMock
           .expects('sizes')
           .once()
-          .withArgs(expectedFilename)
-          .callsArgWith(1, null, sizesArg)
+          .withArgs(contextArg.options, expectedFilename)
+          .callsArgWith(2, null, sizesArg)
         mainInfoUtilMock
           .expects('parseContext')
           .once()

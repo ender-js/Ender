@@ -30,7 +30,7 @@ var testCase = require('buster').testCase
 
 testCase('Functional: build from package.json', {
     'setUp': function () {
-      this.timeout = 30000
+      this.timeout = 50000
       assert.match.message = '${2}'
       refute.match.message = '${2}'
     }
@@ -45,7 +45,10 @@ testCase('Functional: build from package.json', {
                   'package.json': functionalCommon.fixturePackageJSON({
                       name: 'test-package'
                     , main: 'main.js'
-                    , dependencies: [ 'qwery@3.0.0', 'bean@0.3.0' ]
+                    , dependencies: {
+                          'qwery' : '3.0.0'
+                        , 'bean'  : '0.3.0'
+                      }
                   })
                 , 'main.js': '// Main file'
               }

@@ -30,7 +30,7 @@ var testCase = require('buster').testCase
 
 testCase('Functional: build / dependencies', {
     'setUp': function () {
-      this.timeout = 30000
+      this.timeout = 60000
       assert.match.message = '${2}'
     }
 

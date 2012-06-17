@@ -34,8 +34,8 @@ buster.testCase('Install util', {
     'findMissingDependencies': {
         'test no dependencies': function () {
           var originalTree = DependencyTree.create({}, {
-                  'pkg1': { dependencies: {}, parents: [ 'foo' ] }
-                , 'some/path/to/pkg2': { dependencies: {}, parents: [ 'foo', 'bar' ] }
+                  'pkg1': { dependencies: {}, packageJSON: { name: 'pkg1' }, parents: [ 'foo' ] }
+                , 'some/path/to/pkg2': { dependencies: {}, packageJSON: { name: 'pkg2' },parents: [ 'foo', 'bar' ] }
               })
             , expected     = []
             , actual       = installUtil.findMissingDependencies(originalTree.allRootPackages(), originalTree)
@@ -47,21 +47,26 @@ buster.testCase('Install util', {
           var originalTree = DependencyTree.create({}, {
                   'apkg-2': {
                       parents: []
+                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                     , dependencies: {
                           'mypkg-1': {
                               parents: [ 'apkg-2' ]
+                            , packageJSON: { name: 'mypkg-1' }
                             , dependencies: {}
                           }
                       }
                   }
                 , 'somepkg-5': {
                       parents: []
+                    , packageJSON: { name: 'somepkg-5', dependencies: { 'foo-4': '*' } }
                     , dependencies: {
                           'foo-4': {
                               parents: [ 'somepkg-5' ]
+                            , packageJSON: { name: 'foo-4', dependencies: { 'bar-3': '*' } }
                             , dependencies: {
                                 'bar-3': {
                                     parents: [ 'somepkg-5', 'foo-4' ]
+                                  , packageJSON: { name: 'bar-3' }
                                   , dependencies: {}
                                 }
                               }
@@ -70,9 +75,11 @@ buster.testCase('Install util', {
                   }
                 , 'apkg-7': {
                       parents: []
+                    , packageJSON: { name: 'apkg-7', dependencies: { 'mypkg-6': '*' } }
                     , dependencies: {
                           'mypkg-6': {
                               parents: [ 'apkg-7' ]
+                            , packageJSON: { name: 'mypkg-6' }
                             , dependencies: {}
                           }
                       }
@@ -89,9 +96,11 @@ buster.testCase('Install util', {
               this.originalTree = DependencyTree.create({}, {
                   'apkg-2': {
                       parents: []
+                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                     , dependencies: {
                           'mypkg-1': {
                               parents: [ 'apkg-2' ]
+                            , packageJSON: { name: 'mypkg-1', dependencies: { 'memissing': '*' } }
                             , dependencies: {
                                   'memissing': 'missing'
                               }
@@ -100,12 +109,15 @@ buster.testCase('Install util', {
                   }
                 , 'somepkg-5': {
                       parents: []
+                    , packageJSON: { name: 'somepkg-5', dependencies: { 'foo-4': '*' } }
                     , dependencies: {
                           'foo-4': {
                               parents: [ 'somepkg-5' ]
+                            , packageJSON: { name: 'foo-4', dependencies: { 'bar-3': '*', 'argh': '*' } }
                             , dependencies: {
                                   'bar-3': {
                                       parents: [ 'somepkg-5', 'foo-4' ]
+                                    , packageJSON: { name: 'bar-3' }
                                     , dependencies: {}
                                   }
                                 , 'argh': 'missing'
@@ -115,9 +127,11 @@ buster.testCase('Install util', {
                   }
                 , 'apkg-7': {
                       parents: []
+                    , packageJSON: { name: 'apkg-7', dependencies: { 'mypkg-6': '*' } }
                     , dependencies: {
                           'mypkg-6': {
                               parents: [ 'apkg-7' ]
+                            , packageJSON: { name: 'mypkg-6' }
                             , dependencies: {}
                           }
                       }
@@ -153,9 +167,11 @@ buster.testCase('Install util', {
                   'mypkg-1': 'missing'
                 , 'apkg-2': {
                       parents: []
+                    , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
                     , dependencies: {
                           'mypkg-1': {
                               parents: [ 'apkg-2' ]
+                            , packageJSON: { name: 'mypkg-1', dependencies: { 'memissing': '*' } }
                             , dependencies: {
                                   'memissing': 'missing'
                               }
@@ -164,13 +180,16 @@ buster.testCase('Install util', {
                   }
                 , 'somepkg-5': {
                       parents: []
+                    , packageJSON: { name: 'somepkg-5', dependencies: { 'mypkg-6': '*', 'foo-4': '*' } }
                     , dependencies: {
                           'mypkg-6': 'missing'
                         , 'foo-4': {
                               parents: [ 'somepkg-5' ]
+                            , packageJSON: { name: 'foo-4', dependencies: { 'bar-3': '*', 'argh': '*' } }
                             , dependencies: {
                                   'bar-3': {
                                       parents: [ 'somepkg-5', 'foo-4' ]
+                                    , packageJSON: { name: 'bar-3' }
                                     , dependencies: {}
                                   }
                                 , 'argh': 'missing'
@@ -180,9 +199,11 @@ buster.testCase('Install util', {
                   }
                 , 'apkg-7': {
                       parents: []
+                    , packageJSON: { name: 'apkg-7', dependencies: { 'mypkg-6': '*', 'apkg-2': '*' } }
                     , dependencies: {
                           'mypkg-6': {
                               parents: [ 'apkg-7' ]
+                            , packageJSON: { name: 'mypk-6' }
                             , dependencies: {}
                           }
                         , 'apkg-2': 'missing'
@@ -219,22 +240,26 @@ buster.testCase('Install util', {
         var originalTree = DependencyTree.create({}, {
                 'apkg-2': {
                     parents: []
+                  , packageJSON: { name: 'apkg-2', dependencies: { './mypkg-1': '*' } }
                   , dependencies: {
                         './mypkg-1': {
                             parents: [ 'apkg-2' ]
+                          , packageJSON: { name: 'mypkg-1' }
                           , dependencies: {}
                         }
                     }
                 }
               , '/somepkg-5': {
                     parents: []
-                  , packageJSON: { name: 'dontlocalizeme' }
+                  , packageJSON: { name: 'dontlocalizeme', dependencies: { 'foo-4': '*' } }
                   , dependencies: {
                         'foo-4': {
                             parents: [ 'somepkg-5' ]
+                          , packageJSON: { name: 'foo-4', dependencies: { '../../bar-3': '*' } }
                           , dependencies: {
                               '../../bar-3': {
                                   parents: [ 'somepkg-5', 'foo-4' ]
+                                , packageJSON: { name: 'bar-3' }
                                 , dependencies: {}
                               }
                             }
@@ -243,9 +268,11 @@ buster.testCase('Install util', {
                 }
               , 'apkg-7': {
                     parents: []
+                  , packageJSON: { name: 'apkg-7', dependencies: { 'mypkg-6': '*' } }
                   , dependencies: {
                         'mypkg-6': {
                             parents: [ 'apkg-7' ]
+                          , packageJSON: { name: 'mypkg-6' }
                           , dependencies: {}
                         }
                     }

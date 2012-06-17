@@ -300,6 +300,17 @@ testCase('Source package', {
             },  done)
         }
 
+      , 'test (single) main-only asString, with ender={}': function (done) {
+          this.runAsStringTest({
+                expectedFileReads: [ 'node_modules/parent1/node_modules/parent2/node_modules/apkg/lib/mainsrc.js' ]
+              , fileContents: [ 'mainsrc contents' ]
+              , parents: [ 'parent1', 'parent2' ]
+              , pkg: 'apkg'
+              , json: { name: 'apkg-name', main: 'lib/mainsrc', ender: { } }
+              , expectedResult: this.buildExpectedResult({ name: 'apkg-name', main: '  mainsrc contents' })
+            },  done)
+        }
+
     }
 
   , 'ender-only': {
