@@ -110,7 +110,7 @@ testCase('Functional: minify', {
             assert(data['closure-a'].fileContents[1].length < data['closure-s'].fileContents[1].length * 0.9)
 
             // shouldn't make a .min.js for none
-            path.exists(path.join(data.none.dir, 'none.min.js'), function (exists) {
+            fs.exists(path.join(data.none.dir, 'none.min.js'), function (exists) {
               refute(exists, 'no minified file for --minifier none')
               done()
             })

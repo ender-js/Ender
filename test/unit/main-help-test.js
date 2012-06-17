@@ -34,15 +34,14 @@ var testCase = require('buster').testCase
 testCase('Help', {
     'setUp': function () {
       this.runTest = function (options, expectedFilename, exists, done) {
-        var fsMock = this.mock(fs)
-          , pathMock = this.mock(path)
-          , colorsTmplMock = this.mock(colorsTmpl)
+        var fsMock          = this.mock(fs)
+          , colorsTmplMock  = this.mock(colorsTmpl)
           , mainHelpOutMock = this.mock(mainHelpOut)
-          , contentsArg = { contents: 1 }
-          , renderedArg = { rendered: 1 }
+          , contentsArg     = { contents: 1 }
+          , renderedArg     = { rendered: 1 }
         
         expectedFilename = path.join(path.resolve(__dirname, '../../resources/help/'), expectedFilename)
-        pathMock.expects('existsSync').once().withExactArgs(expectedFilename).returns(exists)
+        fsMock.expects('existsSync').once().withExactArgs(expectedFilename).returns(exists)
         if (exists) {
           fsMock.expects('readFile').once().withArgs(expectedFilename, 'utf-8').callsArgWith(2, null, contentsArg)
           colorsTmplMock

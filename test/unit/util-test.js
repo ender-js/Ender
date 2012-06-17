@@ -26,12 +26,11 @@
 var buster = require('buster')
   , assert = buster.assert
   , fs = require('fs')
-  , path = require('path')
   , util = require('../../lib/util')
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , verifyWritable = function (name, dir, done) {
-      path.exists(dir, function (exists) {
+      fs.exists(dir, function (exists) {
         if (!exists) {
           assert.fail(name + ' directory doesn\'t exist:: ' + dir)
           done()
@@ -92,7 +91,7 @@ buster.testCase('Util', {
           var dir = '/tmp/' + Math.random() + '.' + process.pid + '.test'
           util.mkdir(dir, function (err) {
             refute(err, 'no error from mkdir()')
-            path.exists(dir + '/', function (exists) {
+            fs.exists(dir + '/', function (exists) {
               assert(exists, 'directory exists')
               fs.rmdir(dir, done)
             })
@@ -105,7 +104,7 @@ buster.testCase('Util', {
             refute(err, 'no error from fs.mkdir()')
             util.mkdir(dir, function (err) {
               refute(err, 'no error from mkdir()')
-              path.exists(dir + '/', function (exists) {
+              fs.exists(dir + '/', function (exists) {
                 assert(exists, 'directory exists')
                 fs.rmdir(dir, done)
               })

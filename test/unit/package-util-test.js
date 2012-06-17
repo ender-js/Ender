@@ -282,11 +282,11 @@ testCase('Package util', {
 
   , 'getDependenciesFromDirectory': {
         'test no node_modules directory': function (done) {
-          var pathMock = this.mock(path)
+          var fsMock      = this.mock(fs)
             , packageName = 'apackage'
-            , parents = []
+            , parents     = []
 
-          pathMock.expects('exists')
+          fsMock.expects('exists')
             .withArgs(path.resolve('node_modules/apackage/node_modules'))
             .callsArgWith(1, false)
 
@@ -298,14 +298,12 @@ testCase('Package util', {
         }
 
       , 'test empty node_modules directory': function (done) {
-          var fsMock = this.mock(fs)
-            , pathMock = this.mock(path)
+          var fsMock      = this.mock(fs)
             , packageName = 'apackage'
-            , parents = []
+            , parents     = []
             , resolvedDir = path.resolve('node_modules/apackage/node_modules')
 
-          pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
-
+          fsMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
           fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [])
 
           packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
@@ -316,14 +314,12 @@ testCase('Package util', {
         }
 
       , 'test non-empty node_modules directory': function (done) {
-          var fsMock = this.mock(fs)
-            , pathMock = this.mock(path)
+          var fsMock      = this.mock(fs)
             , packageName = 'apackage'
-            , parents = []
+            , parents     = []
             , resolvedDir = path.resolve('node_modules/apackage/node_modules')
 
-          pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
-
+          fsMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
           fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [ 'a', 'list', 'of', 'files' ])
 
           packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
@@ -334,16 +330,14 @@ testCase('Package util', {
         }
 
       , 'test non-empty node_modules directory, deep nesting': function (done) {
-          var fsMock = this.mock(fs)
-            , pathMock = this.mock(path)
+          var fsMock      = this.mock(fs)
             , packageName = 'apackage'
-            , parents = [ 'parent1', 'parent2', 'parent3' ]
+            , parents     = [ 'parent1', 'parent2', 'parent3' ]
             , resolvedDir = path.resolve(
                 'node_modules/parent1/node_modules/parent2/node_modules/parent3/node_modules/apackage/node_modules'
               )
 
-          pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
-
+          fsMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
           fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [ 'a', 'list', 'of', 'files' ])
 
           packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
@@ -355,10 +349,9 @@ testCase('Package util', {
 
       , 'test fs error': function (done) {
           var mockFs = this.mock(fs)
-            , mockPath = this.mock(path)
             , errArg = new Error('this is an error')
 
-          mockPath.expects('exists').once().callsArgWith(1, true)
+          mockFs.expects('exists').once().callsArgWith(1, true)
           mockFs.expects('readdir').once().callsArgWith(1, errArg)
 
           packageUtil.getDependenciesFromDirectory([], 'whatevs', function (err, data) {
@@ -372,14 +365,12 @@ testCase('Package util', {
       }
 
     , 'test filtering of .bin directory': function (done) {
-          var fsMock = this.mock(fs)
-            , pathMock = this.mock(path)
+          var fsMock      = this.mock(fs)
             , packageName = 'apackage'
-            , parents = []
+            , parents     = []
             , resolvedDir = path.resolve('node_modules/apackage/node_modules')
 
-          pathMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
-
+          fsMock.expects('exists').withArgs(resolvedDir).callsArgWith(1, true)
           fsMock.expects('readdir').withArgs(resolvedDir).callsArgWith(1, null, [ '.bin', 'some', 'other', 'modules' ])
 
           packageUtil.getDependenciesFromDirectory(parents, packageName, function (err, dependencies) {
