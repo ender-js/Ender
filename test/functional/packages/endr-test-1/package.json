@@ -1,0 +1,21 @@
+{
+    "name": "endr-test-1"
+  , "description": ""
+  , "version": "0.0.1"
+  , "authors": [
+        "Rod Vagg @rvagg <rod@vagg.org> (https://github.com/rvagg)"
+    ]
+  , "main": "./main.js"
+  , "ender": {
+        "name": "mynewname"
+      , "main": "./main-override.js"
+      , "bridge": "./bridge.js"
+      , "dependencies": {
+            "bean": "*"
+        }
+    }
+  , "homepage": "https://ender.no.de"
+  , "dependencies": {
+        "bonzo": "*"
+    }
+}
