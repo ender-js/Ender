@@ -127,8 +127,6 @@ var mktmpdir = function (callback) {
 
   , enderpath = path.resolve(__dirname, '../../bin/ender')
 
-  , __tmpNpmfixNote = false
-
   , runEnder = function (cmd, files, dir, callback) {
       if (Array.isArray(files)) files = { expectedFiles: files };
       var run = function (dir) {
@@ -140,16 +138,11 @@ var mktmpdir = function (callback) {
               , stdout = ''
               , stderr = ''
 
-            if (!__tmpNpmfixNote) {
-              __tmpNpmfixNote = true
-              require('colors')
-              console.log('\nWARNING: stderr is intentionally blanked due to logfd removal from npm, waiting for fix'.magenta.bold.inverse)
-            }
             child.stdout.on('data', function (data) {
               stdout += data.toString('utf-8')
             })
             child.stderr.on('data', function (data) {
-              //FIXME: commented out while we sort out the npm logstream stuff stderr += data.toString('utf-8')
+              stderr += data.toString('utf-8')
             })
 
             child.on('exit', function (code, signal) {
