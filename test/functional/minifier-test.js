@@ -56,7 +56,8 @@ testCase('Functional: minify', {
                 , files
                 , function (err, dir, fileContents, stdout, stderr) {
                     callback(null, {
-                        dir           : dir
+                        err           : err
+                      , dir           : dir
                       , fileContents  : fileContents
                       , stdout        : stdout
                       , stderr        : stderr
@@ -84,6 +85,8 @@ testCase('Functional: minify', {
             refute(err)
 
             Object.keys(jobs).forEach(function (build) {
+              refute(data[build].err)
+
               refute(data[build].stderr, build + ': ' + data[build].stderr)
 
               assert.stdoutRefersToNPMPackages(data[build].stdout, 'ender-js qwery bonzo bean')
