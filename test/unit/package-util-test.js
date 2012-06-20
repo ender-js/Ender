@@ -102,6 +102,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, 'node_modules/amodule/', expected)
           packageUtil.readPackageJSON([], 'amodule', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })
@@ -113,6 +115,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, 'node_modules/amodule.js/', expected)
           packageUtil.readPackageJSON([], 'amodule.js', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })
@@ -124,6 +128,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, 'node_modules/amodule/', expected)
           packageUtil.readPackageJSON([], 'amodule@0.1.200', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })
@@ -135,6 +141,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, 'node_modules/aparent/node_modules/amodule/', expected)
           packageUtil.readPackageJSON([ 'aparent' ], 'amodule', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })
@@ -152,6 +160,8 @@ testCase('Package util', {
               [ 'aparent1', 'aparent2', 'aparent3' ]
             , 'amodule', function (err, actual) {
                 refute(err)
+                assert.equals(actual._original, expected)
+                ; delete actual._original
                 assert.equals(actual, expected)
                 done()
               }
@@ -164,6 +174,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, '.', expected)
           packageUtil.readPackageJSON([ 'this shouldn\'t matter' ], './', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })
@@ -175,6 +187,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, 'some/path/without/dots', expected)
           packageUtil.readPackageJSON([ 'foobar' ], 'some/path/without/dots', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })
@@ -186,6 +200,8 @@ testCase('Package util', {
           setupReadPackageJSON.call(this, 'some/path/without/dots', expected)
           packageUtil.readPackageJSON([ 'what???' ], './some/path/../path/without/dots', function (err, actual) {
             refute(err)
+            assert.equals(actual._original, expected)
+            ; delete actual._original
             assert.equals(actual, expected)
             done()
           })

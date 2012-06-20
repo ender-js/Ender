@@ -96,6 +96,7 @@ testCase('Functional: minify', {
               assert.hasVersionedPackage(data[build].stdout, 'bonzo', 'stdout')
               assert.hasVersionedPackage(data[build].stdout, 'bean', 'stdout')
 
+              assert(data[build].fileContents, 'build ' + build + ' has file contents')
               data[build].fileContents.forEach(function (contents, i) {
                 assert.match(
                     contents

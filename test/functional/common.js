@@ -167,6 +167,7 @@ var mktmpdir = function (callback) {
                     })
                   }
                 , function (_err, fileContents) {
+                    refute(_err)
                     callback(err, dir, fileContents, String(stdout), String(stderr), function (callback) {
                       rmtmpdir(dir, callback)
                     })

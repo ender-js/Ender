@@ -573,8 +573,8 @@ testCase('Source package', {
     }
 
   , 'test identifier': function () {
-      var srcPackage = SourcePackage.create('foobar', null, false, { name: 'foobar', version: '1.2.3' })
-      assert.equals(srcPackage.getIdentifier(), 'foobar@1.2.3')
+      var srcPackage = SourcePackage.create('foobar', null, false, { name: 'foobar', version: '1.2.3', _original: { name: 'barfoo' } })
+      assert.equals(srcPackage.getIdentifier(), 'barfoo@1.2.3')
     }
 
   , 'test fs error': function (done) {
