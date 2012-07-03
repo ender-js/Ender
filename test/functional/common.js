@@ -114,7 +114,7 @@ buster.assertions.add('sourceHasCopyrightComments', {
 })
 
 var mktmpdir = function (callback) {
-      var dir = util.tmpDir + '/ender_test_' + process.pid + '.' + (+new Date()) + '.' + Math.round(Math.random() * 1000)
+      var dir = util.tmpDir + '/ender_test_' + process.pid + '.' + (+new Date()) + '.' + Math.round(Math.random() * 10000)
 
       fs.mkdir(dir, function (err) {
         callback(err, dir)
@@ -159,8 +159,7 @@ var mktmpdir = function (callback) {
                     f = path.join(dir, f)
                     fs.stat(f, function (err, stats) {
                       refute(err, f + ' exists [' + err + ']')
-                      if (err)
-                        return callback()
+                      if (err) return callback()
                       assert(stats && stats.isFile(), f + ' is a file')
                       assert(stats && stats.size > 0, f + ' is a non-zero size')
                       fs.readFile(f, 'utf-8', callback)

@@ -82,8 +82,6 @@ testCase('Functional: minify', {
       async.parallel(
           jobs
         , function (err, data) {
-            refute(err)
-
             Object.keys(jobs).forEach(function (build) {
               refute(data[build].err)
 
