@@ -46,10 +46,10 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
   test('exec: ender build jeesh', 5, function () {
     var cmd = 'ender build jeesh';
     ender.exec(cmd, function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -64,10 +64,10 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
   test('exec: ender build backbone underscore', 5, function () {
     var cmd = 'ender build backbone underscore';
     ender.exec(cmd, function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -82,10 +82,10 @@ sink('ENDER - DEPENDENCIES', function (test, ok, before, after) {
   test('exec: ender build ender-json', 4, function () {
     var cmd = 'ender build ender-json';
     ender.exec(cmd, function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -107,16 +107,16 @@ sink('ENDER - BUILD', function (test, ok, before, after) {
   test('exec: ender build domready', 6, function () {
     var cmd = 'ender build domready';
     ender.exec(cmd, function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
-      path.exists('./node_modules/domready', function (exists) {
+      fs.exists('./node_modules/domready', function (exists) {
         ok(exists, 'domready was installed');
       });
-      path.exists('./node_modules/ender-js', function (exists) {
+      fs.exists('./node_modules/ender-js', function (exists) {
         ok(exists, 'ender-js was installed');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -146,13 +146,13 @@ sink('ENDER - ADD', function (test, ok, before, after) {
 
   test('exec: ender add qwery', 4, function () {
     ender.exec('ender add qwery', function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
-      path.exists('./node_modules/qwery', function (exists) {
+      fs.exists('./node_modules/qwery', function (exists) {
         ok(exists, 'qwery was installed');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -172,10 +172,10 @@ sink('ENDER - REMOVE', function (test, ok, before, after) {
 
   test('exec: ender remove qwery', 3, function () {
     ender.exec('ender remove qwery', function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -194,10 +194,10 @@ sink('ENDER - SET', function (test, ok, before, after) {
 
   test('exec: ender set qwery@1.1.0', 6, function () {
     ender.exec('ender build qwery@1.1.1', function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -205,10 +205,10 @@ sink('ENDER - SET', function (test, ok, before, after) {
         ok(new RegExp('qwery@1.1.1').test(data), 'includes correct version in comment');
       });
       ender.exec('ender set qwery@1.1.0', function () {
-        path.exists('./ender.js', function (exists) {
+        fs.exists('./ender.js', function (exists) {
           ok(exists, 'ender.js was created');
         });
-        path.exists('./ender.min.js', function (exists) {
+        fs.exists('./ender.min.js', function (exists) {
           ok(exists, 'ender.min.js was created');
         });
         fs.readFile('./ender.js', 'utf-8', function (err, data) {
@@ -229,10 +229,10 @@ sink('ENDER - OUTPUT', function (test, ok, before, after) {
   test('exec: ender build bean --output ./js/bean', 3, function () {
     fs.mkdir('./js', 0777, function () { //make js dir (swallow error if exists)
       ender.exec('ender build bean -o ./js/bean', function () {
-        path.exists('./js/bean.js', function (exists) {
+        fs.exists('./js/bean.js', function (exists) {
           ok(exists, 'ender.js was created');
         });
-        path.exists('./js/bean.min.js', function (exists) {
+        fs.exists('./js/bean.min.js', function (exists) {
           ok(exists, 'ender.min.js was created');
         });
         fs.readFile('./js/bean.js', 'utf-8', function (err, data) {
@@ -252,10 +252,10 @@ sink('ENDER - NOOP', function (test, ok, before, after) {
 
   test('exec: ender build bean --noop', 3, function () {
     ender.exec('ender build bean --noop', function () {
-      path.exists('./ender.js', function (exists) {
+      fs.exists('./ender.js', function (exists) {
         ok(exists, 'ender.js was created');
       });
-      path.exists('./ender.min.js', function (exists) {
+      fs.exists('./ender.min.js', function (exists) {
         ok(exists, 'ender.min.js was created');
       });
       fs.readFile('./ender.js', 'utf-8', function (err, data) {
