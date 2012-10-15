@@ -44,7 +44,7 @@ testCase('Functional: minify', {
     }
 
   , 'ender build qwery bonzo bean --minifier <all>': function (done) {
-      this.timeout = 60000
+      this.timeout = 90000
       assert.match.message = '${2}'
 
       var buildCmd = 'build qwery bonzo bean --minifier '
