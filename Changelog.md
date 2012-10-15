@@ -1,3 +1,16 @@
+0.9.5-dev (1.0-wip) / 2012-10-15
+================================
+
+  * "externs" key (or "ender"->"externs", or "overlay"->"ender"->"externs") for each package in a build can supply an array of files that are passed to Closure as --externs arguments, on top of any Ender --externs arguments
+
+0.9.4-dev (1.0-wip) / 2012-06-20
+================================
+
+  * Additional support for overriding package.json keys with "ender" (and "overlay"->"ender" key)
+  * Node 0.7/0.8 support
+  * Use new `logstream` property in npm (@1.1.30) rather than the (removed) `logfd`
+  * extract ender-minify project
+  * --minifier argument to switch between Closure and UglifyJS (default)
 
 0.9.3-dev (1.0-wip) / 2012-06-01 
 ================================
