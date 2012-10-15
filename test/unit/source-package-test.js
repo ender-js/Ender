@@ -33,6 +33,7 @@ var testCase        = require('buster').testCase
   , templateFiles = {
         'standard' : path.join(__dirname, '/../../resources/source-package.mustache')
       , 'root'     : path.join(__dirname, '/../../resources/root-package.mustache')
+      , 'file'     : path.join(__dirname, '/../../resources/source-file.mustache')
     }
   , templateFileContents
 
@@ -49,6 +50,7 @@ testCase('Source package', {
         cb(null, [ f ])
       }
 
+      // TODO: demystify and clean this mess up
       this.runAsStringTest = function (options, done) {
         // options: expectedFileReads, fileContents, readDelays, parents, pkg, json, expectedResult
 
@@ -77,6 +79,13 @@ testCase('Source package', {
             .withArgs(path.resolve(templateFiles[tmplType]), 'utf-8')
             .callsArgWith(2, null, templateFileContents[tmplType])
           templateFileContents[tmplType] = -1 // i.e. only run this branch once
+        }
+        if (tmplType == 'standard' && options.json.main && typeof templateFileContents.file == 'string') {
+          fsMock
+            .expects('readFile')
+            .withArgs(path.resolve(templateFiles.file), 'utf-8')
+            .callsArgWith(2, null, templateFileContents.file)
+          templateFileContents.file = -1 // i.e. only run this branch once
         }
 
         srcPkg = SourcePackage.create(
@@ -117,7 +126,7 @@ testCase('Source package', {
       if (!templateFileContents) {
         // unfortunately we have to mock this out as we're mocking out the whole `fs`
         async.map(
-            [ 'standard', 'root' ]
+            [ 'standard', 'root', 'file' ]
           , function (type, callback) {
               fs.readFile(templateFiles[type], 'utf8', callback)
             }
@@ -127,6 +136,7 @@ testCase('Source package', {
               templateFileContents = {
                   'standard' : templates[0]
                 , 'root'     : templates[1]
+                , 'file'     : templates[2]
               }
               done()
             }
