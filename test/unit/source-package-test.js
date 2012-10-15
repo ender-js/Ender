@@ -64,7 +64,7 @@ testCase('Source package', {
                     path.resolve(file)
                   , 'utf-8'
                 )
-            if (!options.readDelays)
+          if (!options.readDelays)
             exp.callsArgWith(2, null, options.fileContents[index])
           else {
             setTimeout(function () {
@@ -285,7 +285,7 @@ testCase('Source package', {
                   , 'BAR!'
                   , 'BAZ!'
                 ]
-              , readDelays: [ 50, 25, 0 ]
+              , readDelays: [ 50, 25, 10 ]
               , pkg: 'mypkg'
               , json: {
                     name: 'mypkg-name'
@@ -386,7 +386,7 @@ testCase('Source package', {
                   , 'BAR!'
                   , 'BAZ!'
                 ]
-              , readDelays: [ 50, 25, 0 ]
+              , readDelays: [ 50, 25, 10 ]
               , pkg: 'mypkg'
               , json: {
                     name: 'mypkg-name'
@@ -420,7 +420,7 @@ testCase('Source package', {
               , 'ENDERBAR!'
               , 'ENDERBAZ!'
             ]
-          , readDelays: [ 50, 0, 25, 40, 0, 20 ]
+          , readDelays: [ 50, 10, 25, 40, 10, 20 ]
           , pkg: 'mypkg'
           , json: {
                 name: 'mypkg-name'
