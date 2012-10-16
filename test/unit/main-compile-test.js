@@ -25,9 +25,9 @@
 
 var testCase = require('buster').testCase
   , childProcess = require('child_process')
-  , path = require('path')
   , fs = require('fs')
   , zlib = require('zlib')
+  , enderMinify = require('ender-minify')
   , mainCompile = require('../../lib/main-compile')
   , mainCompileOut = require('../../lib/output/main-compile-output').create()
   , FilesystemError = require('../../lib/errors').FilesystemError
@@ -36,7 +36,7 @@ var testCase = require('buster').testCase
 
 testCase('Compile', {
     'setUp': function () {
-      this.jarPath = path.resolve(__dirname, '../../support/closure.jar')
+      this.jarPath = enderMinify.closureJar
       this.runTest = function (args, expectedOutputFile, expectedJavaCmd, done) {
         var childProcessMock = this.mock(childProcess)
           , fsMock = this.mock(fs)
