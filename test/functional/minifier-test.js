@@ -31,10 +31,13 @@ var testCase          = require('buster').testCase
   , xregexp           = require('xregexp').XRegExp
   , functionalCommon  = require('./common')
 
+  , javaVersionRe     = /\W1\.\d\.\d/
+
 testCase('Functional: minify', {
     'setUp': function (done) {
-      childProcess.exec('java -version', function (err) {
-        this.javaAvailable = !err
+      childProcess.exec('java -version', function (err, stdout, stderr) {
+        this.javaAvailable =
+            !err && (javaVersionRe.test(stderr.toString()) || javaVersionRe.test(stdout.toString()))
         if (err) {
           require('colors')
           console.log('\nWARNING: java not available on this system, can\'t test Closure'.magenta.bold.inverse)
@@ -44,7 +47,7 @@ testCase('Functional: minify', {
     }
 
   , 'ender build qwery bonzo bean --minifier <all>': function (done) {
-      this.timeout = 90000
+      this.timeout = 120000
       assert.match.message = '${2}'
 
       var buildCmd = 'build qwery bonzo bean --minifier '
