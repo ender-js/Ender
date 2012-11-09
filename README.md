@@ -18,4 +18,4 @@ With Ender, if one library goes bad or unmaintained, it can be replaced with ano
 
 ## MORE INFO
 
-For more information checkout [http://ender.no.de](http://ender.no.de)
+For more information checkout [http://ender.jit.su](http://ender.jit.su)
