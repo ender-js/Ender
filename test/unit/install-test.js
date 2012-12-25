@@ -24,8 +24,8 @@
 
 
 var testCase       = require('buster').testCase
+  , repository     = require('ender-repository')
   , install        = require('../../lib/install')
-  , repository     = require('../../lib/repository')
   , util           = require('../../lib/util')
   , installUtil    = require('../../lib/install-util')
   , DependencyTree = require('../../lib/dependency-tree')

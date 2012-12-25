@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "0.9.6-dev"
+  , "version": "0.9.7-dev"
   , "authors": [
         "Jacob Thornton @fat <jacob@twitter.com> (https://github.com/fat)"
       , "Dustin Diaz @ded <dustin@obvious.com> (https://github.com/ded)"
@@ -10,31 +10,27 @@
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
   , "homepage": "https://ender.no.de"
-  , "engines": {
-        "node"        : ">= 0.7.12"
-    }
   , "dependencies": {
-        "npm"          : ">= 1.1.30"
-      , "colors"       : ">= 0.6.0"
-      , "uglify-js"    : ">= 1.3.0"
-      , "async"        : ">= 0.1.22"
-      , "hogan.js"     : ">= 2.0.0"
-      , "archy"        : ">= 0.0.2"
-      , "colors-tmpl"  : ">= 0.0.3"
-      , "xregexp"      : ">= 2.0.0"
-      , "errno"        : ">= 0.0.1"
-      , "glob"         : ">= 3.1.10"
-      , "ender-minify" : ">= 0.0.3"
+        "ender-repository" : "~0.0.1"
+      , "ender-minify"     : "~0.0.4"
+      , "colors"           : "~0.6.0"
+      , "async"            : "~0.1.22"
+      , "hogan.js"         : "~2.0.0"
+      , "archy"            : "~0.0.2"
+      , "colors-tmpl"      : "~0.1.0"
+      , "xregexp"          : "~2.0.0"
+      , "errno"            : "~0.0.3"
+      , "glob"             : "~3.1.14"
     }
   , "directories": {
         "lib"         : "./lib"
       , "bin"         : "./bin"
     }
   , "devDependencies": {
-        "buster"      : ">= 0.5.4"
-      , "rimraf"      : ">= 2.0.2"
-      , "jshint"      : ">= 0.7.1"
-      , "mkfiletree"  : ">= 0.0.0"
+        "buster"      : "~0.6.12"
+      , "rimraf"      : "~2.1.1"
+      , "jshint"      : "~0.9.1"
+      , "mkfiletree"  : "~0.0.0"
     }
   , "bin": {
         "ender"       : "./bin/ender"

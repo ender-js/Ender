@@ -24,11 +24,11 @@
 
 
 var testCase = require('buster').testCase
+  , repository = require('ender-repository')
   , util = require('../../lib/util')
   , mainBuild = require('../../lib/main-build')
   , mainInfoUtil = require('../../lib/main-info-util')
   , mainRemove = require('../../lib/main-remove')
-  , repository = require('../../lib/repository')
 
 testCase('Remove', {
     'test basic remove': function (done) {

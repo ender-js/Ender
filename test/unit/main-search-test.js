@@ -24,8 +24,8 @@
 
 
 var testCase = require('buster').testCase
+  , repository = require('ender-repository')
   , searchUtil = require('../../lib/main-search-util')
-  , repository = require('../../lib/repository')
   , search = require('../../lib/main-search')
   , searchOutput = require('../../lib/output/main-search-output').create()
 
