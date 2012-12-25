@@ -23,88 +23,82 @@
  */
 
 
-var buster      = require('buster')
-  , assert      = buster.assert
-  , minify      = require('../../lib/minify')
-  , enderMinify = require('ender-minify')
-  , MinifyError = require('../../lib/errors').MinifyError
+var buster = require('buster')
+  , assert = buster.assert
+  , path   = require('path')
 
 buster.testCase('Minify', {
     'setUp': function () {
-      this.mockEnderMinify = this.mock(enderMinify)
+      this.enderMinifyStub = this.stub()
       this.sourceArg       = { source: 1 }
       this.resultArg       = { result: 1 }
+      require('ender-minify')
+      this.originalEM = require.cache[path.join(__dirname, '../../node_modules/ender-minify/lib/main.js')].exports
+      require.cache[path.join(__dirname, '../../node_modules/ender-minify/lib/main.js')].exports = this.enderMinifyStub
+      this.enderMinifyStub.minifiers = this.originalEM.minifiers
+      this.enderMinifyStub.closureLevels = this.originalEM.closureLevels
+      this.enderMinifyStub.callsArgWith(3, null, this.resultArg)
 
-      this.expectMinify    = function (minifier, expectedOptions) {
-        this.mockEnderMinify
-          .expects('minify')
-          .once()
-          .withArgs(minifier, this.sourceArg, expectedOptions)
-          .callsArgWith(3, null, this.resultArg)
-      }.bind(this)
-
-      this.runTest         = function (parsedArgs, done) {
-        minify.minify(parsedArgs, this.sourceArg, function (err, result) {
+      this.runTest         = function (minifier, expectedOptions, parsedArgs, done) {
+          require.cache[path.join(__dirname, '../../lib/minify.js')] = null
+          require('../../lib/minify').minify(parsedArgs, this.sourceArg, function (err, result) {
           refute(err)
           assert.same(result, this.resultArg)
+          assert.equals(this.enderMinifyStub.callCount, 1)
+          assert.equals(this.enderMinifyStub.getCall(0).args.length, 4)
+          assert.equals(this.enderMinifyStub.getCall(0).args[0], minifier)
+          assert.same(this.enderMinifyStub.getCall(0).args[1], this.sourceArg)
+          assert.equals(this.enderMinifyStub.getCall(0).args[2], expectedOptions)
           done()
         }.bind(this))
       }.bind(this)
     }
 
+  , tearDown: function () {
+      require.cache[path.join(__dirname, '../../node_modules/ender-minify/lib/main.js')].exports = this.originalEM
+      require.cache[path.join(__dirname, '../../lib/minify.js')] = null
+    }
+
   , 'test basic minify, default to uglify': function (done) {
       var parsedArgs      = { foo: 'bar' } // shouldn't see this come through
         , expectedOptions = {}
-
-      this.expectMinify('uglify', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('uglify', expectedOptions, parsedArgs, done)
     }
 
   , 'test closure default options': function (done) {
       var parsedArgs      = { foo: 'bar', minifier: 'closure' }
         , expectedOptions = {}
-
-      this.expectMinify('closure', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('closure', expectedOptions, parsedArgs, done)
     }
 
   , 'test closure level option (whitespace)': function (done) {
       var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'whitespace' }
         , expectedOptions = { level: 'whitespace' }
-
-      this.expectMinify('closure', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('closure', expectedOptions, parsedArgs, done)
     }
 
   , 'test closure level option (simple)': function (done) {
       var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'simple' }
         , expectedOptions = { level: 'simple' }
-
-      this.expectMinify('closure', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('closure', expectedOptions, parsedArgs, done)
     }
 
   , 'test closure level option (advanced)': function (done) {
       var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'advanced' }
         , expectedOptions = { level: 'advanced' }
-
-      this.expectMinify('closure', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('closure', expectedOptions, parsedArgs, done)
     }
 
   , 'test closure externs option': function (done) {
       var parsedArgs      = { foo: 'bar', minifier: 'closure', externs: [ 'bing', 'bang' ] }
         , expectedOptions = { externs: [ 'bing', 'bang' ] }
-
-      this.expectMinify('closure', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('closure', expectedOptions, parsedArgs, done)
     }
 
   , 'test closure level and externs options': function (done) {
       var parsedArgs      = { foo: 'bar', minifier: 'closure', level: 'advanced', externs: [ 'woo', 'hoo' ] }
         , expectedOptions = { level: 'advanced', externs: [ 'woo', 'hoo' ] }
 
-      this.expectMinify('closure', expectedOptions)
-      this.runTest(parsedArgs, done)
+      this.runTest('closure', expectedOptions, parsedArgs, done)
     }
 })

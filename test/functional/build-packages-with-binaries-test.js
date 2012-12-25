@@ -24,11 +24,9 @@
 
 
 var testCase = require('buster').testCase
-  , fs = require('fs')
-  , path = require('path')
   , functionalCommon = require('./common')
 
-testCase('Functional: build packages which contain binaries', {
+testCase('Functional: build packages that contain binaries', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'
