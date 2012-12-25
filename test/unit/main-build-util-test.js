@@ -26,8 +26,8 @@
 var buster = require('buster')
   , path = require('path')
   , assert = buster.assert
+  , packageUtil = require('ender-repository').util
   , buildUtil = require('../../lib/main-build-util')
-  , packageUtil = require('../../lib/package-util')
 
 buster.testCase('Build util', {
     'packageList': {

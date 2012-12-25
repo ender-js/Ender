@@ -9,9 +9,9 @@
     ]
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
-  , "homepage": "https://ender.no.de"
+  , "homepage": "https://ender.jit.su"
   , "dependencies": {
-        "ender-repository" : "~0.0.1"
+        "ender-repository" : "~0.0.2"
       , "ender-minify"     : "~0.0.4"
       , "colors"           : "~0.6.0"
       , "async"            : "~0.1.22"

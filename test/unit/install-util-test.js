@@ -26,9 +26,9 @@
 var buster = require('buster')
   , path = require('path')
   , assert = buster.assert
+  , packageUtil = require('ender-repository').util
   , DependencyTree = require('../../lib/dependency-tree.js')
   , installUtil = require('../../lib/install-util')
-  , packageUtil = require('../../lib/package-util')
 
 buster.testCase('Install util', {
     'findMissingDependencies': {

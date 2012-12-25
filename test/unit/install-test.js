@@ -40,7 +40,8 @@ testCase('Install', {
       this.optionsArg         = { options: 1 }
       this.packagesArg        = [ 'yee', 'haw' ] // length 2
 
-      this.mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
+      //this.mockUtil.expects('mkdir').once().withArgs('node_modules').callsArg(1)
+      // done by mkdirp now, probably should be mocked out...
       this.mockRepository.expects('setup').once().callsArg(0)
       this.mockRepository.expects('packup').once().callsArg(1)
 

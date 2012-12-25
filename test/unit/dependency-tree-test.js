@@ -26,8 +26,9 @@
 var buster = require('buster')
   , path = require('path')
   , assert = buster.assert
+  , packageUtil    = require('ender-repository').util
   , DependencyTree = require('../../lib/dependency-tree')
-  , packageUtil = require('../../lib/package-util')
+
 
 buster.testCase('Dependency tree', {
     'constructDependencyTree': {
