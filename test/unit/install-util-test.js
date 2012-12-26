@@ -23,17 +23,16 @@
  */
 
 
-var buster = require('buster')
-  , path = require('path')
-  , assert = buster.assert
-  , packageUtil = require('ender-repository').util
-  , DependencyTree = require('../../lib/dependency-tree.js')
-  , installUtil = require('../../lib/install-util')
+var buster          = require('buster')
+  , path            = require('path')
+  , assert          = buster.assert
+  , DependencyGraph = require('ender-dependency-graph')
+  , installUtil     = require('../../lib/install-util')
 
 buster.testCase('Install util', {
     'findMissingDependencies': {
         'test no dependencies': function () {
-          var originalTree = DependencyTree.create({}, {
+          var originalTree = DependencyGraph.create({}, {
                   'pkg1': { dependencies: {}, packageJSON: { name: 'pkg1' }, parents: [ 'foo' ] }
                 , 'some/path/to/pkg2': { dependencies: {}, packageJSON: { name: 'pkg2' },parents: [ 'foo', 'bar' ] }
               })
@@ -44,7 +43,7 @@ buster.testCase('Install util', {
         }
 
       , 'simple dependencies (no missing)': function () {
-          var originalTree = DependencyTree.create({}, {
+          var originalTree = DependencyGraph.create({}, {
                   'apkg-2': {
                       parents: []
                     , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
@@ -93,7 +92,7 @@ buster.testCase('Install util', {
 
       , 'simple dependencies (with missing)': {
             'setUp': function () {
-              this.originalTree = DependencyTree.create({}, {
+              this.originalTree = DependencyGraph.create({}, {
                   'apkg-2': {
                       parents: []
                     , packageJSON: { name: 'apkg-2', dependencies: { 'mypkg-1': '*' } }
@@ -163,7 +162,7 @@ buster.testCase('Install util', {
 
       , 'missing deps exist in other branches': {
             'setUp': function () {
-              this.originalTree = DependencyTree.create({}, {
+              this.originalTree = DependencyGraph.create({}, {
                   'mypkg-1': 'missing'
                 , 'apkg-2': {
                       parents: []
@@ -237,7 +236,7 @@ buster.testCase('Install util', {
     }
 
   , 'findPathDependencies': function () {
-        var originalTree = DependencyTree.create({}, {
+        var originalTree = DependencyGraph.create({}, {
                 'apkg-2': {
                     parents: []
                   , packageJSON: { name: 'apkg-2', dependencies: { './mypkg-1': '*' } }

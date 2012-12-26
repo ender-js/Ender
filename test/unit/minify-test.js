@@ -25,7 +25,6 @@
 
 var buster = require('buster')
   , assert = buster.assert
-  , path   = require('path')
 
 buster.testCase('Minify', {
     'setUp': function () {
@@ -33,14 +32,14 @@ buster.testCase('Minify', {
       this.sourceArg       = { source: 1 }
       this.resultArg       = { result: 1 }
       require('ender-minify')
-      this.originalEM = require.cache[path.join(__dirname, '../../node_modules/ender-minify/lib/main.js')].exports
-      require.cache[path.join(__dirname, '../../node_modules/ender-minify/lib/main.js')].exports = this.enderMinifyStub
+      this.originalEM = require.cache[require.resolve('ender-minify')].exports
+      require.cache[require.resolve('ender-minify')].exports = this.enderMinifyStub
       this.enderMinifyStub.minifiers = this.originalEM.minifiers
       this.enderMinifyStub.closureLevels = this.originalEM.closureLevels
       this.enderMinifyStub.callsArgWith(3, null, this.resultArg)
 
       this.runTest         = function (minifier, expectedOptions, parsedArgs, done) {
-          require.cache[path.join(__dirname, '../../lib/minify.js')] = null
+          require.cache[require.resolve('../../lib/minify.js')] = null
           require('../../lib/minify').minify(parsedArgs, this.sourceArg, function (err, result) {
           refute(err)
           assert.same(result, this.resultArg)
@@ -55,8 +54,8 @@ buster.testCase('Minify', {
     }
 
   , tearDown: function () {
-      require.cache[path.join(__dirname, '../../node_modules/ender-minify/lib/main.js')].exports = this.originalEM
-      require.cache[path.join(__dirname, '../../lib/minify.js')] = null
+      require.cache[require.resolve('ender-minify')].exports = this.originalEM
+      require.cache[require.resolve('../../lib/minify.js')] = null
     }
 
   , 'test basic minify, default to uglify': function (done) {

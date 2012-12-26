@@ -23,25 +23,31 @@
  */
 
 
-var testCase = require('buster').testCase
-  , mainInfo = require('../../lib/main-info')
-  , mainInfoOut = require('../../lib/output/main-info-output').create()
-  , mainInfoUtil = require('../../lib/main-info-util')
-  , DependencyTree = require('../../lib/dependency-tree')
-  , SourceBuild = require('../../lib/source-build')
+var testCase        = require('buster').testCase
+  , mainInfo
+  , mainInfoOut     = require('../../lib/output/main-info-output').create()
+  , mainInfoUtil    = require('../../lib/main-info-util')
 
 testCase('Info', {
     'setUp': function () {
       this.runTest = function (options, expectedFilename, done) {
         var mainInfoOutMock     = this.mock(mainInfoOut)
           , mainInfoUtilMock    = this.mock(mainInfoUtil)
-          , dependencyTreeMock  = this.mock(DependencyTree)
+          , dependencyGraphStub = this.stub()
+          , archyTreeStub       = this.stub()
           , packagesArg         = { packages: 1 }
           , optionsPackagesArg  = { optionsPackages: 1 }
           , sizesArg            = { sizes: 1 }
           , contextArg          = { options: { packages: optionsPackagesArg }, packages: packagesArg }
           , treeArg             = { tree: 1 }
           , archyTreeArg        = { archyTree: 1 }
+
+        require('ender-dependency-graph')
+        this.originalEDG = require.cache[require.resolve('ender-dependency-graph')].exports
+        require.cache[require.resolve('../../lib/main-info')] = null
+        require.cache[require.resolve('ender-dependency-graph')].exports = dependencyGraphStub
+        dependencyGraphStub.archyTree = archyTreeStub
+        mainInfo = require('../../lib/main-info')
 
         mainInfoUtilMock
           .expects('sizes')
@@ -53,18 +59,10 @@ testCase('Info', {
           .once()
           .withArgs(expectedFilename)
           .callsArgWith(1, null, contextArg)
-        dependencyTreeMock
-          .expects('generate')
-          .once()
-          .withArgs(contextArg.options, optionsPackagesArg)
+        dependencyGraphStub.callsArgWith(2, null, treeArg)
             // important we use packages from context->options->packages which is the command-line packages
             // and not context->packages which is the full list of packages in the build
-          .callsArgWith(2, null, treeArg)
-        mainInfoUtilMock
-          .expects('buildArchyTree')
-          .once()
-          .withExactArgs(contextArg.options, optionsPackagesArg, treeArg)
-          .returns(archyTreeArg)
+        archyTreeStub.returns(archyTreeArg)
         mainInfoOutMock
           .expects('buildInfo')
           .once()
@@ -72,10 +70,24 @@ testCase('Info', {
 
         mainInfo.exec(options, mainInfoOut, function (err) {
           refute(err)
+          assert.equals(dependencyGraphStub.callCount, 1)
+          assert.equals(dependencyGraphStub.getCall(0).args.length, 3)
+          assert.equals(dependencyGraphStub.getCall(0).args[0], contextArg.options)
+          assert.equals(dependencyGraphStub.getCall(0).args[1], optionsPackagesArg)
+          assert.equals(archyTreeStub.callCount, 1)
+          assert.equals(archyTreeStub.getCall(0).args.length, 2)
+          assert.equals(archyTreeStub.getCall(0).args[0], optionsPackagesArg)
+          assert.equals(archyTreeStub.getCall(0).args[1], treeArg)
           done()
         })
       }
     }
+
+  , 'tearDown': function () {
+      require.cache[require.resolve('ender-dependency-graph')].exports = this.originalEDG
+      require.cache[require.resolve('../../lib/main-info')] = null
+    }
+
   , 'test no args': function (done) {
       this.runTest({}, 'ender.js', done)
     }
