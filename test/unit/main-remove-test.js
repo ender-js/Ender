@@ -26,14 +26,14 @@
 var testCase       = require('buster').testCase
   , repository     = require('ender-repository')
   , requireSubvert = require('require-subvert')(__dirname)
-  , util           = require('../../lib/util')
-  , mainBuild      = require('../../lib/main-build')
+  , util
+  , mainBuild
   , mainRemove
 
 testCase('Remove', {
     'test basic remove': function (done) {
-      var utilMock         = this.mock(util)
-        , mainBuildMock    = this.mock(mainBuild)
+      var utilMock
+        , mainBuildMock
         , repositoryMock   = this.mock(repository)
         , parseContextStub = this.stub()
         , optionsArg       = {
@@ -55,11 +55,15 @@ testCase('Remove', {
           }
         , outArg = { out: 1 }
 
-      utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
       requireSubvert.subvert('../../lib/parse-context', parseContextStub)
       parseContextStub.callsArgWith(1, null, contextArg)
-      mainRemove = requireSubvert.require('../../lib/main-remove')
+      util          = requireSubvert.require('../../lib/util')
+      mainBuild     = requireSubvert.require('../../lib/main-build')
+      utilMock      = this.mock(util)
+      mainBuildMock = this.mock(mainBuild)
+      mainRemove    = requireSubvert.require('../../lib/main-remove')
 
+      utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
       mainBuildMock.expects('exec').once().withArgs(expectedBuildOptions, outArg).callsArg(2)
       repositoryMock.expects('setup').once().callsArg(0)
       repositoryMock.expects('uninstall').once().withArgs(optionsArg.packages).callsArgWith(1)

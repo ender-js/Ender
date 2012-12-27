@@ -23,42 +23,40 @@
  */
 
 
-var testCase      = require('buster').testCase
-  , buildUtil     = require('../../lib/main-build-util')
-  , install       = require('../../lib/install')
-  , util          = require('../../lib/util')
-  , SourcePackage = require('../../lib/source-package')
-  , SourceBuild   = require('../../lib/source-build')
-  , build         = require('../../lib/main-build')
-  , buildOutput   = require('../../lib/output/main-build-output').create()
-  , info          = require('../../lib/main-info')
-  , write         = require('../../lib/write')
+var testCase       = require('buster').testCase
+  , requireSubvert = require('require-subvert')(__dirname)
+  , buildUtil      = require('../../lib/main-build-util')
+  , install
+  , info
+  , build
+
+require('../../lib/output/main-build-output').create()
 
 testCase('Build', {
     // OK, this is a bit of a mess, more of an integration test, but it tests the ful
     // build process and that it calls everything we expect it to
     'test standard main-build interaction': function (done) {
-      var mockUtil          = this.mock(util)
-        , mockBuildUtil     = this.mock(buildUtil)
-        , mockInstall       = this.mock(install)
-        , mockInfo          = this.mock(info)
+      var mockBuildUtil     = this.mock(buildUtil)
+        , mockInstall
+        , mockInfo
         , out               = require('../../lib/output/main-build-output').create(1)
         , outMock           = this.mock(out)
-        , sourcePackage     = SourcePackage.create()
-        , SourcePackageMock = this.mock(SourcePackage)
-        , sourceBuild       = SourceBuild.create()
-        , sourceBuildMock   = this.mock(sourceBuild)
-        , SourceBuildMock   = this.mock(SourceBuild)
-        , writeMock         = this.mock(write)
+        , enderBuilderStub  = this.stub()
 
         , optionsArg           = { options: 1 }
         , packagesArg          = [ 'foobarbang' ]
         , installedPackagesArg = [ 1, 2, 3 ]
         , dependencyTreeArg    = { dependencyTree: 1 }
         , localizedArg         = [ 'foobar' ]
-        , packageNameArg       = { packageName: 1 }
-        , parentsArg           = { parents: 1 }
-        , dataArg              = { packageJSON: { packageJSON: 1, name: 'foobar' } }
+        , filenameArg          = { filename: 1 }
+
+      enderBuilderStub.callsArgWith(3, null, filenameArg)
+      requireSubvert.subvert('ender-builder', enderBuilderStub)
+      info = requireSubvert.require('../../lib/main-info')
+      install = requireSubvert.require('../../lib/install')
+      mockInfo = this.mock(info)
+      mockInstall = this.mock(install)
+      build = requireSubvert.require('../../lib/main-build')
 
       mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
@@ -68,32 +66,21 @@ testCase('Build', {
         .withArgs(optionsArg, packagesArg)
         .callsArgWith(2, null, installedPackagesArg, dependencyTreeArg)
       outMock.expects('installedFromRepository').once().withArgs(installedPackagesArg.length)
-      SourceBuildMock.expects('create').once().withExactArgs(optionsArg).returns(sourceBuild)
       dependencyTreeArg.localizePackageList = this.stub().returns(localizedArg)
-      mockUtil.expects('getRootPackageName').once().withExactArgs(optionsArg).returns(localizedArg)
-      dependencyTreeArg.forEachUniqueOrderedDependency = this.stub()
-      SourcePackageMock
-        .expects('create')
-        .once()
-        .withExactArgs(packageNameArg, parentsArg, false, dataArg.packageJSON, optionsArg)
-        .returns(sourcePackage)
-      sourceBuildMock.expects('addPackage').once().withArgs(sourcePackage)
       outMock.expects('finishedAssembly').once()
-      writeMock.expects('write').once().withArgs(optionsArg, sourceBuild, out).callsArg(3)
       mockInfo
         .expects('generateAndPrint')
         .once()
-        .withArgs(optionsArg, out, 'ender.js', optionsArg, localizedArg, dependencyTreeArg)
+        .withArgs(optionsArg, out, filenameArg, optionsArg, localizedArg, dependencyTreeArg)
         .callsArg(6)
 
       // execute
       build.exec(optionsArg, out, done)
 
-      assert(dependencyTreeArg.forEachUniqueOrderedDependency.calledOnce)
-      assert(dependencyTreeArg.forEachUniqueOrderedDependency.calledWith(localizedArg))
-      dependencyTreeArg.forEachUniqueOrderedDependency.lastCall.args[1](packageNameArg, parentsArg, dataArg)
-
       assert(true) // required, buster bug
     }
-})
 
+  , 'tearDown': function () {
+      requireSubvert.cleanUp()
+    }
+})

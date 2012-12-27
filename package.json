@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "0.9.10-dev"
+  , "version": "0.9.11-dev"
   , "authors": [
         "Jacob Thornton @fat <jacob@twitter.com> (https://github.com/fat)"
       , "Dustin Diaz @ded <dustin@obvious.com> (https://github.com/ded)"
@@ -11,12 +11,13 @@
   , "main": "./lib/main.js"
   , "homepage": "https://ender.jit.su"
   , "dependencies": {
-        "ender-repository" : "0.0.2"
-      , "ender-minify"     : "0.1.0"
-      , "ender-dependency-graph"
-                           : "0.0.1"
-      , "ender-args-parser"
-                           : "0.0.1"
+
+        "ender-repository"       : "~0.0.2"
+      , "ender-minify"           : "~0.1.0"
+      , "ender-dependency-graph" : "~0.0.1"
+      , "ender-args-parser"      : "~0.0.1"
+      , "ender-builder"          : "~0.0.2"
+
       , "colors"           : "~0.6.0"
       , "async"            : "~0.1.22"
       , "hogan.js"         : "~2.0.0"
@@ -35,7 +36,7 @@
       , "rimraf"           : "~2.1.1"
       , "jshint"           : "~0.9.1"
       , "mkfiletree"       : "~0.0.0"
-      , "require-subvert"  : "~0.0.0"
+      , "require-subvert"  : "~0.0.1"
     }
   , "bin": {
         "ender"       : "./bin/ender"

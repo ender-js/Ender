@@ -23,11 +23,11 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , zlib = require('zlib')
-  , minify = require('../../lib/minify')
-  , mainInfoUtil = require('../../lib/main-info-util')
+var testCase        = require('buster').testCase
+  , enderBuilder    = require('ender-builder')
+  , fs              = require('fs')
+  , zlib            = require('zlib')
+  , mainInfoUtil    = require('../../lib/main-info-util')
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , _i = 100
@@ -36,7 +36,7 @@ testCase('Info util', {
     'test sizes': function (done) {
       var fsMock            = this.mock(fs)
         , zlibMock          = this.mock(zlib)
-        , minifyMock        = this.mock(minify)
+        , enderBuilderMock  = this.mock(enderBuilder)
         , filenameArg       = { filename: 1 }
         , optionsArg        = { options: 1 }
         , fileContentsArg   = { fileContents: 1, length: _i++ }
@@ -49,7 +49,7 @@ testCase('Info util', {
           }
 
       fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, null, fileContentsArg)
-      minifyMock.expects('minify').once().withArgs(optionsArg, fileContentsArg).callsArgWith(2, null, minifyContentsArg)
+      enderBuilderMock.expects('minify').once().withArgs(optionsArg, fileContentsArg).callsArgWith(2, null, minifyContentsArg)
       zlibMock.expects('gzip').once().withArgs(minifyContentsArg).callsArgWith(1, null, gzipContentsArg)
 
       mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
