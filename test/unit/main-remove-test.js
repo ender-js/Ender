@@ -23,26 +23,22 @@
  */
 
 
-var testCase = require('buster').testCase
-  , repository = require('ender-repository')
-  , util = require('../../lib/util')
-  , mainBuild = require('../../lib/main-build')
-  , mainInfoUtil = require('../../lib/main-info-util')
-  , mainRemove = require('../../lib/main-remove')
+var testCase       = require('buster').testCase
+  , repository     = require('ender-repository')
+  , requireSubvert = require('require-subvert')(__dirname)
+  , util           = require('../../lib/util')
+  , mainBuild      = require('../../lib/main-build')
+  , mainRemove
 
 testCase('Remove', {
     'test basic remove': function (done) {
-      var utilMock = this.mock(util)
-        , mainInfoUtilMock = this.mock(mainInfoUtil)
-        , mainBuildMock = this.mock(mainBuild)
-        , repositoryMock = this.mock(repository)
-        , optionsArg = {
+      var utilMock         = this.mock(util)
+        , mainBuildMock    = this.mock(mainBuild)
+        , repositoryMock   = this.mock(repository)
+        , parseContextStub = this.stub()
+        , optionsArg       = {
               packages: [ 'bing', 'bar' ]
             , main: 'remove'
-            , noop: true
-          }
-        , expectedModifiedOptions = {
-              packages: [] // expect it to not pass through the packages that we want to remove
             , noop: true
           }
         , filenameArg = { filename: 1 }
@@ -60,7 +56,10 @@ testCase('Remove', {
         , outArg = { out: 1 }
 
       utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
-      mainInfoUtilMock.expects('parseContext').once().withArgs(filenameArg).callsArgWith(1, null, contextArg)
+      requireSubvert.subvert('../../lib/parse-context', parseContextStub)
+      parseContextStub.callsArgWith(1, null, contextArg)
+      mainRemove = requireSubvert.require('../../lib/main-remove')
+
       mainBuildMock.expects('exec').once().withArgs(expectedBuildOptions, outArg).callsArg(2)
       repositoryMock.expects('setup').once().callsArg(0)
       repositoryMock.expects('uninstall').once().withArgs(optionsArg.packages).callsArgWith(1)
@@ -68,6 +67,12 @@ testCase('Remove', {
 
       mainRemove.exec(optionsArg, outArg, done)
 
-      assert(true) // required for buster, bug
+      assert.equals(parseContextStub.callCount, 1)
+      assert.equals(parseContextStub.getCall(0).args.length, 2)
+      assert.equals(parseContextStub.getCall(0).args[0], filenameArg)
+    }
+
+  , 'tearDown': function () {
+      requireSubvert.cleanUp()
     }
 })

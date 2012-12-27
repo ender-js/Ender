@@ -23,10 +23,11 @@
  */
 
 
-var testCase        = require('buster').testCase
+var testCase       = require('buster').testCase
+  , requireSubvert = require('require-subvert')(__dirname)
+  , mainInfoOut    = require('../../lib/output/main-info-output').create()
+  , mainInfoUtil   = require('../../lib/main-info-util')
   , mainInfo
-  , mainInfoOut     = require('../../lib/output/main-info-output').create()
-  , mainInfoUtil    = require('../../lib/main-info-util')
 
 testCase('Info', {
     'setUp': function () {
@@ -35,6 +36,7 @@ testCase('Info', {
           , mainInfoUtilMock    = this.mock(mainInfoUtil)
           , dependencyGraphStub = this.stub()
           , archyTreeStub       = this.stub()
+          , parseContextStub    = this.stub()
           , packagesArg         = { packages: 1 }
           , optionsPackagesArg  = { optionsPackages: 1 }
           , sizesArg            = { sizes: 1 }
@@ -42,27 +44,21 @@ testCase('Info', {
           , treeArg             = { tree: 1 }
           , archyTreeArg        = { archyTree: 1 }
 
-        require('ender-dependency-graph')
-        this.originalEDG = require.cache[require.resolve('ender-dependency-graph')].exports
-        require.cache[require.resolve('../../lib/main-info')] = null
-        require.cache[require.resolve('ender-dependency-graph')].exports = dependencyGraphStub
         dependencyGraphStub.archyTree = archyTreeStub
-        mainInfo = require('../../lib/main-info')
+        requireSubvert.subvert('ender-dependency-graph', dependencyGraphStub)
+        requireSubvert.subvert('../../lib/parse-context', parseContextStub)
+        mainInfo = requireSubvert.require('../../lib/main-info')
 
         mainInfoUtilMock
           .expects('sizes')
           .once()
           .withArgs(contextArg.options, expectedFilename)
           .callsArgWith(2, null, sizesArg)
-        mainInfoUtilMock
-          .expects('parseContext')
-          .once()
-          .withArgs(expectedFilename)
-          .callsArgWith(1, null, contextArg)
         dependencyGraphStub.callsArgWith(2, null, treeArg)
             // important we use packages from context->options->packages which is the command-line packages
             // and not context->packages which is the full list of packages in the build
         archyTreeStub.returns(archyTreeArg)
+        parseContextStub.callsArgWith(1, null, contextArg)
         mainInfoOutMock
           .expects('buildInfo')
           .once()
@@ -78,14 +74,16 @@ testCase('Info', {
           assert.equals(archyTreeStub.getCall(0).args.length, 2)
           assert.equals(archyTreeStub.getCall(0).args[0], optionsPackagesArg)
           assert.equals(archyTreeStub.getCall(0).args[1], treeArg)
+          assert.equals(parseContextStub.callCount, 1)
+          assert.equals(parseContextStub.getCall(0).args.length, 2)
+          assert.equals(parseContextStub.getCall(0).args[0], expectedFilename)
           done()
         })
       }
     }
 
   , 'tearDown': function () {
-      require.cache[require.resolve('ender-dependency-graph')].exports = this.originalEDG
-      require.cache[require.resolve('../../lib/main-info')] = null
+      requireSubvert.cleanUp()
     }
 
   , 'test no args': function (done) {

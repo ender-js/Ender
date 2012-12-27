@@ -23,39 +23,37 @@
  */
 
 
-var buster = require('buster')
-  , assert = buster.assert
+var buster         = require('buster')
+  , assert         = buster.assert
+  , requireSubvert = require('require-subvert')(__dirname)
 
 buster.testCase('Minify', {
     'setUp': function () {
-      this.enderMinifyStub = this.stub()
-      this.sourceArg       = { source: 1 }
-      this.resultArg       = { result: 1 }
-      require('ender-minify')
-      this.originalEM = require.cache[require.resolve('ender-minify')].exports
-      require.cache[require.resolve('ender-minify')].exports = this.enderMinifyStub
-      this.enderMinifyStub.minifiers = this.originalEM.minifiers
-      this.enderMinifyStub.closureLevels = this.originalEM.closureLevels
-      this.enderMinifyStub.callsArgWith(3, null, this.resultArg)
+      var enderMinifyStub = this.stub()
+        , sourceArg       = { source: 1 }
+        , resultArg       = { result: 1 }
+
+      enderMinifyStub.minifiers = require('ender-minify').minifiers
+      enderMinifyStub.closureLevels = require('ender-minify').closureLevels
+      enderMinifyStub.callsArgWith(3, null, resultArg)
+      requireSubvert.subvert('ender-minify', enderMinifyStub)
 
       this.runTest         = function (minifier, expectedOptions, parsedArgs, done) {
-          require.cache[require.resolve('../../lib/minify.js')] = null
-          require('../../lib/minify').minify(parsedArgs, this.sourceArg, function (err, result) {
+          requireSubvert.require('../../lib/minify').minify(parsedArgs, sourceArg, function (err, result) {
           refute(err)
-          assert.same(result, this.resultArg)
-          assert.equals(this.enderMinifyStub.callCount, 1)
-          assert.equals(this.enderMinifyStub.getCall(0).args.length, 4)
-          assert.equals(this.enderMinifyStub.getCall(0).args[0], minifier)
-          assert.same(this.enderMinifyStub.getCall(0).args[1], this.sourceArg)
-          assert.equals(this.enderMinifyStub.getCall(0).args[2], expectedOptions)
+          assert.same(result, resultArg)
+          assert.equals(enderMinifyStub.callCount, 1)
+          assert.equals(enderMinifyStub.getCall(0).args.length, 4)
+          assert.equals(enderMinifyStub.getCall(0).args[0], minifier)
+          assert.same(enderMinifyStub.getCall(0).args[1], sourceArg)
+          assert.equals(enderMinifyStub.getCall(0).args[2], expectedOptions)
           done()
         }.bind(this))
       }.bind(this)
     }
 
   , tearDown: function () {
-      require.cache[require.resolve('ender-minify')].exports = this.originalEM
-      require.cache[require.resolve('../../lib/minify.js')] = null
+      requireSubvert.cleanUp()
     }
 
   , 'test basic minify, default to uglify': function (done) {

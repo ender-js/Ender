@@ -23,10 +23,11 @@
  */
 
 
-var testCase        = require('buster').testCase
-  , repository      = require('ender-repository')
-  , util            = require('../../lib/util')
-  , installUtil     = require('../../lib/install-util')
+var testCase       = require('buster').testCase
+  , repository     = require('ender-repository')
+  , requireSubvert = require('require-subvert')(__dirname)
+  , util           = require('../../lib/util')
+  , installUtil    = require('../../lib/install-util')
   , install
 
 require('ender-dependency-graph')
@@ -37,10 +38,8 @@ testCase('Install', {
       this.mockInstallUtil     = this.mock(installUtil)
       this.mockRepository      = this.mock(repository)
       this.dependencyGraphStub = this.stub()
-      this.originalEDG         = require.cache[require.resolve('ender-dependency-graph')].exports
-      require.cache[require.resolve('ender-dependency-graph')].exports = this.dependencyGraphStub
-      require.cache[require.resolve('../../lib/install')] = null
-      install                  = require('../../lib/install')
+      requireSubvert.subvert('ender-dependency-graph', this.dependencyGraphStub)
+      install                  = requireSubvert.require('../../lib/install')
 
       this.optionsArg          = { options: 1 }
       this.packagesArg         = [ 'yee', 'haw' ] // length 2
@@ -97,8 +96,7 @@ testCase('Install', {
     }
 
   , tearDown: function () {
-      require.cache[require.resolve('ender-dependency-graph')].exports = this.originalEDG
-      require.cache[require.resolve('../../lib/install.js')] = null
+      requireSubvert.cleanUp()
     }
 
   , 'test basic one package install, already available': function (done) {

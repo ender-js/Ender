@@ -28,8 +28,6 @@ var testCase = require('buster').testCase
   , zlib = require('zlib')
   , minify = require('../../lib/minify')
   , mainInfoUtil = require('../../lib/main-info-util')
-  , mainBuildUtil = require('../../lib/main-build-util')
-  , SourceBuild = require('../../lib/source-build')
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , _i = 100
@@ -91,25 +89,6 @@ testCase('Info util', {
         assert(err instanceof FilesystemError)
         assert.same(err.cause, errArg)
         assert.same(err.message, errArg.message)
-        done()
-      })
-    }
-
-  , 'test parseContest': function (done) {
-      var sourceBuildMock = this.mock(SourceBuild)
-          , optionsArg    = { options: 1 }
-          , packagesArg   = { packages: 1 }
-          , filenameArg   = { filename: 1 }
-
-      sourceBuildMock
-        .expects('parseContext')
-        .once()
-        .withArgs(filenameArg)
-        .callsArgWith(1, null, optionsArg, packagesArg)
-
-      mainInfoUtil.parseContext(filenameArg, function (err, data) {
-        refute(err)
-        assert.equals(data, { options: optionsArg, packages: packagesArg })
         done()
       })
     }
