@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "0.9.9-dev"
+  , "version": "0.9.10-dev"
   , "authors": [
         "Jacob Thornton @fat <jacob@twitter.com> (https://github.com/fat)"
       , "Dustin Diaz @ded <dustin@obvious.com> (https://github.com/ded)"
@@ -14,6 +14,8 @@
         "ender-repository" : "0.0.2"
       , "ender-minify"     : "0.1.0"
       , "ender-dependency-graph"
+                           : "0.0.1"
+      , "ender-args-parser"
                            : "0.0.1"
       , "colors"           : "~0.6.0"
       , "async"            : "~0.1.22"

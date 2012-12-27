@@ -25,15 +25,15 @@
 
 var testCase       = require('buster').testCase
   , requireSubvert = require('require-subvert')(__dirname)
+  , argsParser     = require('ender-args-parser')
   , util           = require('../../lib/util')
   , mainBuild      = require('../../lib/main-build')
-  , argsParse      = require('../../lib/args-parse')
   , mainAdd
 
 testCase('Add', {
     'test basic add': function (done) {
       var utilMock           = this.mock(util)
-        , argsParseMock      = this.mock(argsParse)
+        , argsParserMock     = this.mock(argsParser)
         , mainBuildMock      = this.mock(mainBuild)
         , parseContextStub   = this.stub()
         , optionsArg         = { options: 1 }
@@ -47,7 +47,7 @@ testCase('Add', {
       mainAdd = requireSubvert.require('../../lib/main-add')
 
       utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
-      argsParseMock.expects('extend').once().withExactArgs(contextArg.options, optionsArg).returns(extendedOptionsArg)
+      argsParserMock.expects('extend').once().withExactArgs(contextArg.options, optionsArg).returns(extendedOptionsArg)
       mainBuildMock.expects('exec').once().withExactArgs(extendedOptionsArg, outArg, done).callsArg(2)
 
       mainAdd.exec(optionsArg, outArg, done)

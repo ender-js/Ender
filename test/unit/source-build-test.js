@@ -23,11 +23,11 @@
  */
 
 
-var testCase = require('buster').testCase
+var testCase      = require('buster').testCase
+  , argsParser    = require('ender-args-parser')
   , SourcePackage = require('../../lib/source-package')
-  , SourceBuild = require('../../lib/source-build')
-  , minify = require('../../lib/minify')
-  , argsParse = require('../../lib/args-parse')
+  , SourceBuild   = require('../../lib/source-build')
+  , minify        = require('../../lib/minify')
 
 var createExpectedHeader = function (context, packageList) {
       return [
@@ -51,9 +51,9 @@ testCase('Source build', {
         pkg.__defineGetter__('identifier', function () { return identifier }) // sinon can't mock getters
         return pkg
       }
-      this.createArgsParseMock = function (optionsArg, contextArg) {
-        var argsParseMock = this.mock(argsParse)
-        argsParseMock.expects('toContextString').withExactArgs(optionsArg).once().returns(contextArg)
+      this.createArgsParserMock = function (optionsArg, contextArg) {
+        var argsParserMock = this.mock(argsParser)
+        argsParserMock.expects('toContextString').withExactArgs(optionsArg).once().returns(contextArg)
       }
     }
 
@@ -75,7 +75,7 @@ testCase('Source build', {
                 + pkg3Content
             , mockMinify = this.mock(minify)
 
-          this.createArgsParseMock(optionsArg, contextArg)
+          this.createArgsParserMock(optionsArg, contextArg)
           srcBuild.addPackage(pkg1)
           srcBuild.addPackage(pkg2)
           srcBuild.addPackage(pkg3)
@@ -107,7 +107,7 @@ testCase('Source build', {
             , minifiedSource = 'this is minified, these are not the droids you are looking for'
             , mockMinify = this.mock(minify)
 
-          this.createArgsParseMock(optionsArg, contextArg)
+          this.createArgsParserMock(optionsArg, contextArg)
           srcBuild.addPackage(pkg1)
           srcBuild.addPackage(pkg2)
           srcBuild.addPackage(pkg3)
@@ -138,7 +138,7 @@ testCase('Source build', {
                 + '\n\n}.call({});'
             , mockMinify = this.mock(minify)
 
-          this.createArgsParseMock(optionsArg, contextArg)
+          this.createArgsParserMock(optionsArg, contextArg)
           srcBuild.addPackage(pkg1)
           srcBuild.addPackage(pkg2)
           srcBuild.addPackage(pkg3)
@@ -169,7 +169,7 @@ testCase('Source build', {
             , minifiedSource = 'this is minified, these are not the droids you are looking for'
             , mockMinify = this.mock(minify)
 
-          this.createArgsParseMock(optionsArg, contextArg)
+          this.createArgsParserMock(optionsArg, contextArg)
           srcBuild.addPackage(pkg1)
           srcBuild.addPackage(pkg2)
           srcBuild.addPackage(pkg3)

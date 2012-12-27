@@ -25,9 +25,9 @@
 
 var testCase         = require('buster').testCase
   , fs               = require('fs')
+  , argsParser       = require('ender-args-parser')
   , parseContext     = require('../../lib/parse-context')
   , BuildParseError  = require('../../lib/errors').BuildParseError
-  , UnknownMainError = require('../../lib/errors').UnknownMainError
   , FilesystemError  = require('../../lib/errors').FilesystemError
 
 testCase('parseContext', {
@@ -120,7 +120,7 @@ testCase('parseContext', {
         refute(packages)
         assert.equals(err.name, 'BuildParseError')
         assert(err.cause)
-        assert(err.cause instanceof UnknownMainError)
+        assert(err.cause instanceof argsParser.UnknownMainError)
         assert.equals(err.cause.name, 'UnknownMainError')
         done()
       })
