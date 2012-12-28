@@ -23,13 +23,13 @@
  */
 
 
-var buster = require('buster')
-  , childProcess = require('child_process')
-  , fs = require('fs')
-  , path = require('path')
-  , async = require('async')
-  , rimraf = require('rimraf')
-  , util = require('../../lib/util')
+var buster             = require('buster')
+  , childProcess       = require('child_process')
+  , fs                 = require('fs')
+  , path               = require('path')
+  , async              = require('async')
+  , rimraf             = require('rimraf')
+  , tmpDir             = require('os').tmpDir()
   , copyrightCommentRe = /\/\*![\s\S]*?\*\//g
 
   , makeSourceProvideRegex = function (pkg) {
@@ -114,7 +114,7 @@ buster.assertions.add('sourceHasCopyrightComments', {
 })
 
 var mktmpdir = function (callback) {
-      var dir = util.tmpDir + '/ender_test_' + process.pid + '.' + (+new Date()) + '.' + Math.round(Math.random() * 10000)
+      var dir = tmpDir + '/ender_test_' + process.pid + '.' + (+new Date()) + '.' + Math.round(Math.random() * 10000)
 
       fs.mkdir(dir, function (err) {
         callback(err, dir)

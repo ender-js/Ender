@@ -26,7 +26,6 @@
 var testCase       = require('buster').testCase
   , requireSubvert = require('require-subvert')(__dirname)
   , buildUtil      = require('../../lib/main-build-util')
-  , install
   , info
   , build
 
@@ -37,11 +36,11 @@ testCase('Build', {
     // build process and that it calls everything we expect it to
     'test standard main-build interaction': function (done) {
       var mockBuildUtil     = this.mock(buildUtil)
-        , mockInstall
+        , installStub       = this.stub()
         , mockInfo
         , out               = require('../../lib/output/main-build-output').create(1)
         , outMock           = this.mock(out)
-        , enderBuilderStub  = this.stub()
+        , builderStub       = this.stub()
 
         , optionsArg           = { options: 1 }
         , packagesArg          = [ 'foobarbang' ]
@@ -50,21 +49,16 @@ testCase('Build', {
         , localizedArg         = [ 'foobar' ]
         , filenameArg          = { filename: 1 }
 
-      enderBuilderStub.callsArgWith(3, null, filenameArg)
-      requireSubvert.subvert('ender-builder', enderBuilderStub)
+      builderStub.callsArgWith(3, null, filenameArg)
+      requireSubvert.subvert('ender-builder', builderStub)
+      requireSubvert.subvert('ender-installer', installStub)
       info = requireSubvert.require('../../lib/main-info')
-      install = requireSubvert.require('../../lib/install')
       mockInfo = this.mock(info)
-      mockInstall = this.mock(install)
       build = requireSubvert.require('../../lib/main-build')
 
       mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
       outMock.expects('buildInit').once()
-      mockInstall
-        .expects('installPackages')
-        .once()
-        .withArgs(optionsArg, packagesArg)
-        .callsArgWith(2, null, installedPackagesArg, dependencyTreeArg)
+      installStub.callsArgWith(2, null, installedPackagesArg, dependencyTreeArg)
       outMock.expects('installedFromRepository').once().withArgs(installedPackagesArg.length)
       dependencyTreeArg.localizePackageList = this.stub().returns(localizedArg)
       outMock.expects('finishedAssembly').once()
@@ -77,7 +71,15 @@ testCase('Build', {
       // execute
       build.exec(optionsArg, out, done)
 
-      assert(true) // required, buster bug
+      assert.equals(installStub.callCount, 1)
+      assert.equals(installStub.getCall(0).args.length, 3)
+      assert.equals(installStub.getCall(0).args[0], optionsArg)
+      assert.equals(installStub.getCall(0).args[1], packagesArg)
+      assert.equals(builderStub.callCount, 1)
+      assert.equals(builderStub.getCall(0).args.length, 4)
+      assert.equals(builderStub.getCall(0).args[0], optionsArg)
+      assert.equals(builderStub.getCall(0).args[1], packagesArg)
+      assert.equals(builderStub.getCall(0).args[2], dependencyTreeArg)
     }
 
   , 'tearDown': function () {
