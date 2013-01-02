@@ -1,3 +1,9 @@
+0.9.12-dev (1.0-wip) / 2012-12-28
+=================================
+
+ * Heavily refactored code into multiple, separate, packages.
+ * Lots of minor tweaks and fixes
+
 0.9.6-dev (1.0-wip) / 2012-10-16
 ================================
 
