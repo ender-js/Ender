@@ -16,7 +16,7 @@
       , "ender-minify"           : "~0.1.0"
       , "ender-dependency-graph" : "~0.0.1"
       , "ender-args-parser"      : "~0.0.1"
-      , "ender-builder"          : "~0.0.2"
+      , "ender-builder"          : "~0.0.4"
       , "ender-installer"        : "~0.0.0"
 
       , "colors"           : "~0.6.0"

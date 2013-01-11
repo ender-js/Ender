@@ -33,7 +33,7 @@ var buster             = require('buster')
   , copyrightCommentRe = /\/\*![\s\S]*?\*\//g
 
   , makeSourceProvideRegex = function (pkg) {
-      return RegExp('[;, ]provide\\("' + pkg + '",[\\s\\n]*?\\w+\\.exports\\)[;,]')
+      return RegExp('\\Wprovide\\("' + pkg + '",[\\s\\n]*?\\w+\\.exports\\)[;,]')
     }
 
 buster.assertions.add('sourceHasProvide', {
