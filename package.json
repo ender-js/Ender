@@ -1,35 +1,54 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "0.8.11"
+  , "version": "1.0.0-pre1"
   , "authors": [
-      "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
-    , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
-  ]
-  , "keywords": ["ender", "modules", "builder", "framework", "packager"]
-  , "main": "./lib/ender.js"
-  , "homepage": "https://github.com/ender-js/ender"
-  , "engines": {
-      "node": ">= 0.6.0"
-    }
+        "Jacob Thornton @fat <jacob@twitter.com> (https://github.com/fat)"
+      , "Dustin Diaz @ded <dustin@obvious.com> (https://github.com/ded)"
+      , "Rod Vagg @rvagg <rod@vagg.org> (https://github.com/rvagg)"
+    ]
+  , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
+  , "main": "./lib/main.js"
+  , "homepage": "https://ender.jit.su"
   , "dependencies": {
-      "npm": ">= 1.1.26"
-    , "colors": ">= 0.6.0"
-    , "uglify-js": ">= 1.3.0"
-    , "async": ">= 0.1.22"
-    }
-  , "devDependencies": {
-      "sink-test": "*"
+
+        "ender-repository"       : "~0.0.2"
+      , "ender-minify"           : "~0.1.0"
+      , "ender-dependency-graph" : "~0.0.1"
+      , "ender-args-parser"      : "~0.0.1"
+      , "ender-builder"          : "~0.0.4"
+      , "ender-installer"        : "~0.0.0"
+
+      , "colors"           : "~0.6.0"
+      , "async"            : "~0.1.22"
+      , "hogan.js"         : "~2.0.0"
+      , "archy"            : "~0.0.2"
+      , "colors-tmpl"      : "~0.1.0"
+      , "xregexp"          : "~2.0.0"
+      , "errno"            : "~0.0.3"
+      , "glob"             : "~3.1.14"
+
     }
   , "directories": {
-      "lib": "./lib"
-    , "bin": "./bin"
+        "lib"         : "./lib"
+      , "bin"         : "./bin"
+    }
+  , "devDependencies": {
+        "buster"           : "~0.6.12"
+      , "rimraf"           : "~2.1.1"
+      , "jshint"           : "~0.9.1"
+      , "mkfiletree"       : "~0.0.0"
+      , "require-subvert"  : "~0.0.1"
     }
   , "bin": {
-      "ender": "./bin/ender"
+        "ender"       : "./bin/ender"
     }
   , "preferGlobal": true
   , "scripts": {
-      "test": "make test"
+        "test"        : "make alltests"
+    }
+  , "repository": {
+        "type"        : "git"
+      , "url"         : "https://github.com/ender-js/Ender.git"
     }
 }

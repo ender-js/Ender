@@ -1,0 +1,8 @@
+{yellow}- remove:{/yellow}
+  + removes a package from the current ender build
+  + example: {cyan}$ ender remove underscore backbone{/cyan}
+  + note: alternatively you can specify the {yellow}-d{/yellow} flag ({cyan}$ ender -d underscore backbone{/cyan})
+  {red}+ options:{/red}
+  - {yellow}--use{/yellow} (or {yellow}-u{/yellow}) target a specific ender package (without use, ender defaults to local ender.js or ender.min.js)
+    + example: {cyan}$ ender remove -u ../public/js/mootools.js{/cyan}
+  - {yellow}--quiet{/yellow} suppress printing of non-error or warning messages to stdout
