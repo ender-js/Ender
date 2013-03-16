@@ -23,14 +23,16 @@
  */
 
 
-var testCase       = require('buster').testCase
+var buster         = require('bustermove')
+  , assert         = require('referee').assert
+  , refute         = require('referee').refute
   , repository     = require('ender-repository')
   , requireSubvert = require('require-subvert')(__dirname)
   , util
   , mainBuild
   , mainRemove
 
-testCase('Remove', {
+buster.testCase('Remove', {
     'test basic remove': function (done) {
       var utilMock
         , mainBuildMock

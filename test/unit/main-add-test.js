@@ -23,14 +23,16 @@
  */
 
 
-var testCase       = require('buster').testCase
+var buster         = require('bustermove')
+  , assert         = require('referee').assert
+  , refute         = require('referee').refute
   , requireSubvert = require('require-subvert')(__dirname)
   , argsParser     = require('ender-args-parser')
   , util
   , mainBuild
   , mainAdd
 
-testCase('Add', {
+buster.testCase('Add', {
     'test basic add': function (done) {
       var utilMock
         , argsParserMock     = this.mock(argsParser)

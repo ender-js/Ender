@@ -23,11 +23,10 @@
  */
 
 
-var buster = require('buster')
-  , path = require('path')
-  , assert = buster.assert
-  , packageUtil = require('ender-repository').util
-  , buildUtil = require('../../lib/main-build-util')
+var buster      = require('bustermove')
+  , assert      = require('referee').assert
+  , refute      = require('referee').refute
+  , buildUtil   = require('../../lib/main-build-util')
 
 buster.testCase('Build util', {
     'packageList': {

@@ -23,12 +23,12 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , path = require('path')
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
   , functionalCommon = require('./common')
 
-testCase('Functional: build from package.json', {
+buster.testCase('Functional: build from package.json', {
     'setUp': function () {
       this.timeout = 50000
       assert.match.message = '${2}'

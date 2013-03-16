@@ -23,14 +23,16 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , async = require('async')
-  , path = require('path')
-  , rimraf = require('rimraf')
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
+  , fs               = require('fs')
+  , async            = require('async')
+  , path             = require('path')
+  , rimraf           = require('rimraf')
   , functionalCommon = require('./common')
 
-testCase('Functional: refresh', {
+buster.testCase('Functional: refresh', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'

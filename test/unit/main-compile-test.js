@@ -23,18 +23,20 @@
  */
 
 
-var testCase = require('buster').testCase
-  , childProcess = require('child_process')
-  , fs = require('fs')
-  , zlib = require('zlib')
-  , enderMinify = require('ender-minify')
-  , mainCompile = require('../../lib/main-compile')
-  , mainCompileOut = require('../../lib/output/main-compile-output').create()
-  , FilesystemError = require('../../lib/errors').FilesystemError
+var buster            = require('bustermove')
+  , assert            = require('referee').assert
+  , refute            = require('referee').refute
+  , childProcess      = require('child_process')
+  , fs                = require('fs')
+  , zlib              = require('zlib')
+  , enderMinify       = require('ender-minify')
+  , mainCompile       = require('../../lib/main-compile')
+  , mainCompileOut    = require('../../lib/output/main-compile-output').create()
+  , FilesystemError   = require('../../lib/errors').FilesystemError
   , ChildProcessError = require('../../lib/errors').ChildProcessError
-  , CompressionError = require('../../lib/errors').CompressionError
+  , CompressionError  = require('../../lib/errors').CompressionError
 
-testCase('Compile', {
+buster.testCase('Compile', {
     'setUp': function () {
       this.jarPath = enderMinify.closureJar
       this.runTest = function (args, expectedOutputFile, expectedJavaCmd, done) {

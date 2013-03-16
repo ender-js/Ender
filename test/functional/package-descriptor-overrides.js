@@ -23,13 +23,12 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , async = require('async')
-  , path = require('path')
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
   , functionalCommon = require('./common')
 
-testCase('Functional: package descriptor overrides', {
+buster.testCase('Functional: package descriptor overrides', {
     'setUp': function () {
       this.timeout = 60000
       assert.match.message = '${2}'

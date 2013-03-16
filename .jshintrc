@@ -1,5 +1,5 @@
 {
-    "predef": [ "assert", "refute" ]
+    "predef": []
   , "boss": true
   , "bitwise": true
   , "shadow": true

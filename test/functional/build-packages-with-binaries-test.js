@@ -23,10 +23,12 @@
  */
 
 
-var testCase = require('buster').testCase
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
   , functionalCommon = require('./common')
 
-testCase('Functional: build packages that contain binaries', {
+buster.testCase('Functional: build packages that contain binaries', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'

@@ -23,7 +23,9 @@
  */
 
 
-var buster             = require('buster')
+var referee            = require('referee')
+  , assert             = referee.assert
+  , refute             = referee.refute
   , childProcess       = require('child_process')
   , fs                 = require('fs')
   , path               = require('path')
@@ -36,7 +38,7 @@ var buster             = require('buster')
       return RegExp('\\Wprovide\\("' + pkg + '",[\\s\\n]*?\\w+\\.exports\\)[;,]')
     }
 
-buster.assertions.add('sourceHasProvide', {
+referee.add('sourceHasProvide', {
     assert: function (source, pkg, file) {
       var re = makeSourceProvideRegex(pkg)
       source = source || ''
@@ -46,7 +48,7 @@ buster.assertions.add('sourceHasProvide', {
   , assertMessage: '${2} contains provide("${1}") [${times} time(s), expected 1]'
 })
 
-buster.assertions.add('sourceHasStandardWrapFunction', {
+referee.add('sourceHasStandardWrapFunction', {
     assert: function (source, pkg, file) {
       var re = new RegExp('\\s*\\}\\)?\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{')
       source = source || ''
@@ -56,7 +58,7 @@ buster.assertions.add('sourceHasStandardWrapFunction', {
   , assertMessage: '${2} contains standard wrapper function for ${1} [${times} time(s), expected 1]'
 })
 
-buster.assertions.add('sourceContainsProvideStatements', {
+referee.add('sourceContainsProvideStatements', {
     assert: function (source, times, file) {
       var re = makeSourceProvideRegex('[\\w\\-]+')
       source = source || ''
@@ -66,7 +68,7 @@ buster.assertions.add('sourceContainsProvideStatements', {
   , assertMessage: '${2} contains ${1} provide() statements [${times} time(s), expected ${1}]'
 })
 
-buster.assertions.add('sourceHasProvidesInOrder', {
+referee.add('sourceHasProvidesInOrder', {
     assert: function (source, pkg1, pkg2, file) {
       var re1 = makeSourceProvideRegex(pkg1)
         , re2 = makeSourceProvideRegex(pkg2)
@@ -77,35 +79,35 @@ buster.assertions.add('sourceHasProvidesInOrder', {
   , assertMessage: '${3} has provide("${1}") before provide("${2}")'
 })
 
-buster.assertions.add('hasVersionedPackage', {
+referee.add('hasVersionedPackage', {
     assert: function (txt, pkg, sourceName) {
       return new RegExp(pkg + '@\\d+\\.\\d+\\.\\d+').test(txt)
     }
   , assertMessage: '${2} refers to ${1} versioned'
 })
 
-buster.assertions.add('stdoutRefersToNPMPackages', {
+referee.add('stdoutRefersToNPMPackages', {
     assert: function (stdout, packages) {
       return new RegExp('packages: "' + packages + '"').test(stdout)
     }
   , assertMessage: 'stdout refers to \'packages: "${1}"\''
 })
 
-buster.assertions.add('stdoutReportsBuildCommand', {
+referee.add('stdoutReportsBuildCommand', {
     assert: function (stdout, buildCommand) {
       return new RegExp('current build command is:.*' + buildCommand, 'i').test(stdout)
     }
   , assertMessage: 'stdout reports correct build command "${1}"'
 })
 
-buster.assertions.add('stdoutReportsOutputSizes', {
+referee.add('stdoutReportsOutputSizes', {
     assert: function (stdout) {
       return (/current build size is: .*[\d\.]+ kB.* raw, .*[\d\.]+ kB.* minified and .*[\d\.]+ kB.* gzipped/).test(stdout)
     }
   , assertMessage: 'stdout reports build sizes ${0}'
 })
 
-buster.assertions.add('sourceHasCopyrightComments', {
+referee.add('sourceHasCopyrightComments', {
     assert: function (source, expectedComments, sourceName) {
       source = source || ''
       return source.split(copyrightCommentRe).length - 1 == expectedComments

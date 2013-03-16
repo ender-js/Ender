@@ -23,13 +23,15 @@
  */
 
 
-var testCase = require('buster').testCase
-  , repository = require('ender-repository')
-  , searchUtil = require('../../lib/main-search-util')
-  , search = require('../../lib/main-search')
+var buster       = require('bustermove')
+  , assert       = require('referee').assert
+  , refute       = require('referee').refute
+  , repository   = require('ender-repository')
+  , searchUtil   = require('../../lib/main-search-util')
+  , search       = require('../../lib/main-search')
   , searchOutput = require('../../lib/output/main-search-output').create()
 
-testCase('Search', {
+buster.testCase('Search', {
     'test exec() calls setup(), search() and packup() on repository': function (done) {
       var mock = this.mock(repository)
         , terms = 'terms argument'

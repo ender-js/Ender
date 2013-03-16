@@ -34,11 +34,13 @@
       , "bin"         : "./bin"
     }
   , "devDependencies": {
-        "buster"           : "~0.6.12"
-      , "rimraf"           : "~2.1.1"
-      , "jshint"           : "~0.9.1"
-      , "mkfiletree"       : "~0.0.0"
-      , "require-subvert"  : "~0.0.1"
+        "bustermove"       : "*"
+      , "referee"          : "*"
+      , "tap"              : "*"
+      , "rimraf"           : "*"
+      , "jshint"           : "*"
+      , "mkfiletree"       : "*"
+      , "require-subvert"  : "*"
     }
   , "bin": {
         "ender"       : "./bin/ender"

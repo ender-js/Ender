@@ -23,13 +23,13 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , path = require('path')
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
   , functionalCommon = require('./common')
-  , reMultiComments = /\/\*![\s\S]*?\*\//g
+  , reMultiComments  = /\/\*![\s\S]*?\*\//g
 
-testCase('Functional: build with noop', {
+buster.testCase('Functional: build with noop', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'

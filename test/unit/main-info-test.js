@@ -23,13 +23,15 @@
  */
 
 
-var testCase       = require('buster').testCase
+var buster         = require('bustermove')
+  , assert         = require('referee').assert
+  , refute         = require('referee').refute
   , requireSubvert = require('require-subvert')(__dirname)
   , mainInfoOut    = require('../../lib/output/main-info-output').create()
   , mainInfoUtil   = require('../../lib/main-info-util')
   , mainInfo
 
-testCase('Info', {
+buster.testCase('Info', {
     'setUp': function () {
       this.runTest = function (options, expectedFilename, done) {
         var mainInfoOutMock     = this.mock(mainInfoOut)

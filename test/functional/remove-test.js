@@ -23,13 +23,13 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , async = require('async')
-  , path = require('path')
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
+  , async            = require('async')
   , functionalCommon = require('./common')
 
-testCase('Functional: remove', {
+buster.testCase('Functional: remove', {
     'setUp': function () {
       this.timeout = 30000
       assert.match.message = '${2}'

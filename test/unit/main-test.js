@@ -23,10 +23,12 @@
  */
 
 
-var buster        = require('buster')
-  , argsParser    = require('ender-args-parser')
-  , main          = require('../../lib/main')
-  , mainSearch    = require('../../lib/main-search')
+var buster     = require('bustermove')
+  , assert     = require('referee').assert
+  , refute     = require('referee').refute
+  , argsParser = require('ender-args-parser')
+  , main       = require('../../lib/main')
+  , mainSearch = require('../../lib/main-search')
 
 buster.testCase('Main program', {
     'test main has exec': function () {

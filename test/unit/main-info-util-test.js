@@ -23,7 +23,9 @@
  */
 
 
-var testCase        = require('buster').testCase
+var buster          = require('bustermove')
+  , assert          = require('referee').assert
+  , refute          = require('referee').refute
   , enderBuilder    = require('ender-builder')
   , fs              = require('fs')
   , zlib            = require('zlib')
@@ -32,7 +34,7 @@ var testCase        = require('buster').testCase
 
   , _i = 100
 
-testCase('Info util', {
+buster.testCase('Info util', {
     'test sizes': function (done) {
       var fsMock            = this.mock(fs)
         , zlibMock          = this.mock(zlib)

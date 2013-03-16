@@ -23,15 +23,17 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , path = require('path')
-  , colorsTmpl = require('colors-tmpl')
-  , mainHelp = require('../../lib/main-help')
-  , mainHelpOut = require('../../lib/output/main-help-output').create()
+var buster          = require('bustermove')
+  , assert          = require('referee').assert
+  , refute          = require('referee').refute
+  , fs              = require('fs')
+  , path            = require('path')
+  , colorsTmpl      = require('colors-tmpl')
+  , mainHelp        = require('../../lib/main-help')
+  , mainHelpOut     = require('../../lib/output/main-help-output').create()
   , FilesystemError = require('../../lib/errors').FilesystemError
 
-testCase('Help', {
+buster.testCase('Help', {
     'setUp': function () {
       this.runTest = function (options, expectedFilename, exists, done) {
         var fsMock          = this.mock(fs)
@@ -39,7 +41,7 @@ testCase('Help', {
           , mainHelpOutMock = this.mock(mainHelpOut)
           , contentsArg     = { contents: 1 }
           , renderedArg     = { rendered: 1 }
-        
+
         expectedFilename = path.join(path.resolve(__dirname, '../../resources/help/'), expectedFilename)
         fsMock.expects('existsSync').once().withExactArgs(expectedFilename).returns(exists)
         if (exists) {

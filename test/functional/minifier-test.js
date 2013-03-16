@@ -23,7 +23,9 @@
  */
 
 
-var testCase          = require('buster').testCase
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
   , fs                = require('fs')
   , async             = require('async')
   , path              = require('path')
@@ -33,7 +35,7 @@ var testCase          = require('buster').testCase
 
   , javaVersionRe     = /\W1\.\d\.\d/
 
-testCase('Functional: minify', {
+buster.testCase('Functional: minify', {
     'setUp': function (done) {
       this.timeout = 120000
       childProcess.exec('java -version', function (err, stdout, stderr) {

@@ -23,16 +23,18 @@
  */
 
 
-var testCase = require('buster').testCase
-  , fs = require('fs')
-  , path = require('path')
-  , xregexp = require('xregexp')
-  , mainVersion = require('../../lib/main-version')
-  , mainVersionOut = require('../../lib/output/main-version-output').create()
+var buster          = require('bustermove')
+  , assert          = require('referee').assert
+  , refute          = require('referee').refute
+  , fs              = require('fs')
+  , path            = require('path')
+  , xregexp         = require('xregexp')
+  , mainVersion     = require('../../lib/main-version')
+  , mainVersionOut  = require('../../lib/output/main-version-output').create()
   , FilesystemError = require('../../lib/errors').FilesystemError
-  , JSONParseError = require('../../lib/errors').JSONParseError
+  , JSONParseError  = require('../../lib/errors').JSONParseError
 
-testCase('Version', {
+buster.testCase('Version', {
     'test version': function (done) {
       var fsMock = this.mock(fs)
         , outMock = this.mock(mainVersionOut)

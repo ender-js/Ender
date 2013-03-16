@@ -23,14 +23,16 @@
  */
 
 
-var testCase         = require('buster').testCase
-  , fs               = require('fs')
-  , argsParser       = require('ender-args-parser')
-  , parseContext     = require('../../lib/parse-context')
-  , BuildParseError  = require('../../lib/errors').BuildParseError
-  , FilesystemError  = require('../../lib/errors').FilesystemError
+var buster          = require('bustermove')
+  , assert          = require('referee').assert
+  , refute          = require('referee').refute
+  , fs              = require('fs')
+  , argsParser      = require('ender-args-parser')
+  , parseContext    = require('../../lib/parse-context')
+  , BuildParseError = require('../../lib/errors').BuildParseError
+  , FilesystemError = require('../../lib/errors').FilesystemError
 
-testCase('parseContext', {
+buster.testCase('parseContext', {
     'test simple old-skool parse': function (done) {
       var content = ''
             + '/*!\n'

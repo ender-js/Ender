@@ -23,16 +23,18 @@
  */
 
 
-var testCase = require('buster').testCase
-  , ender = require('../../lib/main')
-  , fs = require('fs')
-  , path = require('path')
-  , util = require('util')
+var buster           = require('bustermove')
+  , assert           = require('referee').assert
+  , refute           = require('referee').refute
+  , ender            = require('../../lib/main')
+  , fs               = require('fs')
+  , path             = require('path')
+  , util             = require('util')
 
-testCase('Functional: version', {
+buster.testCase('Functional: version', {
     'setUp': function () {
       this.output = []
-      var utilStub = this.stub(util, 'print', function (s) {
+      this.stub(util, 'print', function (s) {
         this.output.push(s)
       }.bind(this))
     }
@@ -51,7 +53,7 @@ testCase('Functional: version', {
               actualVersionString = str.replace(/[^\w\:\s\.\-]/, '')
           }.bind(this))
 
-          assert.equals('Active version: v' + expectedVersion, actualVersionString , 'printed correct version string')
+          assert.equals(actualVersionString, 'Active version: v' + expectedVersion, 'printed correct version string')
           complete()
         }.bind(this))
       }.bind(this))
