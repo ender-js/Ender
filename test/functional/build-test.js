@@ -30,7 +30,7 @@ var buster           = require('bustermove')
 
 buster.testCase('Functional: build / dependencies', {
     'setUp': function () {
-      this.timeout = 60000
+      this.timeout = 120000
       assert.match.message = '${2}'
     }
 

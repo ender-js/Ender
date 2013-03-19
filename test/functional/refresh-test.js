@@ -34,7 +34,7 @@ var buster           = require('bustermove')
 
 buster.testCase('Functional: refresh', {
     'setUp': function () {
-      this.timeout = 30000
+      this.timeout = 120000
       assert.match.message = '${2}'
 
       this.runTest = function (use, rmdir, done) {
