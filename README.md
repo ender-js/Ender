@@ -42,4 +42,4 @@ For more information checkout [http://ender.jit.su](http://ender.jit.su)
 
 ## Licence
 
-Ender is Copyright (c) 2012-2013 Dustin Diaz [@ded](https://twitter.com/ded), Jacob Thornton [@fat](https://twitter.com/fat) and Rod Vagg [@rvagg](https://twitter.com/rvagg) and licenced under the MIT licence. All rights not explicitly granted in the MIT license are reserved. See the included LICENSE file for more details.
+Ender is Copyright (c) 2012-2013 Dustin Diaz [@ded](https://twitter.com/ded), Jacob Thornton [@fat](https://twitter.com/fat) and Rod Vagg [@rvagg](https://twitter.com/rvagg) and licensed under the MIT license. All rights not explicitly granted in the MIT license are reserved. See the included LICENSE file for more details.

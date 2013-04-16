@@ -5,8 +5,10 @@
   {red}+ options:{/red}
   - {yellow}--sandbox{/yellow} prevent global leakage of Ender lib variables, passing additional arguments will define the specified packages directly on the window
     + example: {cyan}$ ender build jeesh backbone --sandbox backbone{/cyan}
-  - {yellow}--noop{/yellow} (or {yellow}-x{/yellow}) build without the ender-js client library
-    + example: {cyan}$ ender build mootools-class --noop{/cyan}
+  - {yellow}--noop{/yellow} (or {yellow}-x{/yellow}) build the raw sources of each module without the ender-js client library
+    + example: {cyan}$ ender build jeesh backbone --noop{/cyan}
+  - {yellow}--sans{/yellow} build without the ender-js client library, but include bridges and common JS stitches.
+    + example: {cyan}$ ender build jeesh --sans{/cyan}
   - {yellow}--output{/yellow} (or {yellow}-o{/yellow}) write Ender library to path with custom name
     + example: {cyan}$ ender build mootools-class --output ../public/js/mootools.js{/cyan}
     + (above example would generate a mootools.js file as well as a mootools.min.js file in the ../public/js/ dir.)
