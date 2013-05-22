@@ -3,9 +3,9 @@
   , "description": "Open Module JavaScript Framework"
   , "version": "1.1.0"
   , "authors": [
-        "Jacob Thornton @fat <jacob@twitter.com> (https://github.com/fat)"
-      , "Dustin Diaz @ded <dustin@obvious.com> (https://github.com/ded)"
-      , "Rod Vagg @rvagg <rod@vagg.org> (https://github.com/rvagg)"
+        "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
+      , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
+      , "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
     ]
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
