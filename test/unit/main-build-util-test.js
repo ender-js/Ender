@@ -39,28 +39,28 @@ buster.testCase('Build util', {
 
       , 'test empty args': function () {
             // not really going to happen given the current args-parse
-            this.testPackageList({ }, [ 'ender-js', '.' ])
+            this.testPackageList({ }, [ 'ender-core', 'ender-commonjs', '.' ])
           }
 
       , 'test no args': function () {
-            this.testPackageList({ packages: [] }, [ 'ender-js', '.' ])
+            this.testPackageList({ packages: [] }, [ 'ender-core', 'ender-commonjs', '.' ])
           }
 
       , 'test 1 package': function () {
-          this.testPackageList({ packages: [ 'apkg' ] }, [ 'ender-js', 'apkg' ])
+          this.testPackageList({ packages: [ 'apkg' ] }, [ 'ender-core', 'ender-commonjs', 'apkg' ])
         }
 
       , 'test multiple packages': function () {
           this.testPackageList(
               { packages: [ 'apkg', 'pkg2', 'pkg3', '.', '..' ] }
-            , [ 'ender-js', 'apkg', 'pkg2', 'pkg3', '.', '..' ]
+            , [ 'ender-core', 'ender-commonjs', 'apkg', 'pkg2', 'pkg3', '.', '..' ]
           )
         }
 
       , 'test duplicate packages': function () {
           this.testPackageList(
               { packages: [ 'apkg', 'pkg2', 'apkg' ] }
-            , [ 'ender-js', 'apkg', 'pkg2' ]
+            , [ 'ender-core', 'ender-commonjs', 'apkg', 'pkg2' ]
           )
         }
 
@@ -135,29 +135,41 @@ buster.testCase('Build util', {
         }
     }
 
-  , 'isRootPackage': {
-        'test not root package': function () {
-          refute(buildUtil.isRootPackage({}, 'foobar'))
+  , 'isBasePackage': {
+        'test not base package': function () {
+          refute(buildUtil.isBasePackage({}, 'foobar'))
         }
 
-      , 'test default root package': function () {
-          assert(buildUtil.isRootPackage({}, 'ender-js'))
+      , 'test default client package': function () {
+          assert(buildUtil.isBasePackage({}, 'ender-core'))
         }
 
-      , 'test default root package but with "sans" option': function () {
-          refute(buildUtil.isRootPackage({ sans: true }, 'ender-js'))
+      , 'test default client package but with "sans" option': function () {
+          refute(buildUtil.isBasePackage({ sans: true }, 'ender-core'))
         }
 
-      , 'test default root package but with "noop" option': function () {
-          refute(buildUtil.isRootPackage({ noop: true }, 'ender-js'))
+      , 'test default client package but with "noop" option': function () {
+          refute(buildUtil.isBasePackage({ noop: true }, 'ender-core'))
         }
 
-      , 'test not root package but with "sans" option': function () {
-          refute(buildUtil.isRootPackage({ sans: true }, 'foobar'))
+      , 'test default module package': function () {
+          assert(buildUtil.isBasePackage({}, 'ender-commonjs'))
         }
 
-      , 'test not root package but with "noop" option': function () {
-          refute(buildUtil.isRootPackage({ sans: true }, 'foobar'))
+      , 'test default module package but with "sans" option': function () {
+          refute(buildUtil.isBasePackage({ sans: true }, 'ender-commonjs'))
+        }
+
+      , 'test default module package but with "noop" option': function () {
+          refute(buildUtil.isBasePackage({ noop: true }, 'ender-commonjs'))
+        }
+
+      , 'test not base package but with "sans" option': function () {
+          refute(buildUtil.isBasePackage({ sans: true }, 'foobar'))
+        }
+
+      , 'test not base package but with "noop" option': function () {
+          refute(buildUtil.isBasePackage({ sans: true }, 'foobar'))
         }
     }
 })
