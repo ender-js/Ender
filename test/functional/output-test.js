@@ -44,7 +44,7 @@ buster.testCase('Functional: build with output', {
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js bonzo bean')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs bonzo bean')
             assert.stdoutReportsBuildCommand(stdout, 'ender build bonzo bean --output foobar')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'bonzo', 'stdout')
@@ -55,20 +55,18 @@ buster.testCase('Functional: build with output', {
                   contents
                 , /Build: ender build bonzo bean --output foobar$/m
                 , files[i] + ' contains correct build command')
-              assert.sourceContainsProvideStatements(contents, 2, files[i])
+              assert.sourceContainsPackages(contents, 2, files[i])
               assert.hasVersionedPackage(contents, 'bonzo', files[i])
               assert.hasVersionedPackage(contents, 'bean', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bonzo', files[i])
-              assert.sourceHasProvide(contents, 'bonzo', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-              assert.sourceHasProvide(contents, 'bean', files[i])
+              assert.sourceHasPackage(contents, 'bonzo', files[i])
+              assert.sourceHasPackage(contents, 'bean', files[i])
 
-              assert.sourceHasProvidesInOrder(contents, 'bonzo', 'bean', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bonzo', 'bean', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js bonzo bean'.split(' ')
+              , 'ender-core ender-commonjs bonzo bean'.split(' ')
               , callback.bind(null, done)
             )
         })

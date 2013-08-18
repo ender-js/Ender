@@ -93,7 +93,7 @@ buster.testCase('Functional: minify', {
 
               refute(data[build].stderr, build + ': ' + data[build].stderr)
 
-              assert.stdoutRefersToNPMPackages(data[build].stdout, 'ender-js qwery bonzo bean')
+              assert.stdoutRefersToNPMPackages(data[build].stdout, 'ender-core ender-commonjs qwery bonzo bean')
               assert.stdoutReportsBuildCommand(data[build].stdout, data[build].cmd)
               ; (build == 'none' ? refute : assert).stdoutReportsOutputSizes(data[build].stdout)
               assert.hasVersionedPackage(data[build].stdout, 'qwery', 'stdout')
@@ -108,7 +108,7 @@ buster.testCase('Functional: minify', {
                   , data[build].files[i] + ' contains correct build command: [' + data[build].cmd + ']'
                 )
                 if (build != 'closure-a') {
-                  assert.sourceContainsProvideStatements(contents, 3, data[build].files[i])
+                  assert.sourceContainsPackages(contents, 3, data[build].files[i])
                 }
                 assert.hasVersionedPackage(contents, 'qwery', data[build].files[i])
                 assert.hasVersionedPackage(contents, 'bean', data[build].files[i])

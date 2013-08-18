@@ -42,7 +42,7 @@ buster.testCase('Functional: package descriptor overrides', {
               refute(err)
               refute(stderr)
 
-              assert.stdoutRefersToNPMPackages(stdout, 'ender-js ' + pkg) //TODO: would be nice to see bean on stdout
+              assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs ' + pkg) //TODO: would be nice to see bean on stdout
               assert.stdoutReportsBuildCommand(stdout, 'ender build ' + pkg)
               assert.stdoutReportsOutputSizes(stdout)
               expectedIncludes.forEach(function (incl) {
@@ -57,24 +57,23 @@ buster.testCase('Functional: package descriptor overrides', {
                   , files[i] + ' contains correct build command'
                 )
                 // should only have the 2 provide()s, not bonzo which is in the parent deps
-                assert.sourceContainsProvideStatements(contents, 2, files[i])
+                assert.sourceContainsPackages(contents, 2, files[i])
                 expectedIncludes.forEach(function (incl) {
                   assert.hasVersionedPackage(contents, incl, files[i])
-                  assert.sourceHasStandardWrapFunction(contents, incl, files[i])
-                  assert.sourceHasProvide(contents, incl, files[i])
+                  assert.sourceHasPackage(contents, incl, files[i])
                 })
                 // should refer to proper name here
                 assert.hasVersionedPackage(contents, pkg, files[i])
                 // name rewritten name for provide()
-                assert.sourceHasProvide(contents, expectedName, files[i])
-                assert.sourceHasProvidesInOrder(contents, expectedIncludes[0], expectedName, files[i])
+                assert.sourceHasPackage(contents, expectedName, files[i])
+                assert.sourceHasPackagesInOrder(contents, expectedIncludes[0], expectedName, files[i])
 
                 contentsAsserts(contents, files[i])
               })
 
               functionalCommon.verifyNodeModulesDirectories(
                   dir
-                , [ 'ender-js' ].concat(expectedIncludes).concat([ pkg ])
+                , [ 'ender-core', 'ender-commonjs' ].concat(expectedIncludes).concat([ pkg ])
                 , function (err) {
                     refute(err)
                     done()

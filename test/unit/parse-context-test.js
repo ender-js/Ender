@@ -66,7 +66,7 @@ buster.testCase('parseContext', {
     }
 
   , 'test simple new-style parse': function (done) {
-      var expectedPackages = 'ender-js@0.3.7 bean@0.4.9 qwery@3.3.3 bonzo@1.0.1 domready@0.2.11 bowser@0.1.0'.split(' ')
+      var expectedPackages = 'ender-core@0.3.7 bean@0.4.9 qwery@3.3.3 bonzo@1.0.1 domready@0.2.11 bowser@0.1.0'.split(' ')
         , content = ''
             + '/*!\n'
             + '  * =============================================================\n'

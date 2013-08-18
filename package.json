@@ -27,7 +27,6 @@
       , "colors-tmpl"      : "~0.1.0"
       , "xregexp"          : "~2.0.0"
       , "errno"            : "~0.0.3"
-      , "glob"             : "~3.1.14"
 
     }
   , "directories": {

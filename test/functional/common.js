@@ -34,13 +34,13 @@ var referee            = require('referee')
   , tmpDir             = require('os').tmpDir()
   , copyrightCommentRe = /\/\*![\s\S]*?\*\//g
 
-  , makeSourceProvideRegex = function (pkg) {
-      return RegExp('\\Wprovide\\("' + pkg + '",[\\s\\n]*?\\w+\\.exports\\)[;,]')
+  , makeSourcePackageRegex = function (pkg) {
+      return RegExp('loadPackage\\("' + pkg + '"')
     }
 
-referee.add('sourceHasProvide', {
+referee.add('sourceHasPackage', {
     assert: function (source, pkg, file) {
-      var re = makeSourceProvideRegex(pkg)
+      var re = makeSourcePackageRegex(pkg)
       source = source || ''
       this.times = source.split(re).length - 1
       return this.times == 1
@@ -48,30 +48,20 @@ referee.add('sourceHasProvide', {
   , assertMessage: '${2} contains provide("${1}") [${times} time(s), expected 1]'
 })
 
-referee.add('sourceHasStandardWrapFunction', {
-    assert: function (source, pkg, file) {
-      var re = new RegExp('\\s*\\}\\)?\\([\'"]' + pkg + '[\'"],.*?function\\s*\\([^\\)]*\\)\\s*\\{')
-      source = source || ''
-      this.times = source.split(re).length - 1
-      return this.times == 1
-    }
-  , assertMessage: '${2} contains standard wrapper function for ${1} [${times} time(s), expected 1]'
-})
-
-referee.add('sourceContainsProvideStatements', {
+referee.add('sourceContainsPackages', {
     assert: function (source, times, file) {
-      var re = makeSourceProvideRegex('[\\w\\-]+')
+      var re = makeSourcePackageRegex('[\\w\\-]+')
       source = source || ''
       this.times = source.split(re).length - 1
       return this.times == times
     }
-  , assertMessage: '${2} contains ${1} provide() statements [${times} time(s), expected ${1}]'
+  , assertMessage: '${2} contains ${1} Module.package() [${times} time(s), expected ${1}]'
 })
 
-referee.add('sourceHasProvidesInOrder', {
+referee.add('sourceHasPackagesInOrder', {
     assert: function (source, pkg1, pkg2, file) {
-      var re1 = makeSourceProvideRegex(pkg1)
-        , re2 = makeSourceProvideRegex(pkg2)
+      var re1 = makeSourcePackageRegex(pkg1)
+        , re2 = makeSourcePackageRegex(pkg2)
         , idx1 = source.search(re1)
         , idx2 = source.search(re2)
       return idx1 < idx2
@@ -150,6 +140,7 @@ var mktmpdir = function (callback) {
             child.on('exit', function (code, signal) {
               var err
               if (code !== 0) {
+                debugger
                 err = new Error('Child process exited on signal: ' + signal)
                 err.stderr = stderr
                 return callback(err)

@@ -51,7 +51,7 @@ buster.testCase('Functional: build packages that contain binaries', {
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js tracer-bullet@0.0.0 long-stack-traces@0.1.2')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs tracer-bullet@0.0.0 long-stack-traces@0.1.2')
             assert.stdoutReportsBuildCommand(stdout, 'ender build tracer-bullet@0.0.0 long-stack-traces@0.1.2')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'tracer-bullet', 'stdout')
@@ -63,13 +63,13 @@ buster.testCase('Functional: build packages that contain binaries', {
                 , /Build: ender build tracer-bullet@0.0.0 long-stack-traces@0.1.2$/m
                 , files[i] + ' contains correct build command'
               )
-              assert.sourceHasProvide(contents, 'tracer-bullet', files[i])
-              assert.sourceHasProvide(contents, 'long-stack-traces', files[i])
+              assert.sourceHasPackage(contents, 'tracer-bullet', files[i])
+              assert.sourceHasPackage(contents, 'long-stack-traces', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js tracer-bullet long-stack-traces .bin'.split(' ')
+              , 'ender-core ender-commonjs tracer-bullet long-stack-traces .bin'.split(' ')
               , callback.bind(null, done)
             )
         })

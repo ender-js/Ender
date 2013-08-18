@@ -63,35 +63,6 @@ buster.testCase('Build util', {
             , [ 'ender-core', 'ender-commonjs', 'apkg', 'pkg2' ]
           )
         }
-
-      , 'test noop no args': function () {
-          this.testPackageList({ noop: true }, [ '.' ])
-        }
-
-      , 'test noop and packages': function () {
-          this.testPackageList(
-              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], noop: true }
-            , [ 'foo', 'bar', '.', '../../bang' ]
-          )
-        }
-
-      , 'test sans no args': function () {
-          this.testPackageList({ sans: true }, [ '.' ])
-        }
-
-      , 'test sans and packages': function () {
-          this.testPackageList(
-              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], sans: true }
-            , [ 'foo', 'bar', '.', '../../bang' ]
-          )
-        }
-
-      , 'test noop and sans and packages': function () {
-          this.testPackageList(
-              { packages: [ 'foo', 'bar', '.', '../../bang', 'bar', 'foo' ], sans: true, noop: true }
-            , [ 'foo', 'bar', '.', '../../bang' ]
-          )
-        }
     }
 
   , 'uniquePackages': {
@@ -144,32 +115,8 @@ buster.testCase('Build util', {
           assert(buildUtil.isBasePackage({}, 'ender-core'))
         }
 
-      , 'test default client package but with "sans" option': function () {
-          refute(buildUtil.isBasePackage({ sans: true }, 'ender-core'))
-        }
-
-      , 'test default client package but with "noop" option': function () {
-          refute(buildUtil.isBasePackage({ noop: true }, 'ender-core'))
-        }
-
       , 'test default module package': function () {
           assert(buildUtil.isBasePackage({}, 'ender-commonjs'))
-        }
-
-      , 'test default module package but with "sans" option': function () {
-          refute(buildUtil.isBasePackage({ sans: true }, 'ender-commonjs'))
-        }
-
-      , 'test default module package but with "noop" option': function () {
-          refute(buildUtil.isBasePackage({ noop: true }, 'ender-commonjs'))
-        }
-
-      , 'test not base package but with "sans" option': function () {
-          refute(buildUtil.isBasePackage({ sans: true }, 'foobar'))
-        }
-
-      , 'test not base package but with "noop" option': function () {
-          refute(buildUtil.isBasePackage({ sans: true }, 'foobar'))
         }
     }
 })

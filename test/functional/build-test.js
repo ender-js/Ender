@@ -44,7 +44,7 @@ buster.testCase('Functional: build / dependencies', {
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js jeesh')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs jeesh')
             assert.stdoutReportsBuildCommand(stdout, 'ender build jeesh')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'jeesh', 'stdout')
@@ -55,34 +55,28 @@ buster.testCase('Functional: build / dependencies', {
 
             fileContents.forEach(function (contents, i) {
               assert.match(contents, /Build: ender build jeesh$/m, files[i] + ' contains correct build command')
-              assert.sourceContainsProvideStatements(contents, 5, files[i]) // jeesh has a provide() too
+              assert.sourceContainsPackages(contents, 5, files[i]) // jeesh has a provide() too
               assert.hasVersionedPackage(contents, 'jeesh', files[i])
               assert.hasVersionedPackage(contents, 'domready', files[i])
               assert.hasVersionedPackage(contents, 'qwery', files[i])
               assert.hasVersionedPackage(contents, 'bonzo', files[i])
               assert.hasVersionedPackage(contents, 'bean', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'domready', files[i])
-              assert.sourceHasProvide(contents, 'domready', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'qwery', files[i])
-              assert.sourceHasProvide(contents, 'qwery', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bonzo', files[i])
-              assert.sourceHasProvide(contents, 'bonzo', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-              assert.sourceHasProvide(contents, 'bean', files[i])
+              assert.sourceHasPackage(contents, 'domready', files[i])
+              assert.sourceHasPackage(contents, 'qwery', files[i])
+              assert.sourceHasPackage(contents, 'bonzo', files[i])
+              assert.sourceHasPackage(contents, 'bean', files[i])
 
               // check they are in order, we only care about the following ordering pairs:
               // (take advantage of the useless jeesh provide() to make sure it's last)
-              assert.sourceHasProvidesInOrder(contents, 'domready', 'jeesh', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'qwery', 'jeesh', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'bonzo', 'jeesh', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'bean', 'jeesh', files[i])
-
-              assert.sourceHasCopyrightComments(contents, 6, files[i]) // 1 each + header
+              assert.sourceHasPackagesInOrder(contents, 'domready', 'jeesh', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'qwery', 'jeesh', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bonzo', 'jeesh', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bean', 'jeesh', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js jeesh'.split(' ')
+              , 'ender-core ender-commonjs jeesh'.split(' ')
               , callback.bind(null, done)
             )
         })
@@ -109,7 +103,7 @@ so if we include bean at the top level we should see it once in our build file.
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js sel bean dagron')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs sel bean dagron')
             assert.stdoutReportsBuildCommand(stdout, 'ender build sel bean dagron')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'sel', 'stdout')
@@ -120,35 +114,31 @@ so if we include bean at the top level we should see it once in our build file.
 
             fileContents.forEach(function (contents, i) {
               assert.match(contents, /Build: ender build sel bean dagron$/m, files[i] + ' contains correct build command')
-              assert.sourceContainsProvideStatements(contents, 5, files[i])
+              assert.sourceContainsPackages(contents, 5, files[i])
               assert.hasVersionedPackage(contents, 'sel', files[i])
               assert.hasVersionedPackage(contents, 'es5-basic', files[i])
               assert.hasVersionedPackage(contents, 'bean', files[i])
               assert.hasVersionedPackage(contents, 'dagron', files[i])
               assert.hasVersionedPackage(contents, 'qwery', files[i])
               // sel & es5-basic don't have the standard wrapper pattern
-              assert.sourceHasProvide(contents, 'sel', files[i])
-              assert.sourceHasProvide(contents, 'es5-basic', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-              assert.sourceHasProvide(contents, 'bean', files[i])
+              assert.sourceHasPackage(contents, 'sel', files[i])
+              assert.sourceHasPackage(contents, 'es5-basic', files[i])
+              assert.sourceHasPackage(contents, 'bean', files[i])
               // dagron doesn't have the standard wrapper pattern
-              assert.sourceHasProvide(contents, 'dagron', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'qwery', files[i])
-              assert.sourceHasProvide(contents, 'qwery', files[i])
+              assert.sourceHasPackage(contents, 'dagron', files[i])
+              assert.sourceHasPackage(contents, 'qwery', files[i])
 
               // check they are in order, we only care about the following ordering pairs:
-              assert.sourceHasProvidesInOrder(contents, 'es5-basic', 'sel', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'bean', 'dagron', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'qwery', 'dagron', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'es5-basic', 'sel', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bean', 'dagron', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'qwery', 'dagron', files[i])
               // check that they are in the order specified on the commandline
-              assert.sourceHasProvidesInOrder(contents, 'sel', 'dagron', files[i])
-
-              assert.sourceHasCopyrightComments(contents, 5, files[i]) // head, ender-js, bean, dagron, qwery
+              assert.sourceHasPackagesInOrder(contents, 'sel', 'dagron', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js sel bean dagron'.split(' ')
+              , 'ender-core ender-commonjs sel bean dagron'.split(' ')
               , callback.bind(null, done)
             )
         })
@@ -180,7 +170,7 @@ so if we include bean at the top level we should see it once in our build file.
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js ender-bootstrap-popover@2.0.2')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs ender-bootstrap-popover@2.0.2')
             assert.stdoutReportsBuildCommand(stdout, 'ender build ender-bootstrap-popover@2.0.2')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'ender-bootstrap-popover', 'stdout')
@@ -199,7 +189,7 @@ so if we include bean at the top level we should see it once in our build file.
                 , /Build: ender build ender-bootstrap-popover@2.0.2$/m
                 , files[i] + ' contains correct build command'
               )
-              assert.sourceContainsProvideStatements(contents, 9, files[i])
+              assert.sourceContainsPackages(contents, 9, files[i])
               assert.hasVersionedPackage(contents, 'ender-bootstrap-popover', files[i])
               assert.hasVersionedPackage(contents, 'ender-bootstrap-base', files[i])
               assert.hasVersionedPackage(contents, 'bowser', files[i])
@@ -210,35 +200,28 @@ so if we include bean at the top level we should see it once in our build file.
               assert.hasVersionedPackage(contents, 'ender-bootstrap-transition', files[i])
               assert.hasVersionedPackage(contents, 'ender-bootstrap-tooltip', files[i])
               // the ender-bootstrap packages don't have the standard wrapper pattern
-              assert.sourceHasStandardWrapFunction(contents, 'bowser', files[i])
-              assert.sourceHasProvide(contents, 'bowser', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'domready', files[i])
-              assert.sourceHasProvide(contents, 'domready', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'qwery', files[i])
-              assert.sourceHasProvide(contents, 'qwery', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bonzo', files[i])
-              assert.sourceHasProvide(contents, 'bonzo', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-              assert.sourceHasProvide(contents, 'bean', files[i])
+              assert.sourceHasPackage(contents, 'bowser', files[i])
+              assert.sourceHasPackage(contents, 'domready', files[i])
+              assert.sourceHasPackage(contents, 'qwery', files[i])
+              assert.sourceHasPackage(contents, 'bonzo', files[i])
+              assert.sourceHasPackage(contents, 'bean', files[i])
 
               // check they are in order, we only care about the following ordering pairs:
-              assert.sourceHasProvidesInOrder(contents, 'ender-bootstrap-transition', 'ender-bootstrap-popover', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'ender-bootstrap-tooltip', 'ender-bootstrap-popover', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'ender-bootstrap-base', 'ender-bootstrap-popover', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'ender-bootstrap-base', 'ender-bootstrap-transition', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'ender-bootstrap-base', 'ender-bootstrap-tooltip', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'bowser', 'ender-bootstrap-base', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'bonzo', 'ender-bootstrap-base', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'domready', 'ender-bootstrap-base', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'bean', 'ender-bootstrap-base', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'qwery', 'ender-bootstrap-base', files[i])
-
-              assert.sourceHasCopyrightComments(contents, 7, files[i]) // head, ender-js, bowser, bonzo, domready, bean, qwery
+              assert.sourceHasPackagesInOrder(contents, 'ender-bootstrap-transition', 'ender-bootstrap-popover', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'ender-bootstrap-tooltip', 'ender-bootstrap-popover', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'ender-bootstrap-base', 'ender-bootstrap-popover', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'ender-bootstrap-base', 'ender-bootstrap-transition', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'ender-bootstrap-base', 'ender-bootstrap-tooltip', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bowser', 'ender-bootstrap-base', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bonzo', 'ender-bootstrap-base', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'domready', 'ender-bootstrap-base', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bean', 'ender-bootstrap-base', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'qwery', 'ender-bootstrap-base', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js ender-bootstrap-popover'.split(' ')
+              , 'ender-core ender-commonjs ender-bootstrap-popover'.split(' ')
               , callback.bind(null, done)
             )
         })

@@ -41,7 +41,6 @@ buster.testCase('Remove', {
         , optionsArg       = {
               packages: [ 'bing', 'bar' ]
             , main: 'remove'
-            , noop: true
           }
         , filenameArg = { filename: 1 }
         , contextArg = { options: {
@@ -52,7 +51,6 @@ buster.testCase('Remove', {
         , expectedBuildOptions = {
               packages: [ 'foo', 'bang' ]
             , main: 'build'
-            , noop: true
             , sandbox: [ 'foo' ]
           }
         , outArg = { out: 1 }

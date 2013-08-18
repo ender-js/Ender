@@ -46,7 +46,7 @@ buster.testCase('Functional: add', {
                     refute(err)
                     refute(stderr)
 
-                    assert.stdoutRefersToNPMPackages(stdout, 'ender-js qwery bean')
+                    assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs qwery bean')
                     assert.stdoutReportsBuildCommand(stdout, 'ender build qwery bean' + (use ? ' --output ' + use : ''))
                     assert.stdoutReportsOutputSizes(stdout)
                     assert.hasVersionedPackage(stdout, 'qwery', 'stdout')
@@ -58,20 +58,19 @@ buster.testCase('Functional: add', {
                         , new RegExp('Build: ender build qwery bean' + (use ? ' --output ' + use : '') + '$', 'm')
                         , files[i] + ' contains correct build command'
                       )
-                      assert.sourceContainsProvideStatements(contents, 2, files[i])
+                      debugger
+                      assert.sourceContainsPackages(contents, 2, files[i])
                       assert.hasVersionedPackage(contents, 'qwery', files[i])
                       assert.hasVersionedPackage(contents, 'bean', files[i])
-                      assert.sourceHasStandardWrapFunction(contents, 'qwery', files[i])
-                      assert.sourceHasProvide(contents, 'qwery', files[i])
-                      assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-                      assert.sourceHasProvide(contents, 'bean', files[i])
+                      assert.sourceHasPackage(contents, 'qwery', files[i])
+                      assert.sourceHasPackage(contents, 'bean', files[i])
 
-                      assert.sourceHasProvidesInOrder(contents, 'qwery', 'bean', files[i])
+                      assert.sourceHasPackagesInOrder(contents, 'qwery', 'bean', files[i])
                     })
 
                     functionalCommon.verifyNodeModulesDirectories(
                         dir
-                      , 'ender-js qwery bean'.split(' ')
+                      , 'ender-core ender-commonjs qwery bean'.split(' ')
                       , function (err) { callback(err, dir) }
                     )
                   }
@@ -86,7 +85,7 @@ buster.testCase('Functional: add', {
                     refute(err)
                     refute(stderr)
 
-                    assert.stdoutRefersToNPMPackages(stdout, 'ender-js qwery bean bonzo sel')
+                    assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs qwery bean bonzo sel')
                     assert.stdoutReportsBuildCommand(stdout, 'ender build qwery bean bonzo sel' + (use ? ' --output ' + use : ''))
                     assert.stdoutReportsOutputSizes(stdout)
                     assert.hasVersionedPackage(stdout, 'qwery', 'stdout')
@@ -100,30 +99,27 @@ buster.testCase('Functional: add', {
                         , new RegExp('Build: ender build qwery bean bonzo sel' + (use ? ' --output ' + use : '') + '$', 'm')
                         , files[i] + ' contains correct build command'
                       )
-                      assert.sourceContainsProvideStatements(contents, 5, files[i])
+                      assert.sourceContainsPackages(contents, 5, files[i])
                       assert.hasVersionedPackage(contents, 'qwery', files[i])
                       assert.hasVersionedPackage(contents, 'bean', files[i])
                       assert.hasVersionedPackage(stdout, 'bonzo', 'stdout')
                       assert.hasVersionedPackage(stdout, 'es5-basic', 'stdout')
                       assert.hasVersionedPackage(stdout, 'sel', 'stdout')
-                      assert.sourceHasStandardWrapFunction(contents, 'qwery', files[i])
-                      assert.sourceHasProvide(contents, 'qwery', files[i])
-                      assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-                      assert.sourceHasProvide(contents, 'bean', files[i])
-                      assert.sourceHasStandardWrapFunction(contents, 'bonzo', files[i])
-                      assert.sourceHasProvide(contents, 'bonzo', files[i])
-                      assert.sourceHasProvide(contents, 'es5-basic', files[i])
-                      assert.sourceHasProvide(contents, 'sel', files[i])
+                      assert.sourceHasPackage(contents, 'qwery', files[i])
+                      assert.sourceHasPackage(contents, 'bean', files[i])
+                      assert.sourceHasPackage(contents, 'bonzo', files[i])
+                      assert.sourceHasPackage(contents, 'es5-basic', files[i])
+                      assert.sourceHasPackage(contents, 'sel', files[i])
 
-                      assert.sourceHasProvidesInOrder(contents, 'qwery', 'bean', files[i])
-                      assert.sourceHasProvidesInOrder(contents, 'bean', 'bonzo', files[i])
-                      assert.sourceHasProvidesInOrder(contents, 'bonzo', 'es5-basic', files[i])
-                      assert.sourceHasProvidesInOrder(contents, 'es5-basic', 'sel', files[i])
+                      assert.sourceHasPackagesInOrder(contents, 'qwery', 'bean', files[i])
+                      assert.sourceHasPackagesInOrder(contents, 'bean', 'bonzo', files[i])
+                      assert.sourceHasPackagesInOrder(contents, 'bonzo', 'es5-basic', files[i])
+                      assert.sourceHasPackagesInOrder(contents, 'es5-basic', 'sel', files[i])
                     })
 
                     functionalCommon.verifyNodeModulesDirectories(
                         dir
-                      , 'ender-js qwery bean bonzo sel'.split(' ')
+                      , 'ender-core ender-commonjs qwery bean bonzo sel'.split(' ')
                       , callback.bind(null, done)
                     )
                   }

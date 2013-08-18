@@ -58,7 +58,7 @@ buster.testCase('Functional: build from package.json', {
             refute(err)
             refute(stderr)
 
-            assert.stdoutRefersToNPMPackages(stdout, 'ender-js .')
+            assert.stdoutRefersToNPMPackages(stdout, 'ender-core ender-commonjs .')
             assert.stdoutReportsBuildCommand(stdout, 'ender build .')
             assert.stdoutReportsOutputSizes(stdout)
             assert.hasVersionedPackage(stdout, 'qwery', 'stdout')
@@ -70,23 +70,22 @@ buster.testCase('Functional: build from package.json', {
                 , /Build: ender build .$/m
                 , files[i] + ' contains correct build command'
               )
-              assert.sourceContainsProvideStatements(contents, 3, files[i])
+
+              assert.sourceContainsPackages(contents, 3, files[i])
               assert.hasVersionedPackage(contents, 'qwery', files[i])
               assert.hasVersionedPackage(contents, 'bean', files[i])
               assert.hasVersionedPackage(contents, 'test-package', files[i])
-              assert.sourceHasProvide(contents, 'qwery', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'qwery', files[i])
-              assert.sourceHasProvide(contents, 'bean', files[i])
-              assert.sourceHasStandardWrapFunction(contents, 'bean', files[i])
-              assert.sourceHasProvide(contents, 'test-package', files[i])
+              assert.sourceHasPackage(contents, 'qwery', files[i])
+              assert.sourceHasPackage(contents, 'bean', files[i])
+              assert.sourceHasPackage(contents, 'test-package', files[i])
 
-              assert.sourceHasProvidesInOrder(contents, 'bean', 'test-package', files[i])
-              assert.sourceHasProvidesInOrder(contents, 'qwery', 'test-package', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'bean', 'test-package', files[i])
+              assert.sourceHasPackagesInOrder(contents, 'qwery', 'test-package', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
                 dir
-              , 'ender-js qwery bean'.split(' ')
+              , 'ender-core ender-commonjs qwery bean'.split(' ')
               , callback.bind(null, done)
             )
         })
