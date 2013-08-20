@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "1.1.0"
+  , "version": "2.0.0-dev"
   , "authors": [
         "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
       , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
@@ -12,12 +12,12 @@
   , "homepage": "https://ender.jit.su"
   , "dependencies": {
 
-        "ender-args-parser"      : "~0.0.2"
-      , "ender-builder"          : "~0.1.0"
-      , "ender-dependency-graph" : "~0.0.2"
+        "ender-args-parser"      : "0.0.3-dev"
+      , "ender-builder"          : "0.2.0-dev"
+      , "ender-dependency-graph" : "0.0.3-dev"
       , "ender-installer"        : "~0.0.0"
       , "ender-minify"           : "~0.1.1"
-      , "ender-package-util"     : "~0.0.1"
+      , "ender-package-util"     : "0.0.2-dev"
       , "ender-repository"       : "~0.0.4"
 
       , "colors"           : "~0.6.0"
