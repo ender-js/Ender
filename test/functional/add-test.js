@@ -58,7 +58,7 @@ buster.testCase('Functional: add', {
                         , new RegExp('Build: ender build qwery bean' + (use ? ' --output ' + use : '') + '$', 'm')
                         , files[i] + ' contains correct build command'
                       )
-                      debugger
+
                       assert.sourceContainsPackages(contents, 2, files[i])
                       assert.hasVersionedPackage(contents, 'qwery', files[i])
                       assert.hasVersionedPackage(contents, 'bean', files[i])

@@ -63,7 +63,6 @@ buster.testCase('Functional: build packages that contain binaries', {
                 , /Build: ender build tracer-bullet@0.0.0 long-stack-traces@0.1.2$/m
                 , files[i] + ' contains correct build command'
               )
-              assert.sourceHasPackage(contents, 'tracer-bullet', files[i])
               assert.sourceHasPackage(contents, 'long-stack-traces', files[i])
             })
 

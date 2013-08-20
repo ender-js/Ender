@@ -140,7 +140,6 @@ var mktmpdir = function (callback) {
             child.on('exit', function (code, signal) {
               var err
               if (code !== 0) {
-                debugger
                 err = new Error('Child process exited on signal: ' + signal)
                 err.stderr = stderr
                 return callback(err)

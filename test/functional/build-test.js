@@ -55,8 +55,7 @@ buster.testCase('Functional: build / dependencies', {
 
             fileContents.forEach(function (contents, i) {
               assert.match(contents, /Build: ender build jeesh$/m, files[i] + ' contains correct build command')
-              assert.sourceContainsPackages(contents, 5, files[i]) // jeesh has a provide() too
-              assert.hasVersionedPackage(contents, 'jeesh', files[i])
+              assert.sourceContainsPackages(contents, 4, files[i])
               assert.hasVersionedPackage(contents, 'domready', files[i])
               assert.hasVersionedPackage(contents, 'qwery', files[i])
               assert.hasVersionedPackage(contents, 'bonzo', files[i])
@@ -65,13 +64,6 @@ buster.testCase('Functional: build / dependencies', {
               assert.sourceHasPackage(contents, 'qwery', files[i])
               assert.sourceHasPackage(contents, 'bonzo', files[i])
               assert.sourceHasPackage(contents, 'bean', files[i])
-
-              // check they are in order, we only care about the following ordering pairs:
-              // (take advantage of the useless jeesh provide() to make sure it's last)
-              assert.sourceHasPackagesInOrder(contents, 'domready', 'jeesh', files[i])
-              assert.sourceHasPackagesInOrder(contents, 'qwery', 'jeesh', files[i])
-              assert.sourceHasPackagesInOrder(contents, 'bonzo', 'jeesh', files[i])
-              assert.sourceHasPackagesInOrder(contents, 'bean', 'jeesh', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(
