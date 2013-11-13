@@ -27,55 +27,60 @@ var buster         = require('bustermove')
   , assert         = require('referee').assert
   , refute         = require('referee').refute
   , requireSubvert = require('require-subvert')(__dirname)
-  , mainInfoOut    = require('../../lib/output/main-info-output').create()
-  , mainInfoUtil   = require('../../lib/main-info-util')
-  , mainInfo
 
 buster.testCase('Info', {
     'setUp': function () {
+      var enderPackage        = require('ender-package')
+        , mainBuildUtil       = require('../../lib/main-build-util')
+        , mainInfoUtil        = require('../../lib/main-info-util')
+        , out                 = require('../../lib/output/main-info-output').create()
+
       this.runTest = function (options, expectedFilename, done) {
-        var mainInfoOutMock     = this.mock(mainInfoOut)
+        var enderPackageMock    = this.mock(enderPackage)
+          , mainBuildUtilMock   = this.mock(mainBuildUtil)
           , mainInfoUtilMock    = this.mock(mainInfoUtil)
-          , dependencyGraphStub = this.stub()
-          , archyTreeStub       = this.stub()
+          , outMock             = this.mock(out)
           , parseContextStub    = this.stub()
-          , packagesArg         = { packages: 1 }
-          , optionsPackagesArg  = { optionsPackages: 1 }
+          , mainInfo
+
+          , packageIdsArg       = [ 'foobar@1.2.3' ]
           , sizesArg            = { sizes: 1 }
-          , contextArg          = { options: { packages: optionsPackagesArg }, packages: packagesArg }
-          , treeArg             = { tree: 1 }
+          , contextArg          = { options: {}, packages: packageIdsArg }
           , archyTreeArg        = { archyTree: 1 }
 
-        dependencyGraphStub.archyTree = archyTreeStub
-        requireSubvert.subvert('ender-dependency-graph', dependencyGraphStub)
-        requireSubvert.subvert('../../lib/parse-context', parseContextStub)
-        mainInfo = requireSubvert.require('../../lib/main-info')
-
+        // setup our stubs and mocks
+        parseContextStub.callsArgWith(1, null, contextArg)
+        
+        mainBuildUtilMock
+          .expects('packageList')
+          .once()
+          .withExactArgs(contextArg.options)
+          .returns(packageIdsArg)
+        
         mainInfoUtilMock
           .expects('sizes')
           .once()
           .withArgs(contextArg.options, expectedFilename)
           .callsArgWith(2, null, sizesArg)
-        dependencyGraphStub.callsArgWith(2, null, treeArg)
-            // important we use packages from context->options->packages which is the command-line packages
-            // and not context->packages which is the full list of packages in the build
-        archyTreeStub.returns(archyTreeArg)
-        parseContextStub.callsArgWith(1, null, contextArg)
-        mainInfoOutMock
+      
+        enderPackageMock
+          .expects('buildArchyTree')
+          .once()
+          .withArgs(packageIdsArg, true)
+          .callsArgWith(2, null, archyTreeArg)
+      
+        outMock
           .expects('buildInfo')
           .once()
-          .withExactArgs(expectedFilename, contextArg.options, packagesArg, sizesArg, archyTreeArg)
+          .withExactArgs(expectedFilename, contextArg.options, sizesArg, archyTreeArg)
 
-        mainInfo.exec(options, mainInfoOut, function (err) {
+        // subvert single-function modules
+        requireSubvert.subvert('../../lib/parse-context', parseContextStub)
+
+        // load the module under test and execute
+        mainInfo = requireSubvert.require('../../lib/main-info')
+        mainInfo.exec(options, out, function (err) {
           refute(err)
-          assert.equals(dependencyGraphStub.callCount, 1)
-          assert.equals(dependencyGraphStub.getCall(0).args.length, 3)
-          assert.equals(dependencyGraphStub.getCall(0).args[0], contextArg.options)
-          assert.equals(dependencyGraphStub.getCall(0).args[1], optionsPackagesArg)
-          assert.equals(archyTreeStub.callCount, 1)
-          assert.equals(archyTreeStub.getCall(0).args.length, 2)
-          assert.equals(archyTreeStub.getCall(0).args[0], optionsPackagesArg)
-          assert.equals(archyTreeStub.getCall(0).args[1], treeArg)
           assert.equals(parseContextStub.callCount, 1)
           assert.equals(parseContextStub.getCall(0).args.length, 2)
           assert.equals(parseContextStub.getCall(0).args[0], expectedFilename)

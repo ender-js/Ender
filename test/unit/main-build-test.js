@@ -27,61 +27,81 @@ var buster         = require('bustermove')
   , assert         = require('referee').assert
   , refute         = require('referee').refute
   , requireSubvert = require('require-subvert')(__dirname)
-  , buildUtil      = require('../../lib/main-build-util')
-  , info
-  , build
+
 
 require('../../lib/output/main-build-output').create()
 
 buster.testCase('Build', {
-    // OK, this is a bit of a mess, more of an integration test, but it tests the ful
+    // OK, this is a bit of a mess, more of an integration test, but it tests the full
     // build process and that it calls everything we expect it to
     'test standard main-build interaction': function (done) {
-      var mockBuildUtil     = this.mock(buildUtil)
-        , installStub       = this.stub()
-        , mockInfo
+      var enderPackage      = require('ender-package')
+        , mainBuildUtil     = require('../../lib/main-build-util')
+        , mainInfo          = require('../../lib/main-info')
         , out               = require('../../lib/output/main-build-output').create(1)
+
+        , enderPackageMock  = this.mock(enderPackage)
+        , mainBuildUtilMock = this.mock(mainBuildUtil)
+        , mainInfoMock      = this.mock(mainInfo)
         , outMock           = this.mock(out)
+        , installStub       = this.stub()
         , builderStub       = this.stub()
+        , mainBuild
 
         , optionsArg           = { options: 1 }
-        , packagesArg          = [ 'foobarbang' ]
-        , installedPackagesArg = [ 1, 2, 3 ]
-        , dependencyTreeArg    = { dependencyTree: 1 }
-        , localizedArg         = [ 'foobar' ]
+        , packageIdsArg        = [ './foobar' ]
+        , installedIdsArg      = [ 'foobar@0.0.1' ]
+        , packagesArg          = [ 'foobarDepPkg', 'foobarPkg' ]
+        , installResultsArg    = [ 1, 2, 3 ]
         , filenameArg          = { filename: 1 }
 
-      builderStub.callsArgWith(3, null, filenameArg)
-      requireSubvert.subvert('ender-builder', builderStub)
-      requireSubvert.subvert('ender-installer', installStub)
-      info = requireSubvert.require('../../lib/main-info')
-      mockInfo = this.mock(info)
-      build = requireSubvert.require('../../lib/main-build')
-
-      mockBuildUtil.expects('packageList').once().withExactArgs(optionsArg).returns(packagesArg)
+      // setup our stubs and mocks
+      mainBuildUtilMock
+        .expects('packageList')
+        .once()
+        .withExactArgs(optionsArg)
+        .returns(packageIdsArg)
+        
       outMock.expects('buildInit').once()
-      installStub.callsArgWith(2, null, installedPackagesArg, dependencyTreeArg)
-      outMock.expects('installedFromRepository').once().withArgs(installedPackagesArg.length)
-      dependencyTreeArg.localizePackageList = this.stub().returns(localizedArg)
+      installStub.callsArgWith(2, null, installedIdsArg, installResultsArg)
+      outMock.expects('installedFromRepository').once().withArgs(installResultsArg.length)
+      
+      enderPackageMock
+        .expects('walkDependencies')
+        .once()
+        .withArgs(installedIdsArg, true, true)
+        .callsArgWith(3, null, packagesArg)
+        
+      builderStub.callsArgWith(2, null, filenameArg)
       outMock.expects('finishedAssembly').once()
-      mockInfo
+
+      mainInfoMock
         .expects('generateAndPrint')
         .once()
-        .withArgs(optionsArg, out, filenameArg, optionsArg, localizedArg, dependencyTreeArg)
-        .callsArg(6)
+        .withArgs(out, filenameArg, optionsArg, installedIdsArg)
+        .callsArg(4)
+      
+      // subvert single-function modules
+      requireSubvert.subvert('ender-builder', builderStub)
+      requireSubvert.subvert('ender-installer', installStub)
 
-      // execute
-      build.exec(optionsArg, out, done)
+      // load the module under test and execute
+      mainBuild = requireSubvert.require('../../lib/main-build')
+      mainBuild.exec(optionsArg, out, function (err) {
+        refute(err)
 
-      assert.equals(installStub.callCount, 1)
-      assert.equals(installStub.getCall(0).args.length, 3)
-      assert.equals(installStub.getCall(0).args[0], optionsArg)
-      assert.equals(installStub.getCall(0).args[1], packagesArg)
-      assert.equals(builderStub.callCount, 1)
-      assert.equals(builderStub.getCall(0).args.length, 4)
-      assert.equals(builderStub.getCall(0).args[0], optionsArg)
-      assert.equals(builderStub.getCall(0).args[1], packagesArg)
-      assert.equals(builderStub.getCall(0).args[2], dependencyTreeArg)
+        assert.equals(installStub.callCount, 1)
+        assert.equals(installStub.getCall(0).args.length, 3)
+        assert.equals(installStub.getCall(0).args[0], packageIdsArg)
+        assert.equals(installStub.getCall(0).args[1], undefined)
+      
+        assert.equals(builderStub.callCount, 1)
+        assert.equals(builderStub.getCall(0).args.length, 3)
+        assert.equals(builderStub.getCall(0).args[0], optionsArg)
+        assert.equals(builderStub.getCall(0).args[1], packagesArg)
+        
+        done()
+      })
     }
 
   , 'tearDown': function () {

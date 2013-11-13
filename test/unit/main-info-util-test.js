@@ -29,7 +29,7 @@ var buster          = require('bustermove')
   , enderBuilder    = require('ender-builder')
   , fs              = require('fs')
   , zlib            = require('zlib')
-  , mainInfoUtil    = require('../../lib/main-info-util')
+  , infoUtil    = require('../../lib/main-info-util')
   , FilesystemError = require('../../lib/errors').FilesystemError
 
   , _i = 100
@@ -54,7 +54,7 @@ buster.testCase('Info util', {
       enderBuilderMock.expects('minify').once().withArgs(optionsArg, fileContentsArg).callsArgWith(2, null, minifyContentsArg)
       zlibMock.expects('gzip').once().withArgs(minifyContentsArg).callsArgWith(1, null, gzipContentsArg)
 
-      mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
+      infoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
         refute(err)
         assert.equals(sizes, expectedSizes)
         done()
@@ -70,7 +70,7 @@ buster.testCase('Info util', {
 
       fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, null, fileContentsArg)
 
-      mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
+      infoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
         refute(err)
         assert.equals(sizes, expectedSizes)
         done()
@@ -85,7 +85,7 @@ buster.testCase('Info util', {
 
       fsMock.expects('readFile').once().withArgs(filenameArg, 'utf-8').callsArgWith(2, errArg)
 
-      mainInfoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
+      infoUtil.sizes(optionsArg, filenameArg, function (err, sizes) {
         assert(err)
         refute(sizes)
         assert(err instanceof FilesystemError)

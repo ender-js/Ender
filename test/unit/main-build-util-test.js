@@ -23,16 +23,16 @@
  */
 
 
-var buster      = require('bustermove')
-  , assert      = require('referee').assert
-  , refute      = require('referee').refute
-  , buildUtil   = require('../../lib/main-build-util')
+var buster        = require('bustermove')
+  , assert        = require('referee').assert
+  , refute        = require('referee').refute
+  , mainBuildUtil = require('../../lib/main-build-util')
 
 buster.testCase('Build util', {
     'packageList': {
         'setUp': function () {
           this.testPackageList = function (args, expected) {
-            var packages = buildUtil.packageList(args)
+            var packages = mainBuildUtil.packageList(args)
             assert.equals(packages, expected)
           }
         }
@@ -56,67 +56,11 @@ buster.testCase('Build util', {
             , [ 'ender-core', 'ender-commonjs', 'apkg', 'pkg2', 'pkg3', '.', '..' ]
           )
         }
-
-      , 'test duplicate packages': function () {
-          this.testPackageList(
-              { packages: [ 'apkg', 'pkg2', 'apkg' ] }
-            , [ 'ender-core', 'ender-commonjs', 'apkg', 'pkg2' ]
-          )
-        }
     }
 
-  , 'uniquePackages': {
-        'setUp': function () {
-          this.testUniquePackages = function (packages, expected) {
-            var uniques = buildUtil.uniquePackages(packages)
-            assert.equals(uniques, expected)
-          }
-        }
-
-      , 'test no packages': function () {
-          this.testUniquePackages([], [])
-        }
-
-      , 'test single package': function () {
-          this.testUniquePackages([ 'apkg' ], [ 'apkg' ])
-        }
-
-      , 'test multiple unique package': function () {
-          this.testUniquePackages(
-              [ 'apkg', 'foo', 'bar' ]
-            , [ 'apkg', 'foo', 'bar' ]
-          )
-        }
-
-      , 'test multiple packages with dupes': function () {
-          this.testUniquePackages(
-              [ 'apkg', 'foo', 'apkg', 'bar', 'bar' ]
-            , [ 'apkg', 'foo', 'bar' ]
-          )
-        }
-
-      , 'test multiple packages with dupes and versions': function () {
-          // There is a question here about versioning, perhaps if there is an unversioned
-          // and a versioned of the same package then include the versioned one? How about
-          // when 2 different versions of the same package are specified
-          this.testUniquePackages(
-              [ 'apkg', 'foo', 'apkg@0.1', 'bar', 'bar', 'bar@2.0.0', 'yo@0.0.1' ]
-            , [ 'apkg', 'foo', 'bar', 'yo@0.0.1' ]
-          )
-        }
-    }
-
-  , 'isBasePackage': {
-        'test not base package': function () {
-          refute(buildUtil.isBasePackage({}, 'foobar'))
-        }
-
-      , 'test default client package': function () {
-          assert(buildUtil.isBasePackage({}, 'ender-core'))
-        }
-
-      , 'test default module package': function () {
-          assert(buildUtil.isBasePackage({}, 'ender-commonjs'))
+  , 'getCorePackages': {
+        'no args': function () {
+          assert.equals(mainBuildUtil.getCorePackages({}), ['ender-core', 'ender-commonjs'])
         }
     }
 })

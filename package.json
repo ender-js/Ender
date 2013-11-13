@@ -6,6 +6,7 @@
         "Jacob Thornton <jacob@twitter.com> (https://github.com/fat)"
       , "Dustin Diaz <dustin@obvious.com> (https://github.com/ded)"
       , "Rod Vagg <rod@vagg.org> (https://github.com/rvagg)"
+      , "Andrew McCollum (https://github.com/amccollum)"
     ]
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
@@ -13,12 +14,11 @@
   , "dependencies": {
 
         "ender-args-parser"      : "0.0.3-dev"
-      , "ender-builder"          : "0.2.0-dev"
-      , "ender-dependency-graph" : "0.0.3-dev"
-      , "ender-installer"        : "~0.0.0"
+      , "ender-builder"          : "0.3.0-dev"
+      , "ender-installer"        : "0.1.0-dev"
       , "ender-minify"           : "~0.1.1"
-      , "ender-package-util"     : "0.0.2-dev"
-      , "ender-repository"       : "~0.0.4"
+      , "ender-package"          : "0.0.5-dev"
+      , "ender-repository"       : "0.0.5-dev"
 
       , "colors"           : "~0.6.0"
       , "async"            : "~0.1.22"

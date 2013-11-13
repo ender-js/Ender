@@ -45,7 +45,7 @@ referee.add('sourceHasPackage', {
       this.times = source.split(re).length - 1
       return this.times == 1
     }
-  , assertMessage: '${2} contains provide("${1}") [${times} time(s), expected 1]'
+  , assertMessage: '${2} contains Module.loadPackage("${1}") [${times} time(s), expected 1]'
 })
 
 referee.add('sourceContainsPackages', {
@@ -53,9 +53,10 @@ referee.add('sourceContainsPackages', {
       var re = makeSourcePackageRegex('[\\w\\-]+')
       source = source || ''
       this.times = source.split(re).length - 1
+      debugger
       return this.times == times
     }
-  , assertMessage: '${2} contains ${1} Module.package() [${times} time(s), expected ${1}]'
+  , assertMessage: '${2} contains ${1} Module.loadPackage() [${times} time(s), expected ${1}]'
 })
 
 referee.add('sourceHasPackagesInOrder', {
@@ -66,7 +67,7 @@ referee.add('sourceHasPackagesInOrder', {
         , idx2 = source.search(re2)
       return idx1 < idx2
     }
-  , assertMessage: '${3} has provide("${1}") before provide("${2}")'
+  , assertMessage: '${3} has Module.loadPackage("${1}") before Module.loadPackage("${2}")'
 })
 
 referee.add('hasVersionedPackage', {
