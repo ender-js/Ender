@@ -19,24 +19,24 @@
 7 verbose parsed url   href: '.' }
 8 silly lockFile 3a52ce78- .
 9 verbose lock . /Users/dustindiaz/.npm/3a52ce78-.lock
-10 verbose tar pack [ '/var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz',
+10 verbose tar pack [ '/var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz',
 10 verbose tar pack   '.' ]
-11 verbose tarball /var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
+11 verbose tarball /var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
 12 verbose folder .
-13 info prepublish ender@2.0.1-dev
+13 info prepublish ender@2.0.2-dev
 14 silly lockFile 1f1177db-tar tar://.
 15 verbose lock tar://. /Users/dustindiaz/.npm/1f1177db-tar.lock
-16 silly lockFile 29ba60e5-40994-0-9470695310737938-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-17 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz /Users/dustindiaz/.npm/29ba60e5-40994-0-9470695310737938-tmp-tgz.lock
+16 silly lockFile ae705dfc-95919-0-9939037074800581-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+17 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz /Users/dustindiaz/.npm/ae705dfc-95919-0-9939037074800581-tmp-tgz.lock
 18 silly lockFile 1f1177db-tar tar://.
 19 silly lockFile 1f1177db-tar tar://.
-20 silly lockFile 29ba60e5-40994-0-9470695310737938-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-21 silly lockFile 29ba60e5-40994-0-9470695310737938-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-22 verbose tar unpack /var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-23 silly lockFile 3803f9c2-40994-0-9470695310737938-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-24 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package /Users/dustindiaz/.npm/3803f9c2-40994-0-9470695310737938-package.lock
-25 silly lockFile 29ba60e5-40994-0-9470695310737938-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-26 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz /Users/dustindiaz/.npm/29ba60e5-40994-0-9470695310737938-tmp-tgz.lock
+20 silly lockFile ae705dfc-95919-0-9939037074800581-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+21 silly lockFile ae705dfc-95919-0-9939037074800581-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+22 verbose tar unpack /var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+23 silly lockFile 8cf3cd06-95919-0-9939037074800581-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+24 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package /Users/dustindiaz/.npm/8cf3cd06-95919-0-9939037074800581-package.lock
+25 silly lockFile ae705dfc-95919-0-9939037074800581-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+26 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz /Users/dustindiaz/.npm/ae705dfc-95919-0-9939037074800581-tmp-tgz.lock
 27 silly gunzTarPerm modes [ '755', '644' ]
 28 silly gunzTarPerm extractEntry package.json
 29 silly gunzTarPerm extractEntry .npmignore
@@ -119,31 +119,31 @@
 106 silly gunzTarPerm extractEntry test/unit/main-build-test.js
 107 silly gunzTarPerm extractEntry test/unit/parse-context-test.js
 108 silly gunzTarPerm extractEntry test/unit/main-remove-test.js
-109 silly lockFile 3803f9c2-40994-0-9470695310737938-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-110 silly lockFile 3803f9c2-40994-0-9470695310737938-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-111 silly lockFile 29ba60e5-40994-0-9470695310737938-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-112 silly lockFile 29ba60e5-40994-0-9470695310737938-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/tmp.tgz
-113 verbose tar pack [ '/Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz',
-113 verbose tar pack   '/var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package' ]
-114 verbose tarball /Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-115 verbose folder /var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-116 silly lockFile 3803f9c2-40994-0-9470695310737938-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-117 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package /Users/dustindiaz/.npm/3803f9c2-40994-0-9470695310737938-package.lock
-118 silly lockFile bcf607e3--npm-ender-2-0-1-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-119 verbose lock tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz /Users/dustindiaz/.npm/bcf607e3--npm-ender-2-0-1-dev-package-tgz.lock
-120 silly lockFile 3803f9c2-40994-0-9470695310737938-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-121 silly lockFile 3803f9c2-40994-0-9470695310737938-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-84903-o3MXCg-8/1384564540994-0.9470695310737938/package
-122 silly lockFile bcf607e3--npm-ender-2-0-1-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-123 silly lockFile bcf607e3--npm-ender-2-0-1-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-124 silly lockFile bdd2dae8-diaz-npm-ender-2-0-1-dev-package /Users/dustindiaz/.npm/ender/2.0.1-dev/package
-125 verbose lock /Users/dustindiaz/.npm/ender/2.0.1-dev/package /Users/dustindiaz/.npm/bdd2dae8-diaz-npm-ender-2-0-1-dev-package.lock
-126 silly lockFile bdd2dae8-diaz-npm-ender-2-0-1-dev-package /Users/dustindiaz/.npm/ender/2.0.1-dev/package
-127 silly lockFile bdd2dae8-diaz-npm-ender-2-0-1-dev-package /Users/dustindiaz/.npm/ender/2.0.1-dev/package
-128 verbose tar unpack /Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-129 silly lockFile f58e1fcf-diaz-npm-ender-2-0-1-dev-package tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package
-130 verbose lock tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package /Users/dustindiaz/.npm/f58e1fcf-diaz-npm-ender-2-0-1-dev-package.lock
-131 silly lockFile bcf607e3--npm-ender-2-0-1-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-132 verbose lock tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz /Users/dustindiaz/.npm/bcf607e3--npm-ender-2-0-1-dev-package-tgz.lock
+109 silly lockFile 8cf3cd06-95919-0-9939037074800581-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+110 silly lockFile 8cf3cd06-95919-0-9939037074800581-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+111 silly lockFile ae705dfc-95919-0-9939037074800581-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+112 silly lockFile ae705dfc-95919-0-9939037074800581-tmp-tgz tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/tmp.tgz
+113 verbose tar pack [ '/Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz',
+113 verbose tar pack   '/var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package' ]
+114 verbose tarball /Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+115 verbose folder /var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+116 silly lockFile 8cf3cd06-95919-0-9939037074800581-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+117 verbose lock tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package /Users/dustindiaz/.npm/8cf3cd06-95919-0-9939037074800581-package.lock
+118 silly lockFile 4cb0637c--npm-ender-2-0-2-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+119 verbose lock tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz /Users/dustindiaz/.npm/4cb0637c--npm-ender-2-0-2-dev-package-tgz.lock
+120 silly lockFile 8cf3cd06-95919-0-9939037074800581-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+121 silly lockFile 8cf3cd06-95919-0-9939037074800581-package tar:///var/folders/56/r7_32yvx5_j39wy18ps_k8zh0000gn/T/npm-85015-6P8T6EbD/1384564595919-0.9939037074800581/package
+122 silly lockFile 4cb0637c--npm-ender-2-0-2-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+123 silly lockFile 4cb0637c--npm-ender-2-0-2-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+124 silly lockFile cf19244b-diaz-npm-ender-2-0-2-dev-package /Users/dustindiaz/.npm/ender/2.0.2-dev/package
+125 verbose lock /Users/dustindiaz/.npm/ender/2.0.2-dev/package /Users/dustindiaz/.npm/cf19244b-diaz-npm-ender-2-0-2-dev-package.lock
+126 silly lockFile cf19244b-diaz-npm-ender-2-0-2-dev-package /Users/dustindiaz/.npm/ender/2.0.2-dev/package
+127 silly lockFile cf19244b-diaz-npm-ender-2-0-2-dev-package /Users/dustindiaz/.npm/ender/2.0.2-dev/package
+128 verbose tar unpack /Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+129 silly lockFile 7b0ff7e1-diaz-npm-ender-2-0-2-dev-package tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package
+130 verbose lock tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package /Users/dustindiaz/.npm/7b0ff7e1-diaz-npm-ender-2-0-2-dev-package.lock
+131 silly lockFile 4cb0637c--npm-ender-2-0-2-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+132 verbose lock tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz /Users/dustindiaz/.npm/4cb0637c--npm-ender-2-0-2-dev-package-tgz.lock
 133 silly gunzTarPerm modes [ '755', '644' ]
 134 silly gunzTarPerm extractEntry package.json
 135 silly gunzTarPerm extractEntry .npmignore
@@ -226,17 +226,17 @@
 212 silly gunzTarPerm extractEntry test/unit/main-build-test.js
 213 silly gunzTarPerm extractEntry test/unit/parse-context-test.js
 214 silly gunzTarPerm extractEntry test/unit/main-remove-test.js
-215 silly lockFile f58e1fcf-diaz-npm-ender-2-0-1-dev-package tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package
-216 silly lockFile f58e1fcf-diaz-npm-ender-2-0-1-dev-package tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package
-217 silly lockFile bcf607e3--npm-ender-2-0-1-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-218 silly lockFile bcf607e3--npm-ender-2-0-1-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz
-219 verbose chmod /Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz 644
-220 verbose chown /Users/dustindiaz/.npm/ender/2.0.1-dev/package.tgz [ 501, 20 ]
+215 silly lockFile 7b0ff7e1-diaz-npm-ender-2-0-2-dev-package tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package
+216 silly lockFile 7b0ff7e1-diaz-npm-ender-2-0-2-dev-package tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package
+217 silly lockFile 4cb0637c--npm-ender-2-0-2-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+218 silly lockFile 4cb0637c--npm-ender-2-0-2-dev-package-tgz tar:///Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz
+219 verbose chmod /Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz 644
+220 verbose chown /Users/dustindiaz/.npm/ender/2.0.2-dev/package.tgz [ 501, 20 ]
 221 silly lockFile 3a52ce78- .
 222 silly lockFile 3a52ce78- .
 223 silly publish { name: 'ender',
 223 silly publish   description: 'Open Module JavaScript Framework',
-223 silly publish   version: '2.0.1-dev',
+223 silly publish   version: '2.0.2-dev',
 223 silly publish   authors:
 223 silly publish    [ 'Jacob Thornton <jacob@twitter.com> (https://github.com/fat)',
 223 silly publish      'Dustin Diaz <dustin@obvious.com> (https://github.com/ded)',
@@ -275,19 +275,19 @@
 223 silly publish   readme: '# ENDER\n\n**Ender is a full featured package manager for your browser**\n\nIt allows you to search, install, manage, and compile front-end JavaScript packages and their dependencies for the web. We like to think of it as [NPM](https://github.com/isaacs/npm)\'s little sister.\n\n**Ender is not a JavaScript library**\n\nIt\'s not a jQuery replacement. It\'s not even a static asset. It\'s a tool for making the consumption of front-end JavaScript packages dead simple and incredibly powerful.\n\n![Ender](http://f.cl.ly/items/1W0P3I3D3m3U0e1j2h1c/Screen%20shot%202011-05-09%20at%2011.31.42%20AM.png)\n\n## WHY?\n\nIn the browser - **small, loosely coupled modules are the future and large, tightly-bound monolithic libraries are the past!**\n\nEnder capitalizes on this by offering a unique way to bring together the exciting work happening in JavaScript packages and allows you to mix, match, and customize your own build, suited to your individual needs, without all the extra cruft that comes with larger libraries.\n\nWith Ender, if one library goes bad or unmaintained, it can be replaced with another. Need a specific package version? No problem! Does your package have dependencies? Let us handle that for you too!\n\n## MORE INFO\n\nFor more information checkout [http://ender.jit.su](http://ender.jit.su)\n\n## BUILD STATUS\n\n**Ender** [![Build Status](https://secure.travis-ci.org/ender-js/Ender.png)](http://travis-ci.org/ender-js/Ender)\n\n[Ender Args Parser](https://github.com/ender-js/ender-args-parser) [![Build Status](https://secure.travis-ci.org/ender-js/ender-args-parser.png)](http://travis-ci.org/ender-js/ender-args-parser)\n\n[Ender Builder](https://github.com/ender-js/ender-builder) [![Build Status](https://secure.travis-ci.org/ender-js/ender-builder.png)](http://travis-ci.org/ender-js/ender-builder)\n\n[Ender Dependency Graph](https://github.com/ender-js/ender-dependency-graph) [![Build Status](https://secure.travis-ci.org/ender-js/ender-dependency-graph.png)](http://travis-ci.org/ender-js/ender-dependency-graph)\n\n[Ender Installer](https://github.com/ender-js/ender-installer) [![Build Status](https://secure.travis-ci.org/ender-js/ender-installer.png)](http://travis-ci.org/ender-js/ender-installer)\n\n[Ender Minify](https://github.com/ender-js/ender-minify) [![Build Status](https://secure.travis-ci.org/ender-js/ender-minify.png)](http://travis-ci.org/ender-js/ender-minify)\n\n[Ender Package Util](https://github.com/ender-js/ender-package-util) [![Build Status](https://secure.travis-ci.org/ender-js/ender-package-util.png)](http://travis-ci.org/ender-js/ender-package-util)\n\n[Ender Repository](https://github.com/ender-js/ender-repository) [![Build Status](https://secure.travis-ci.org/ender-js/ender-repository.png)](http://travis-ci.org/ender-js/ender-repository)\n\n## Licence\n\nEnder is Copyright (c) 2012-2013 Dustin Diaz [@ded](https://twitter.com/ded), Jacob Thornton [@fat](https://twitter.com/fat) and Rod Vagg [@rvagg](https://twitter.com/rvagg) and licensed under the MIT license. All rights not explicitly granted in the MIT license are reserved. See the included LICENSE file for more details.',
 223 silly publish   readmeFilename: 'README.md',
 223 silly publish   bugs: { url: 'https://github.com/ender-js/Ender/issues' },
-223 silly publish   _id: 'ender@2.0.1-dev',
-223 silly publish   dist: { shasum: '2160dc5399856780f0016c77d428dbbf1df2f2b0' },
+223 silly publish   _id: 'ender@2.0.2-dev',
+223 silly publish   dist: { shasum: '17783f8dcd26666c4f28419f4770f216eeb93c4c' },
 223 silly publish   _from: '.' }
 224 verbose url raw ender
 225 verbose url resolving [ 'https://registry.npmjs.org/', './ender' ]
 226 verbose url resolved https://registry.npmjs.org/ender
-227 info trying registry request attempt 1 at 17:15:42
+227 info trying registry request attempt 1 at 17:16:36
 228 http PUT https://registry.npmjs.org/ender
 229 http 409 https://registry.npmjs.org/ender
 230 verbose url raw ender
 231 verbose url resolving [ 'https://registry.npmjs.org/', './ender' ]
 232 verbose url resolved https://registry.npmjs.org/ender
-233 info trying registry request attempt 1 at 17:15:42
+233 info trying registry request attempt 1 at 17:16:37
 234 http GET https://registry.npmjs.org/ender
 235 http 200 https://registry.npmjs.org/ender
 236 error publish fail Cannot publish over existing version.
