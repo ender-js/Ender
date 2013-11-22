@@ -50,25 +50,25 @@ buster.testCase('Info', {
 
         // setup our stubs and mocks
         parseContextStub.callsArgWith(1, null, contextArg)
-        
+
         mainBuildUtilMock
           .expects('packageList')
           .once()
           .withExactArgs(contextArg.options)
           .returns(packageIdsArg)
-        
+
         mainInfoUtilMock
           .expects('sizes')
           .once()
           .withArgs(contextArg.options, expectedFilename)
           .callsArgWith(2, null, sizesArg)
-      
+
         enderPackageMock
           .expects('buildArchyTree')
           .once()
           .withArgs(packageIdsArg, true)
           .callsArgWith(2, null, archyTreeArg)
-      
+
         outMock
           .expects('buildInfo')
           .once()

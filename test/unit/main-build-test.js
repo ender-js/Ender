@@ -61,17 +61,17 @@ buster.testCase('Build', {
         .once()
         .withExactArgs(optionsArg)
         .returns(packageIdsArg)
-        
+
       outMock.expects('buildInit').once()
       installStub.callsArgWith(2, null, installedIdsArg, installResultsArg)
       outMock.expects('installedFromRepository').once().withArgs(installResultsArg.length)
-      
+
       enderPackageMock
         .expects('walkDependencies')
         .once()
         .withArgs(installedIdsArg, true, true)
         .callsArgWith(3, null, packagesArg)
-        
+
       builderStub.callsArgWith(2, null, filenameArg)
       outMock.expects('finishedAssembly').once()
 
@@ -80,7 +80,7 @@ buster.testCase('Build', {
         .once()
         .withArgs(out, filenameArg, optionsArg, installedIdsArg)
         .callsArg(4)
-      
+
       // subvert single-function modules
       requireSubvert.subvert('ender-builder', builderStub)
       requireSubvert.subvert('ender-installer', installStub)
@@ -94,12 +94,12 @@ buster.testCase('Build', {
         assert.equals(installStub.getCall(0).args.length, 3)
         assert.equals(installStub.getCall(0).args[0], packageIdsArg)
         assert.equals(installStub.getCall(0).args[1], undefined)
-      
+
         assert.equals(builderStub.callCount, 1)
         assert.equals(builderStub.getCall(0).args.length, 3)
         assert.equals(builderStub.getCall(0).args[0], optionsArg)
         assert.equals(builderStub.getCall(0).args[1], packagesArg)
-        
+
         done()
       })
     }
