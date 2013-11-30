@@ -116,12 +116,12 @@ buster.testCase('Functional: minify', {
               })
             })
 
-            // non minified files should be roughly the same size, give or take a bit due to build cmd at the top
-            assert.equals(data.none.fileContents[0].length, data.uglify.fileContents[0].length - 4)
+            // non minified files should be roughly the same size, give or take a bit due to build cmd at the top and the sourceMapping reference at the end
+            assert.equals(data.none.fileContents[0].length, data.uglify.fileContents[0].length - 6)
             if (this.javaAvailable) {
-              assert.equals(data.none.fileContents[0].length, data['closure-w'].fileContents[0].length - 27)
-              assert.equals(data.none.fileContents[0].length, data['closure-s'].fileContents[0].length - 23)
-              assert.equals(data.none.fileContents[0].length, data['closure-a'].fileContents[0].length - 25)
+              assert.equals(data.none.fileContents[0].length, data['closure-w'].fileContents[0].length - 32)
+              assert.equals(data.none.fileContents[0].length, data['closure-s'].fileContents[0].length - 28)
+              assert.equals(data.none.fileContents[0].length, data['closure-a'].fileContents[0].length - 30)
             }
 
             // lets shoot for at least 60% compression
