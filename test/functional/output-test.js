@@ -60,6 +60,10 @@ buster.testCase('Functional: build with output', {
               assert.hasVersionedPackage(contents, 'bean', files[i])
               assert.sourceHasPackage(contents, 'bonzo', files[i])
               assert.sourceHasPackage(contents, 'bean', files[i])
+              assert.sourceHasRequire(contents, 'bonzo', files[i])
+              assert.sourceHasRequire(contents, 'bean', files[i])
+              assert.sourceHasRequire(contents, 'bonzo/src/ender', files[i])
+              assert.sourceHasRequire(contents, 'bean/src/ender', files[i])
 
               assert.sourceHasPackagesInOrder(contents, 'bonzo', 'bean', files[i])
             })

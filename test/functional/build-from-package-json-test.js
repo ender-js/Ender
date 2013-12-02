@@ -78,6 +78,11 @@ buster.testCase('Functional: build from package.json', {
               assert.sourceHasPackage(contents, 'qwery', files[i])
               assert.sourceHasPackage(contents, 'bean', files[i])
               assert.sourceHasPackage(contents, 'test-package', files[i])
+              assert.sourceHasRequire(contents, 'qwery', files[i])
+              assert.sourceHasRequire(contents, 'bean', files[i])
+              assert.sourceHasRequire(contents, 'test-package', files[i])
+              assert.sourceHasRequire(contents, 'qwery/src/ender', files[i])
+              assert.sourceHasRequire(contents, 'bean/src/ender', files[i])
 
               assert.sourceHasPackagesInOrder(contents, 'bean', 'test-package', files[i])
               assert.sourceHasPackagesInOrder(contents, 'qwery', 'test-package', files[i])

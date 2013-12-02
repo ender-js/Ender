@@ -34,40 +34,48 @@ var referee            = require('referee')
   , tmpDir             = require('os').tmpDir()
   , copyrightCommentRe = /\/\*![\s\S]*?\*\//g
 
-  , makeSourcePackageRegex = function (pkg) {
-      return RegExp('loadPackage\\("' + pkg + '"')
+  , makePackageRegex = function (pkg) {
+      return new RegExp('createPackage\\([\'"]' + pkg + '[\'"]')
     }
 
 referee.add('sourceHasPackage', {
     assert: function (source, pkg, file) {
-      var re = makeSourcePackageRegex(pkg)
+      var re = makePackageRegex(pkg)
       source = source || ''
       this.times = source.split(re).length - 1
       return this.times == 1
     }
-  , assertMessage: '${2} contains Module.loadPackage("${1}") [${times} time(s), expected 1]'
+  , assertMessage: "${2} contains Module.createPackage('${1}') [${times} time(s), expected 1]"
 })
 
 referee.add('sourceContainsPackages', {
     assert: function (source, times, file) {
-      var re = makeSourcePackageRegex('[\\w\\-]+')
+      var re = makePackageRegex('[\\w\\-]+')
       source = source || ''
       this.times = source.split(re).length - 1
-      debugger
       return this.times == times
     }
-  , assertMessage: '${2} contains ${1} Module.loadPackage() [${times} time(s), expected ${1}]'
+  , assertMessage: "${2} contains ${1} Module.createPackage [${times} time(s), expected ${1}]"
+})
+
+referee.add('sourceHasRequire', {
+    assert: function (source, module, file) {
+      // `require` will get mangled in minified builds
+      var r = (file.indexOf('.min.js') == -1) ? 'require' : '\\w+'
+      return new RegExp(r + '\\([\'"]' + module + '[\'"]\\)').test(source)
+    }
+  , assertMessage: "${2} missing require('${1}')"
 })
 
 referee.add('sourceHasPackagesInOrder', {
     assert: function (source, pkg1, pkg2, file) {
-      var re1 = makeSourcePackageRegex(pkg1)
-        , re2 = makeSourcePackageRegex(pkg2)
+      var re1 = makePackageRegex(pkg1)
+        , re2 = makePackageRegex(pkg2)
         , idx1 = source.search(re1)
         , idx2 = source.search(re2)
       return idx1 < idx2
     }
-  , assertMessage: '${3} has Module.loadPackage("${1}") before Module.loadPackage("${2}")'
+  , assertMessage: '${3} has Module.createPackage("${1}") before Module.createPackage("${2}")'
 })
 
 referee.add('hasVersionedPackage', {

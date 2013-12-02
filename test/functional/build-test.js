@@ -64,6 +64,14 @@ buster.testCase('Functional: build / dependencies', {
               assert.sourceHasPackage(contents, 'qwery', files[i])
               assert.sourceHasPackage(contents, 'bonzo', files[i])
               assert.sourceHasPackage(contents, 'bean', files[i])
+              assert.sourceHasRequire(contents, 'domready', files[i])
+              assert.sourceHasRequire(contents, 'qwery', files[i])
+              assert.sourceHasRequire(contents, 'bonzo', files[i])
+              assert.sourceHasRequire(contents, 'bean', files[i])
+              assert.sourceHasRequire(contents, 'domready/src/ender', files[i])
+              assert.sourceHasRequire(contents, 'qwery/src/ender', files[i])
+              assert.sourceHasRequire(contents, 'bonzo/src/ender', files[i])
+              assert.sourceHasRequire(contents, 'bean/src/ender', files[i])
             })
 
             functionalCommon.verifyNodeModulesDirectories(

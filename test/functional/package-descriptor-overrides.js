@@ -61,11 +61,13 @@ buster.testCase('Functional: package descriptor overrides', {
                 expectedIncludes.forEach(function (incl) {
                   assert.hasVersionedPackage(contents, incl, files[i])
                   assert.sourceHasPackage(contents, incl, files[i])
+                  assert.sourceHasRequire(contents, incl, files[i])
                 })
                 // should refer to proper name here
                 assert.hasVersionedPackage(contents, pkg, files[i])
                 // name rewritten name for provide()
                 assert.sourceHasPackage(contents, expectedName, files[i])
+                assert.sourceHasRequire(contents, expectedName, files[i])
                 assert.sourceHasPackagesInOrder(contents, expectedIncludes[0], expectedName, files[i])
 
                 contentsAsserts(contents, files[i])

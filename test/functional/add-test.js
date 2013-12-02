@@ -64,6 +64,10 @@ buster.testCase('Functional: add', {
                       assert.hasVersionedPackage(contents, 'bean', files[i])
                       assert.sourceHasPackage(contents, 'qwery', files[i])
                       assert.sourceHasPackage(contents, 'bean', files[i])
+                      assert.sourceHasRequire(contents, 'qwery', files[i])
+                      assert.sourceHasRequire(contents, 'bean', files[i])
+                      assert.sourceHasRequire(contents, 'qwery/src/ender', files[i])
+                      assert.sourceHasRequire(contents, 'bean/src/ender', files[i])
 
                       assert.sourceHasPackagesInOrder(contents, 'qwery', 'bean', files[i])
                     })
@@ -110,6 +114,16 @@ buster.testCase('Functional: add', {
                       assert.sourceHasPackage(contents, 'bonzo', files[i])
                       assert.sourceHasPackage(contents, 'es5-basic', files[i])
                       assert.sourceHasPackage(contents, 'sel', files[i])
+
+                      assert.sourceHasRequire(contents, 'qwery', files[i])
+                      assert.sourceHasRequire(contents, 'bean', files[i])
+                      assert.sourceHasRequire(contents, 'bonzo', files[i])
+                      assert.sourceHasRequire(contents, 'es5-basic', files[i])
+                      assert.sourceHasRequire(contents, 'sel', files[i])
+                      assert.sourceHasRequire(contents, 'qwery/src/ender', files[i])
+                      assert.sourceHasRequire(contents, 'bean/src/ender', files[i])
+                      assert.sourceHasRequire(contents, 'bonzo/src/ender', files[i])
+                      assert.sourceHasRequire(contents, 'sel/lib/ender', files[i])
 
                       assert.sourceHasPackagesInOrder(contents, 'qwery', 'bean', files[i])
                       assert.sourceHasPackagesInOrder(contents, 'bean', 'bonzo', files[i])
