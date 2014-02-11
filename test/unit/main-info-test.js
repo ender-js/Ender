@@ -30,15 +30,17 @@ var buster         = require('bustermove')
 
 buster.testCase('Info', {
     'setUp': function () {
-      var enderPackage        = require('ender-package')
+      var fs                  = require('fs')
+        , zlib                = require('zlib')
+        , enderPackage        = require('ender-package')
         , mainBuildUtil       = require('../../lib/main-build-util')
-        , mainInfoUtil        = require('../../lib/main-info-util')
         , out                 = require('../../lib/output/main-info-output').create()
 
       this.runTest = function (options, expectedFilename, done) {
-        var enderPackageMock    = this.mock(enderPackage)
+        var fsMock              = this.mock(fs)
+          , zlibMock            = this.mock(zlib)
+          , enderPackageMock    = this.mock(enderPackage)
           , mainBuildUtilMock   = this.mock(mainBuildUtil)
-          , mainInfoUtilMock    = this.mock(mainInfoUtil)
           , outMock             = this.mock(out)
           , parseContextStub    = this.stub()
           , mainInfo
@@ -57,11 +59,16 @@ buster.testCase('Info', {
           .withExactArgs(contextArg.options)
           .returns(packageIdsArg)
 
-        mainInfoUtilMock
-          .expects('sizes')
+        fsMock
+          .expects('readFile')
+          .twice()
+          .callsArgWith(2, null, 'file contents')
+
+        zlibMock
+          .expects('gzip')
           .once()
-          .withArgs(contextArg.options, expectedFilename)
-          .callsArgWith(2, null, sizesArg)
+          .withArgs('file contents')
+          .callsArgWith(1, null, 'gzipped contents')
 
         enderPackageMock
           .expects('buildArchyTree')
@@ -72,7 +79,7 @@ buster.testCase('Info', {
         outMock
           .expects('buildInfo')
           .once()
-          .withExactArgs(expectedFilename, contextArg.options, sizesArg, archyTreeArg)
+          .withExactArgs(expectedFilename, contextArg.options, { build: 13, minifiedBuild: 13, gzippedMinifiedBuild: 16 }, archyTreeArg)
 
         // subvert single-function modules
         requireSubvert.subvert('../../lib/parse-context', parseContextStub)

@@ -53,7 +53,8 @@ buster.testCase('Build', {
         , installedIdsArg      = [ 'foobar@0.0.1' ]
         , packagesArg          = [ 'foobarDepPkg', 'foobarPkg' ]
         , installResultsArg    = [ 1, 2, 3 ]
-        , filenameArg          = { filename: 1 }
+        , buildFilesArg        = { build: 'build' }
+        , buildFilenamesArg    = { build: 'ender.js' }
 
       // setup our stubs and mocks
       mainBuildUtilMock
@@ -72,14 +73,14 @@ buster.testCase('Build', {
         .withArgs(installedIdsArg, true, true)
         .callsArgWith(3, null, packagesArg)
 
-      builderStub.callsArgWith(2, null, filenameArg)
+      builderStub.callsArgWith(2, null, buildFilesArg, buildFilenamesArg)
       outMock.expects('finishedAssembly').once()
 
       mainInfoMock
         .expects('generateAndPrint')
         .once()
-        .withArgs(out, filenameArg, optionsArg, installedIdsArg)
-        .callsArg(4)
+        .withArgs(out, buildFilenamesArg.build, optionsArg, installedIdsArg, buildFilesArg)
+        .callsArg(5)
 
       // subvert single-function modules
       requireSubvert.subvert('ender-builder', builderStub)

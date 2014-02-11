@@ -18,10 +18,9 @@
       , "ender-installer"        : "ender-js/ender-installer#beta"
       , "ender-package"          : "ender-js/ender-package#beta"
       , "ender-repository"       : "ender-js/ender-repository#beta"
-      , "ender-minify"           : "~0.1.1"
 
       , "colors"           : "~0.6.0"
-      , "async"            : "~0.1.22"
+      , "async"            : "~0.2.10"
       , "hogan.js"         : "~2.0.0"
       , "archy"            : "~0.0.2"
       , "colors-tmpl"      : "~0.1.0"
