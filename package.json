@@ -6,11 +6,11 @@
         "Andrew McCollum (https://github.com/amccollum)"
       , "Rod Vagg (https://github.com/rvagg)"
       , "Dustin Diaz (https://github.com/ded)"
-        "Jacob Thornton (https://github.com/fat)"
+      , "Jacob Thornton (https://github.com/fat)"
     ]
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
-  , "homepage": "https://ender.jit.su"
+  , "homepage": "https://enderjs.com"
   , "dependencies": {
 
         "ender-args-parser"      : "1.0.0"
