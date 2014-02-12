@@ -10,7 +10,7 @@
     ]
   , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
   , "main": "./lib/main.js"
-  , "homepage": "https://enderjs.com"
+  , "homepage": "http://enderjs.com"
   , "dependencies": {
 
         "ender-args-parser"      : "1.0.0"
