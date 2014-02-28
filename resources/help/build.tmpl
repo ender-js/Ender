@@ -5,6 +5,8 @@
   {red}+ options:{/red}
   - {yellow}--sandbox{/yellow} prevent global leakage of Ender lib variables, passing additional arguments will define the specified packages directly on the window
     + example: {cyan}$ ender build jeesh backbone --sandbox backbone{/cyan}
+  - {yellow}--integrate{/yellow} try to automatically integrate modules that don't include bridge files
+    + example: {cyan}$ ender build jeesh underscore --integrate underscore{/cyan}
   - {yellow}--output{/yellow} (or {yellow}-o{/yellow}) write Ender library to path with custom name
     + example: {cyan}$ ender build mootools-class --output ../public/js/mootools.js{/cyan}
     + (above example would generate a mootools.js file as well as a mootools.min.js file in the ../public/js/ dir.)
