@@ -1,7 +1,7 @@
 {
     "name": "ender"
   , "description": "Open Module JavaScript Framework"
-  , "version": "2.0.3"
+  , "version": "2.0.4"
   , "authors": [
         "Andrew McCollum (https://github.com/amccollum)"
       , "Rod Vagg (https://github.com/rvagg)"
@@ -14,7 +14,7 @@
   , "dependencies": {
 
         "ender-args-parser"      : "1.0.3"
-      , "ender-builder"          : "1.0.3"
+      , "ender-builder"          : "1.0.4"
       , "ender-installer"        : "1.0.3"
       , "ender-package"          : "1.0.3"
       , "ender-repository"       : "1.0.3"
