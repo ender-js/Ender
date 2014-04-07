@@ -23,15 +23,29 @@
  */
 
 
-var extend      = require('util')._extend
-  , BuildOutput = require('./main-build-output')
+/******************************************************************************
+ * 'Version' executable module, for `ender version` or `ender -v`, just read
+ * the package.json and print the current version.
+ */
 
-  , AddOutput   = extend({
+var fs              = require('fs')
+  , path            = require('path')
+  , JSONParseError  = require('./errors').JSONParseError
+  , FilesystemError = require('./errors').FilesystemError
 
-        create: function (out, debug, quiet) {
-          return Object.create(this).init(out, debug, quiet)
+  , exec = function (options, out, callback) {
+      var file = path.resolve(__dirname, '../../package.json')
+      fs.readFile(file, 'utf-8', function (err, data) {
+        if (err) return callback(new FilesystemError(err))
+        try {
+          data = JSON.parse(data)
+        } catch (err) {
+          return callback(new JSONParseError(err.message + ' [' + file + ']', err))
         }
 
-    }, BuildOutput) // inherit from BuildOutput
+        out.log('Active version: v' + data.version)
+        callback()
+      })
+    }
 
-module.exports = AddOutput
+module.exports.exec = exec

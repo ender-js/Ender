@@ -34,22 +34,34 @@ var async         = require('async')
   , fs            = require('fs')
   , zlib          = require('zlib')
 
+  , argsParser    = require('ender-args-parser')
   , enderPackage  = require('ender-package')
-  , mainBuildUtil = require('./main-build-util')
-  , parseContext  = require('./parse-context')
   , util          = require('./util')
 
   , CompressionError = require('./errors').CompressionError
   , FilesystemError  = require('./errors').FilesystemError
 
-  , generateAndPrint = function (out, buildName, options, ids, files, callback) {
+  , exec = function (options, out, callback, buildName, ids, files) {
       var sizes = {}
 
         , finish = function (callback) {
             // build an `archy` tree representing the packages in the build
             enderPackage.buildArchyTree(ids, true, function (err, archyTree) {
               if (err) return callback(err) // wrapped in ender-package
-              out.buildInfo(buildName, options, sizes, archyTree)
+
+              out.log('Your current build command is: ' + ('ender ' + argsParser.toContextString(options)).yellow)
+              out.log(
+                  'Your current build size is: '
+                + util.toKb(sizes.build).yellow + ' raw'
+                + (sizes.minifiedBuild
+                    ? ', ' + util.toKb(sizes.minifiedBuild).yellow + ' minified and '
+                           + util.toKb(sizes.gzippedMinifiedBuild).yellow + ' gzipped'
+                    : ''
+                  )
+                + '\n'
+              )
+              out.log(archyTree)
+
               callback()
             })
           }
@@ -87,14 +99,20 @@ var async         = require('async')
           }
 
         , loadOptions = function (callback) {
+            // If we're the main command, we need to load things from the build
+            if (!buildName) {
+              buildName = util.getInputFilenameFromOptions(options)
+              options = null
+            }
+
             if (options && ids) return callback()
 
             // read 'Build: ...' and 'Packages: ...' from the head of the build file
-            parseContext(buildName, function (err, context) {
-              if (err) return callback(err) // wrapped in source-build.js
+            util.parseContext(buildName, function (err, context) {
+              if (err) return callback(err)
               options = context.options
 
-              if (!ids) ids = mainBuildUtil.packageList(options)
+              if (!ids) ids = util.packageList(options)
               callback()
             })
           }
@@ -110,18 +128,4 @@ var async         = require('async')
       )
     }
 
-  , exec = function (args, out, callback) {
-      generateAndPrint(
-          out
-        , util.getInputFilenameFromOptions(args)
-        , null // no options, read them from build file
-        , null // no package ids, read them from build file
-        , null // no files, read them from disk
-        , callback
-      )
-    }
-
-module.exports = {
-    exec             : exec
-  , generateAndPrint : generateAndPrint
-}
+module.exports.exec = exec

@@ -27,7 +27,7 @@ var config = module.exports
 
 config['unit'] = {
     environment: 'node'
-  , tests: [ 'test/unit/*-test.js' ]
+  , tests: [ 'test/unit/*-test.js', 'test/unit/commands/*-test.js' ]
   , libs: [ 'test/common.js' ]
 }
 

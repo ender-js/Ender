@@ -27,53 +27,43 @@ var buster         = require('bustermove')
   , assert         = require('referee').assert
   , refute         = require('referee').refute
   , repository     = require('ender-repository')
+  , util           = require('../../../src/commands/util')
+  , build          = require('../../../src/commands/build')
+  , remove         = require('../../../src/commands/remove')
   , requireSubvert = require('require-subvert')(__dirname)
-  , util
-  , mainBuild
-  , mainRemove
 
 buster.testCase('Remove', {
     'test basic remove': function (done) {
-      var utilMock
-        , mainBuildMock
-        , repositoryMock   = this.mock(repository)
-        , parseContextStub = this.stub()
-        , optionsArg       = {
+      var optionsArg       = {
               packages: [ 'bing', 'bar' ]
-            , main: 'remove'
+            , command: 'remove'
           }
         , filenameArg = { filename: 1 }
         , contextArg = { options: {
               packages: [ 'foo', 'bar', 'bing', 'bang' ]
-            , main: 'build'
+            , command: 'build'
             , sandbox: [ 'foo' ]
           } }
         , expectedBuildOptions = {
               packages: [ 'foo', 'bang' ]
-            , main: 'build'
+            , command: 'build'
             , sandbox: [ 'foo' ]
           }
         , outArg = { out: 1 }
 
-      requireSubvert.subvert('../../lib/parse-context', parseContextStub)
-      parseContextStub.callsArgWith(1, null, contextArg)
-      util          = requireSubvert.require('../../lib/util')
-      mainBuild     = requireSubvert.require('../../lib/main-build')
-      utilMock      = this.mock(util)
-      mainBuildMock = this.mock(mainBuild)
-      mainRemove    = requireSubvert.require('../../lib/main-remove')
 
+        , repositoryMock   = this.mock(repository)
+        , utilMock         = this.mock(util)
+        , buildMock        = this.mock(build)
+
+      utilMock.expects('parseContext').once().callsArgWith(1, null, contextArg)
       utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
-      mainBuildMock.expects('exec').once().withArgs(expectedBuildOptions, outArg).callsArg(2)
+      buildMock.expects('exec').once().withArgs(expectedBuildOptions, outArg).callsArg(2)
       repositoryMock.expects('setup').once().callsArg(0)
       repositoryMock.expects('uninstall').once().withArgs(optionsArg.packages).callsArgWith(1)
       repositoryMock.expects('packup').once()
 
-      mainRemove.exec(optionsArg, outArg, done)
-
-      assert.equals(parseContextStub.callCount, 1)
-      assert.equals(parseContextStub.getCall(0).args.length, 2)
-      assert.equals(parseContextStub.getCall(0).args[0], filenameArg)
+      remove.exec(optionsArg, outArg, done)
     }
 
   , 'tearDown': function () {

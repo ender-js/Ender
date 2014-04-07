@@ -22,12 +22,6 @@
  * SOFTWARE.
  */
 
-/******************************************************************************
- * a utility to partially read an ender build file and parse the head comment
- * to pull out the 'Build:' and 'Packages:' lines. Returns the build command as a properly
- * parsed options object (via argsParser).
- */
-
 const fs              = require('fs')
     , argsParser      = require('ender-args-parser')
     , FilesystemError = require('./errors').FilesystemError
@@ -35,8 +29,33 @@ const fs              = require('fs')
 
     // 'Packages:' is optional because it's not in <= 0.8.x Ender builds
     , buildInfoRegex  = /\n {2}\* Build: ender ([^\n]*)\s\S*(?:(?: {2}\* Packages: )([^\n]*))?/
+    , defaultClientLib = 'ender-core'
+    , defaultModuleLib = 'ender-commonjs'
 
-var parseContext = function (file, callback) {
+
+var getCorePackages = function (options) {
+      var corePackages = []
+
+      if (options['client-lib'] != 'none')
+        corePackages.push(options['client-lib'] || defaultClientLib)
+
+      if (options['module-lib'] != 'none')
+        corePackages.push(options['module-lib'] || defaultModuleLib)
+
+      return corePackages
+    }
+
+  , packageList = function (options) {
+      var ids = options.packages && options.packages.length ? options.packages : [ '.' ]
+      return getCorePackages(options).concat(ids)
+    }
+
+    // for --use <file>
+  , getInputFilenameFromOptions = function (options) {
+      return options.use ? options.use.replace(/(\.js)?$/, '.js') : 'ender.js'
+    }
+
+  , parseContext = function (file, callback) {
       fs.open(file, 'r', function (err, fd) {
         if (err) return callback(new FilesystemError(err))
 
@@ -71,4 +90,18 @@ var parseContext = function (file, callback) {
       })
     }
 
+  , toKb = function (size) {
+      size = Math.round(size / 1024 * 10) / 10
+      return size + ' kB'
+    }
+
+
 module.exports = parseContext
+
+module.exports = {
+    getCorePackages              : getCorePackages
+  , packageList                  : packageList
+  , getInputFilenameFromOptions  : getInputFilenameFromOptions
+  , parseContext                 : parseContext
+  , toKb                         : toKb
+}

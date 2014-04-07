@@ -23,28 +23,28 @@
  */
 
 
-/******************************************************************************
- * 'Add' executable module, for `ender add <packages> [--use <file>]`.
- * This module first parses the build command in the ender.js file in CWD or
- * the file or the file provided on the --use option.
- * The build command from the ender.js build is then modified to add the
- * packages specified on the commandline and is then passed to the Build
- * module which does all the hard work.
- */
+var buster       = require('bustermove')
+  , assert       = require('referee').assert
+  , refute       = require('referee').refute
+  , repository   = require('ender-repository')
+  , search       = require('../../../src/commands/search')
 
-var argsParser   = require('ender-args-parser')
-  , util         = require('./util')
-  , parseContext = require('./parse-context')
-  , mainBuild    = require('./main-build')
+buster.testCase('Search', {
+    'test exec() calls setup(), search() and packup() on repository': function (done) {
+      var repositoryMock = this.mock(repository)
+        , terms = 'terms argument'
+        , outArg = { log: function () {} }
+        , searchExpectation
 
-  , exec = function (options, out, callback) {
-      var filename = util.getInputFilenameFromOptions(options)
-    ; delete options.use // don't want --use showing up in the 'Build:' context string
-      parseContext(filename, function (err, context) {
-        if (!err) options = argsParser.extend(context.options, options)
-        // merge commandline args with the build command in ender.js
-        mainBuild.exec(options, out, callback)
+      repositoryMock.expects('setup').once().callsArg(0)
+      searchExpectation = repositoryMock.expects('search').once().callsArg(1)
+      repositoryMock.expects('packup').once()
+
+      search.exec({ packages: terms }, outArg, function (err) {
+        refute(err)
+        assert.same(searchExpectation.args[0][0], terms)
+        assert.isFunction(searchExpectation.args[0][1]) // internal 'handle()' method
+        done()
       })
     }
-
-module.exports.exec = exec
+})

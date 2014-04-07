@@ -33,30 +33,38 @@
  *   5) handles any errors, via a generic output module if needed
  */
 
-//FIXME: remove this after 0.8 available on travis
-!('exists' in require('fs')) && (function () {
-  require('fs').exists     = require('path').exists
-  require('fs').existsSync = require('path').existsSync
-}())
-
 process.title = 'Ender'
 
-var sysUtil    = require('util')
+var colors     = require('colors')
   , argsParser = require('ender-args-parser')
-  , Output     = require('./output/output')
-
-    // basic error handler, differentiates between 'known' EnderErrors and everything else
-  , complete = function (out, callback, err) {
-      if (err) out.error(err)
-      callback(err)
-    }
 
     // public entry point can be used with a standard argv array or a string for API usage
-  , exec = function (argv, callback) {
+  , exec = function (argv, out, callback) {
       var parseType = 'parse'
         , options
-        , exe
-        , out
+
+        , complete = function (err) {
+            if (err) {
+              var name = (err.name || 'Error').replace(/([a-z])([A-Z])/g, '$1 $2')
+              out.log((name + ': ').red.bold + err.message.red)
+              if (options.debug) {
+                out.log(err.stack)
+                if (err.cause) {
+                  out.log('Caused by:')
+                  out.log(err.cause.stack)
+                }
+              } else {
+                out.log('Run with --debug to see more information')
+              }
+            }
+
+            callback(err)
+          }
+
+      if (typeof out == 'function') {
+        callback = out
+        out = console
+      }
 
       if (typeof argv == 'string') {
         // for API use: ender.exec('ender <cmd>', cb)
@@ -66,18 +74,9 @@ var sysUtil    = require('util')
 
       try {
         options = argsParser[parseType](argv)
-
-        // get the module to execute and it's partner output module
-        exe = options && require('./main-' + options.main)
-        out = options && require('./output/main-' + options.main + '-output').create(sysUtil, options.debug, options.quiet)
-
-        if (exe && out) {
-          exe.exec(options, out, complete.bind(null, out, callback))
-        } // else err? argsParser should take care of this if it's list of mains corresponds to the modules we have
+        require('./commands/' + options.command).exec(options, out, complete)
       } catch (ex) {
-        // create a generic/base 'out' module which can do the error printing
-        out = Output.create(sysUtil, argv.indexOf('--debug') != -1)
-        complete(out, callback, ex)
+        complete(ex)
       }
     }
 

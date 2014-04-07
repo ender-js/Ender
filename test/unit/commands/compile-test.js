@@ -29,11 +29,10 @@ var buster            = require('bustermove')
   , childProcess      = require('child_process')
   , fs                = require('fs')
   , zlib              = require('zlib')
-  , mainCompile       = require('../../lib/main-compile')
-  , mainCompileOut    = require('../../lib/output/main-compile-output').create()
-  , FilesystemError   = require('../../lib/errors').FilesystemError
-  , ChildProcessError = require('../../lib/errors').ChildProcessError
-  , CompressionError  = require('../../lib/errors').CompressionError
+  , compile           = require('../../../src/commands/compile')
+  , FilesystemError   = require('../../../src/commands/errors').FilesystemError
+  , ChildProcessError = require('../../../src/commands/errors').ChildProcessError
+  , CompressionError  = require('../../../src/commands/errors').CompressionError
 
 
 buster.testCase('Compile', {
@@ -43,22 +42,21 @@ buster.testCase('Compile', {
         var childProcessMock = this.mock(childProcess)
           , fsMock = this.mock(fs)
           , zlibMock = this.mock(zlib)
-          , outMock = this.mock(mainCompileOut)
           , stdoutArg = 'stdout output'
           , dataArg = { data: 1, length: 222 }
           , zDataArg = { zData: 1, length: 111 }
+          , outArg = { log: function () {} }
 
-        outMock.expects('compiling').once()
         childProcessMock.expects('exec')
           .once()
           .withArgs(expectedJavaCmd)
           .callsArgWith(1, null, stdoutArg, null)
+
         fsMock.expects('readFile').once().withArgs(expectedOutputFile, 'utf-8').callsArgWith(2, null, dataArg)
         zlibMock.expects('gzip').once().withArgs(dataArg).callsArgWith(1, null, zDataArg)
-        outMock.expects('compiled').once().withArgs(expectedOutputFile, dataArg.length, zDataArg.length)
-        mainCompile.exec(
+        compile.exec(
             args
-          , mainCompileOut
+          , outArg
           , function (err) {
               refute(err)
               done()
@@ -141,12 +139,11 @@ buster.testCase('Compile', {
 
   , 'test child process error': function (done) {
         var childProcessMock = this.mock(childProcess)
-          , outMock = this.mock(mainCompileOut)
           , errArg = new Error('this is an error')
+          , outArg = { log: function () {} }
 
-        outMock.expects('compiling').once()
         childProcessMock.expects('exec').once().callsArgWith(1, errArg)
-        mainCompile.exec({ packages: [] }, mainCompileOut, function (err, stdout, stderr) {
+        compile.exec({ packages: [] }, outArg, function (err, stdout, stderr) {
           assert(err)
           refute(stdout)
           refute(stderr)
@@ -159,14 +156,13 @@ buster.testCase('Compile', {
 
   , 'test fs error': function (done) {
         var childProcessMock = this.mock(childProcess)
-          , outMock = this.mock(mainCompileOut)
           , fsMock = this.mock(fs)
           , errArg = new Error('this is an error')
+          , outArg = { log: function () {} }
 
-        outMock.expects('compiling').once()
         childProcessMock.expects('exec').once().callsArgWith(1, null, '')
         fsMock.expects('readFile').once().callsArgWith(2, errArg)
-        mainCompile.exec({ packages: [] }, mainCompileOut, function (err, stdout, stderr) {
+        compile.exec({ packages: [] }, outArg, function (err, stdout, stderr) {
           assert(err)
           refute(stdout)
           refute(stderr)
@@ -179,16 +175,15 @@ buster.testCase('Compile', {
 
   , 'test zlib error': function (done) {
         var childProcessMock = this.mock(childProcess)
-          , outMock = this.mock(mainCompileOut)
           , fsMock = this.mock(fs)
           , zlibMock = this.mock(zlib)
           , errArg = new Error('this is an error')
+          , outArg = { log: function () {} }
 
-        outMock.expects('compiling').once()
         childProcessMock.expects('exec').once().callsArgWith(1, null, '')
         fsMock.expects('readFile').once().callsArgWith(2, null, '')
         zlibMock.expects('gzip').once().callsArgWith(1, errArg)
-        mainCompile.exec({ packages: [] }, mainCompileOut, function (err, stdout, stderr) {
+        compile.exec({ packages: [] }, outArg, function (err, stdout, stderr) {
           assert(err)
           refute(stdout)
           refute(stderr)

@@ -27,32 +27,22 @@ var buster     = require('bustermove')
   , assert     = require('referee').assert
   , refute     = require('referee').refute
   , argsParser = require('ender-args-parser')
-  , main       = require('../../lib/main')
-  , mainSearch = require('../../lib/main-search')
+  , main       = require('../../src/main')
+  , search     = require('../../src/commands/search')
 
 buster.testCase('Main program', {
     'test main has exec': function () {
       assert.isFunction(main.exec)
     }
 
-  , 'test main calls argsParser to parse arguments': function () {
+  , 'test main loads main module': function (done) {
       var argsParserMock = this.mock(argsParser)
+        , searchMock = this.mock(search)
         , expectedArgs = [ 'foo', 'bar', 'search' ]
-
-      argsParserMock.expects('parse').once().withArgs(expectedArgs).returns(null)
-
-      main.exec(expectedArgs)
-      assert(true)
-    }
-
-  , 'test main loads main module as specified by args-parser': function (done) {
-      var argsParserMock = this.mock(argsParser)
-        , mainSearchMock = this.mock(mainSearch)
-        , expectedArgs = [ 'foo', 'bar', 'search' ]
-        , argsArg = { main: 'search' }
+        , argsArg = { command: 'search' }
 
       argsParserMock.expects('parse').once().withArgs(expectedArgs).returns(argsArg)
-      mainSearchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
+      searchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
 
       main.exec(expectedArgs, done)
       assert(true)
@@ -60,14 +50,14 @@ buster.testCase('Main program', {
 
   , 'test API exec(string, cb) call': function (done) {
       var argsParserMock = this.mock(argsParser)
-        , mainSearchMock = this.mock(mainSearch)
+        , searchMock = this.mock(search)
         , expectedArgs = [ 'search', 'foo', 'bar' ]
-        , argsArg = { main: 'search' }
+        , argsArg = { command: 'search' }
 
       // note the difference hear is that the first 2 elements of our args array aren't
       // discarded, only the unnecessary 'ender' element (below)
       argsParserMock.expects('parseClean').once().withArgs(expectedArgs).returns(argsArg)
-      mainSearchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
+      searchMock.expects('exec').once().withArgs(argsArg).callsArg(2)
 
       main.exec('ender ' + expectedArgs.join(' '), done)
       assert(true)

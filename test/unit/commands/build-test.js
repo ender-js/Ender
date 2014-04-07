@@ -29,24 +29,20 @@ var buster         = require('bustermove')
   , requireSubvert = require('require-subvert')(__dirname)
 
 
-require('../../lib/output/main-build-output').create()
-
 buster.testCase('Build', {
     // OK, this is a bit of a mess, more of an integration test, but it tests the full
     // build process and that it calls everything we expect it to
     'test standard main-build interaction': function (done) {
       var enderPackage      = require('ender-package')
-        , mainBuildUtil     = require('../../lib/main-build-util')
-        , mainInfo          = require('../../lib/main-info')
-        , out               = require('../../lib/output/main-build-output').create(1)
+        , util              = require('../../../src/commands/util')
+        , info              = require('../../../src/commands/info')
 
         , enderPackageMock  = this.mock(enderPackage)
-        , mainBuildUtilMock = this.mock(mainBuildUtil)
-        , mainInfoMock      = this.mock(mainInfo)
-        , outMock           = this.mock(out)
+        , utilMock          = this.mock(util)
+        , infoMock          = this.mock(info)
         , installStub       = this.stub()
         , builderStub       = this.stub()
-        , mainBuild
+        , build
 
         , optionsArg           = { options: 1 }
         , packageIdsArg        = [ './foobar' ]
@@ -55,17 +51,32 @@ buster.testCase('Build', {
         , installResultsArg    = [ 1, 2, 3 ]
         , buildFilesArg        = { build: 'build' }
         , buildFilenamesArg    = { build: 'ender.js' }
+        , outArg               = { log: function () {} }
+
+        , finished             = function (err) {
+            refute(err)
+
+            assert.equals(installStub.callCount, 1)
+            assert.equals(installStub.getCall(0).args.length, 3)
+            assert.equals(installStub.getCall(0).args[0], packageIdsArg)
+            assert.equals(installStub.getCall(0).args[1], undefined)
+
+            assert.equals(builderStub.callCount, 1)
+            assert.equals(builderStub.getCall(0).args.length, 3)
+            assert.equals(builderStub.getCall(0).args[0], optionsArg)
+            assert.equals(builderStub.getCall(0).args[1], packagesArg)
+
+            done()
+          }
 
       // setup our stubs and mocks
-      mainBuildUtilMock
+      utilMock
         .expects('packageList')
         .once()
         .withExactArgs(optionsArg)
         .returns(packageIdsArg)
 
-      outMock.expects('buildInit').once()
       installStub.callsArgWith(2, null, installedIdsArg, installResultsArg)
-      outMock.expects('installedFromRepository').once().withArgs(installResultsArg.length)
 
       enderPackageMock
         .expects('walkDependencies')
@@ -74,35 +85,20 @@ buster.testCase('Build', {
         .callsArgWith(3, null, packagesArg)
 
       builderStub.callsArgWith(2, null, buildFilesArg, buildFilenamesArg)
-      outMock.expects('finishedAssembly').once()
 
-      mainInfoMock
-        .expects('generateAndPrint')
+      infoMock
+        .expects('exec')
         .once()
-        .withArgs(out, buildFilenamesArg.build, optionsArg, installedIdsArg, buildFilesArg)
-        .callsArg(5)
+        .withExactArgs(optionsArg, outArg, finished, buildFilenamesArg.build, installedIdsArg, buildFilesArg)
+        .callsArg(2)
 
       // subvert single-function modules
       requireSubvert.subvert('ender-builder', builderStub)
       requireSubvert.subvert('ender-installer', installStub)
 
       // load the module under test and execute
-      mainBuild = requireSubvert.require('../../lib/main-build')
-      mainBuild.exec(optionsArg, out, function (err) {
-        refute(err)
-
-        assert.equals(installStub.callCount, 1)
-        assert.equals(installStub.getCall(0).args.length, 3)
-        assert.equals(installStub.getCall(0).args[0], packageIdsArg)
-        assert.equals(installStub.getCall(0).args[1], undefined)
-
-        assert.equals(builderStub.callCount, 1)
-        assert.equals(builderStub.getCall(0).args.length, 3)
-        assert.equals(builderStub.getCall(0).args[0], optionsArg)
-        assert.equals(builderStub.getCall(0).args[1], packagesArg)
-
-        done()
-      })
+      build = requireSubvert.require('../../../src/commands/build')
+      build.exec(optionsArg, outArg, finished)
     }
 
   , 'tearDown': function () {

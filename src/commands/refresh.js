@@ -23,36 +23,27 @@
  */
 
 
-var archy      = require('archy')
-  , colors     = require('colors')
-  , argsParser = require('ender-args-parser')
-  , extend     = require('util')._extend
-  , toKb       = require('../util').toKb
-  , Output     = require('./output')
+/******************************************************************************
+ * 'Refresh' executable module, for `ender refresh [--use <file>]`.
+ * This module first parses the build command in the ender.js file in CWD or
+ * the file or the file provided on the --use option.
+ * The build command from the ender.js build is then passed to the Build
+ * module which does all the hard work.
+ */
 
-  , InfoOutput = extend({
+var util         = require('./util')
+  , build        = require('./build')
 
-        buildInfo: function (filename, options, sizes, archyTree) {
-          //this.log('Your current build type is ' + ('"' + options.main + '"').yellow)
-          this.log('Your current build command is: ' + ('ender ' + argsParser.toContextString(options)).yellow)
-          this.log(
-              'Your current build size is: '
-            + toKb(sizes.build).yellow + ' raw'
-            + (sizes.minifiedBuild
-                ? ', ' + toKb(sizes.minifiedBuild).yellow + ' minified and '
-                       + toKb(sizes.gzippedMinifiedBuild).yellow + ' gzipped'
-                : ''
-              )
+  , exec = function (options, out, callback) {
+      var filename = util.getInputFilenameFromOptions(options)
+    ; delete options.use // don't want --use showing up in the 'Build:' context string
+      util.parseContext(filename, function (err, context) {
+        if (err) return callback(err)
 
-          )
-          this.log()
-          this.log(archyTree)
-        }
+        // set --force-install but don't leave a trace in the 'Build:' context string
+        context.options['_force-install'] = true
+        build.exec(context.options, out, callback)
+      })
+    }
 
-      , create: function (out, debug, quiet) {
-          return Object.create(this).init(out, debug, quiet)
-        }
-
-    }, Output) // inherit from Output
-
-module.exports = InfoOutput
+module.exports.exec = exec

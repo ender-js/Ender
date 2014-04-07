@@ -33,27 +33,29 @@ buster.testCase('Info', {
       var fs                  = require('fs')
         , zlib                = require('zlib')
         , enderPackage        = require('ender-package')
-        , mainBuildUtil       = require('../../lib/main-build-util')
-        , out                 = require('../../lib/output/main-info-output').create()
+        , util                = require('../../../src/commands/util')
 
       this.runTest = function (options, expectedFilename, done) {
         var fsMock              = this.mock(fs)
           , zlibMock            = this.mock(zlib)
           , enderPackageMock    = this.mock(enderPackage)
-          , mainBuildUtilMock   = this.mock(mainBuildUtil)
-          , outMock             = this.mock(out)
-          , parseContextStub    = this.stub()
-          , mainInfo
+          , utilMock            = this.mock(util)
+          , info
 
           , packageIdsArg       = [ 'foobar@1.2.3' ]
           , sizesArg            = { sizes: 1 }
-          , contextArg          = { options: {}, packages: packageIdsArg }
+          , contextArg          = { options: { packages: packageIdsArg } }
           , archyTreeArg        = { archyTree: 1 }
+          , outArg              = { log: function () {} }
 
         // setup our stubs and mocks
-        parseContextStub.callsArgWith(1, null, contextArg)
+        utilMock
+          .expects('parseContext')
+          .once()
+          .withArgs(util.getInputFilenameFromOptions(options))
+          .callsArgWith(1, null, contextArg)
 
-        mainBuildUtilMock
+        utilMock
           .expects('packageList')
           .once()
           .withExactArgs(contextArg.options)
@@ -76,23 +78,9 @@ buster.testCase('Info', {
           .withArgs(packageIdsArg, true)
           .callsArgWith(2, null, archyTreeArg)
 
-        outMock
-          .expects('buildInfo')
-          .once()
-          .withExactArgs(expectedFilename, contextArg.options, { build: 13, minifiedBuild: 13, gzippedMinifiedBuild: 16 }, archyTreeArg)
-
-        // subvert single-function modules
-        requireSubvert.subvert('../../lib/parse-context', parseContextStub)
-
         // load the module under test and execute
-        mainInfo = requireSubvert.require('../../lib/main-info')
-        mainInfo.exec(options, out, function (err) {
-          refute(err)
-          assert.equals(parseContextStub.callCount, 1)
-          assert.equals(parseContextStub.getCall(0).args.length, 2)
-          assert.equals(parseContextStub.getCall(0).args[0], expectedFilename)
-          done()
-        })
+        info = requireSubvert.require('../../../src/commands/info')
+        info.exec(options, outArg, done)
       }
     }
 

@@ -34,11 +34,12 @@
 var builder       = require('ender-builder')
   , install       = require('ender-installer')
   , enderPackage  = require('ender-package')
-  , mainInfo      = require('./main-info')
-  , mainBuildUtil = require('./main-build-util')
+  , info          = require('./info')
+  , util          = require('./util')
 
   , handle = function (options, out, ids, installResults, callback) {
-      if (out && installResults) out.installedFromRepository(installResults.length)
+      if (installResults) out.log('Successfully finished installing packages')
+      out.log('Assembling build...')
 
       enderPackage.walkDependencies(ids, true, true, function (err, packages) {
         if (err) return callback(err) // wrapper in ender-package
@@ -46,18 +47,20 @@ var builder       = require('ender-builder')
         builder(options, packages, function (err, files, filenames) {
           if (err) return callback(err) // wrapped in write.js
 
-          out.finishedAssembly()
+          out.log('\n')
 
           // delegate to main-info to print details about the build, we can prime it with
           // the options and ids so it doesn't have to do that work itself
           if (!options.quiet) {
-            mainInfo.generateAndPrint(
-                out
+            info.exec(
+                options
+              , out
+              , callback
+
+              // Optional args so we don't have to rediscover them
               , filenames.build
-              , options
               , ids
               , files
-              , callback
             )
           }
         })
@@ -65,10 +68,10 @@ var builder       = require('ender-builder')
     }
 
   , exec = function (options, out, callback) {
-      var ids = mainBuildUtil.packageList(options)
+      var ids = util.packageList(options)
         , refresh = options['force-install'] || options['_force-install']
 
-      out.buildInit(ids)
+      out.log('Installing packages: "' + ids.join(' ') + '"...')
 
       install(ids, refresh, function (err, ids, installResults) {
         if (err) return callback(err) // wrapped in repository.js

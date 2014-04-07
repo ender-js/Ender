@@ -29,20 +29,19 @@ var buster          = require('bustermove')
   , fs              = require('fs')
   , path            = require('path')
   , colorsTmpl      = require('colors-tmpl')
-  , mainHelp        = require('../../lib/main-help')
-  , mainHelpOut     = require('../../lib/output/main-help-output').create()
-  , FilesystemError = require('../../lib/errors').FilesystemError
+  , help            = require('../../../src/commands/help')
+  , FilesystemError = require('../../../src/commands/errors').FilesystemError
 
 buster.testCase('Help', {
     'setUp': function () {
       this.runTest = function (options, expectedFilename, exists, done) {
         var fsMock          = this.mock(fs)
           , colorsTmplMock  = this.mock(colorsTmpl)
-          , mainHelpOutMock = this.mock(mainHelpOut)
           , contentsArg     = { contents: 1 }
           , renderedArg     = { rendered: 1 }
+          , outArg          = { log: function () {} }
 
-        expectedFilename = path.join(path.resolve(__dirname, '../../resources/help/'), expectedFilename)
+        expectedFilename = path.join(path.resolve(__dirname, '../../../resources/help/'), expectedFilename)
         fsMock.expects('existsSync').once().withExactArgs(expectedFilename).returns(exists)
         if (exists) {
           fsMock.expects('readFile').once().withArgs(expectedFilename, 'utf-8').callsArgWith(2, null, contentsArg)
@@ -51,11 +50,9 @@ buster.testCase('Help', {
             .once()
             .withExactArgs(contentsArg)
             .returns(renderedArg)
-          mainHelpOutMock.expects('showDocument').once().withExactArgs(renderedArg)
-        } else
-          mainHelpOutMock.expects('noSuchCommand').once().withExactArgs(path.basename(expectedFilename, '.tmpl' ))
+        }
 
-        mainHelp.exec(options, mainHelpOut, function (err) {
+        help.exec(options, outArg, function (err) {
           refute(err)
           done()
         })
@@ -76,9 +73,10 @@ buster.testCase('Help', {
   , 'test fs error': function (done) {
       var fsMock = this.mock(fs)
         , errArg = new Error('this is an error')
+        , outArg = { log: function () {} }
 
       fsMock.expects('readFile').once().callsArgWith(2, errArg)
-      mainHelp.exec({ packages: [] }, null, function (err) {
+      help.exec({ packages: [] }, outArg, function (err) {
         assert(err)
         assert(err instanceof FilesystemError)
         assert.same(err.cause, errArg)

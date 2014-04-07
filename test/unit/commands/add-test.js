@@ -28,39 +28,31 @@ var buster         = require('bustermove')
   , refute         = require('referee').refute
   , requireSubvert = require('require-subvert')(__dirname)
   , argsParser     = require('ender-args-parser')
-  , util
-  , mainBuild
-  , mainAdd
 
 buster.testCase('Add', {
     'test basic add': function (done) {
-      var utilMock
+      var util               = require('../../../src/commands/util')
+        , build              = require('../../../src/commands/build')
+        , add
+
         , argsParserMock     = this.mock(argsParser)
-        , mainBuildMock
-        , parseContextStub   = this.stub()
+        , utilMock           = this.mock(util)
+        , buildMock          = this.mock(build)
+        , addMock            = this.mock(add)
+
         , optionsArg         = { options: 1 }
         , filenameArg        = { filename: 1 }
         , contextArg         = { options: { contextOptions: 1 } }
         , extendedOptionsArg = { extendedOptions: 1 }
-        , outArg             = { out: 1 }
-
-      requireSubvert.subvert('../../lib/parse-context', parseContextStub)
-      parseContextStub.callsArgWith(1, null, contextArg)
-      util          = require('../../lib/util')
-      mainBuild     = require('../../lib/main-build')
-      utilMock      = this.mock(util)
-      mainBuildMock = this.mock(mainBuild)
-      mainAdd       = requireSubvert.require('../../lib/main-add')
+        , outArg             = { log: function () {} }
 
       utilMock.expects('getInputFilenameFromOptions').once().withExactArgs(optionsArg).returns(filenameArg)
+      utilMock.expects('parseContext').once().withArgs(filenameArg).callsArgWith(1, null, contextArg)
       argsParserMock.expects('extend').once().withExactArgs(contextArg.options, optionsArg).returns(extendedOptionsArg)
-      mainBuildMock.expects('exec').once().withExactArgs(extendedOptionsArg, outArg, done).callsArg(2)
+      buildMock.expects('exec').once().withExactArgs(extendedOptionsArg, outArg, done).callsArg(2)
 
-      mainAdd.exec(optionsArg, outArg, done)
-
-      assert.equals(parseContextStub.callCount, 1)
-      assert.equals(parseContextStub.getCall(0).args.length, 2)
-      assert.equals(parseContextStub.getCall(0).args[0], filenameArg)
+      add = requireSubvert.require('../../../src/commands/add')
+      add.exec(optionsArg, outArg, done)
     }
 
   , 'tearDown': function () {

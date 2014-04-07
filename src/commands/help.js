@@ -36,7 +36,7 @@ var fs                = require('fs')
   , colorsTmpl        = require('colors-tmpl')
   , FilesystemError   = require('./errors').FilesystemError
 
-  , templateDirectory = '../resources/help/'
+  , templateDirectory = '../../resources/help/'
 
     // page aliases
   , aliases = {
@@ -45,8 +45,8 @@ var fs                = require('fs')
       , 'list': 'info'
     }
 
-  , exec = function (args, out, callback) {
-      var page = args.packages[0] || 'main'
+  , exec = function (options, out, callback) {
+      var page = options.packages[0] || 'main'
         , file
 
       page = page.toLowerCase().replace(/[^a-z]/g,'')
@@ -56,11 +56,12 @@ var fs                = require('fs')
       if (fs.existsSync(file)) {
         fs.readFile(file, 'utf-8', function (err, data) {
           if (err) return callback(new FilesystemError(err))
-          out.showDocument(colorsTmpl.render(data))
+          out.log(colorsTmpl.render(data))
           callback()
         })
       } else {
-        out.noSuchCommand(args.packages[0])
+        out.log('No such command: ' + page.yellow)
+        out.log('Use ' + 'ender help'.cyan + ' to show a summary of basic commands')
         callback()
       }
     }

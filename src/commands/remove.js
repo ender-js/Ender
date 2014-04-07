@@ -37,8 +37,7 @@ var async         = require('async')
   , repository    = require('ender-repository')
   , argsParser    = require('ender-args-parser')
   , util          = require('./util')
-  , mainBuild     = require('./main-build')
-  , parseContext  = require('./parse-context')
+  , build         = require('./build')
 
   , exec = function (options, out, callback) {
       var filename = util.getInputFilenameFromOptions(options)
@@ -51,8 +50,8 @@ var async         = require('async')
     ; delete options.use // don't want --use showing up in the 'Build:' context string
       options.packages = [] // reset the packages list so argsParser.extend() doesn't include them
 
-      parseContext(filename, function (err, context) {
-        if (err) return callback(err) // wrapped in source-build.js
+      util.parseContext(filename, function (err, context) {
+        if (err) return callback(err)
 
         // merge the commandline with the ender.js build command
         options          = argsParser.extend(context.options, options)
@@ -64,7 +63,7 @@ var async         = require('async')
             [
                 repository.setup // shouldn't need to do a packup because main-build will do it
               , repository.uninstall.bind(null, toRemove)
-              , mainBuild.exec.bind(null, options, out) // hard work done by main-build
+              , build.exec.bind(null, options, out) // hard work done by main-build
             ]
           , finish
         )

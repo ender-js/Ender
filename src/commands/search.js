@@ -31,9 +31,34 @@
  */
 
 var repository = require('ender-repository')
+  , colors     = require('colors')
   , xregexp    = require('xregexp')
-  , searchUtil = require('./main-search-util')
   , defaultMax = 8
+
+  , sortByRegExp = function (regex, array, ranked, priority) {
+      var i = 0
+        , j
+        , m
+        , p
+
+      for (; i < priority.length; i++) {
+        p = priority[i]
+        for (j = 0; j < array.length; j++) {
+          if (typeof array[j][p] == 'string' && regex.test(array[j][p])) {
+            ranked.push(array.splice(j, 1)[0])
+            j--
+          } else if (array[j][p] && typeof array[j][p] != 'string') {
+            for (m = 0; m < array[j][p].length; m++) {
+              if (regex.test(array[j][p][m])) {
+                ranked.push(array.splice(j, 1)[0])
+                j--
+                break
+              }
+            }
+          }
+        }
+      }
+    }
 
     // rank libs according to the keywords requested, those with the keyword(s)
     // in the name go to the top, then those with the keyword(s) in their
@@ -47,18 +72,50 @@ var repository = require('ender-repository')
 
       // args as exact phrase for name
       regexp = new RegExp('^' + args.join('\\s') + '$')
-      searchUtil.sortByRegExp(regexp, data, sorted, [ 'name' ])
+      sortByRegExp(regexp, data, sorted, [ 'name' ])
 
       // args as phrase anywhere
       regexp = new RegExp('\\b' + args.join('\\s') + '\\b', 'i')
-      searchUtil.sortByRegExp(regexp, data, sorted, priority)
+      sortByRegExp(regexp, data, sorted, priority)
 
       // args as keywords anywhere (ex: useful for case when express matches expresso)
       regexp = new RegExp('\\b' + args.join('\\b|\\b') + '\\b', 'i')
-      searchUtil.sortByRegExp(regexp, data, sorted, priority)
+      sortByRegExp(regexp, data, sorted, priority)
 
       // we don't really care about relevance at this point :P
       return sorted.concat(data)
+    }
+
+  , processItem = function (out, item, terms) {
+      var reg = new RegExp('(' + terms.map(function (item) {
+            return xregexp.escape(item)
+          }).join('|') + ')', 'ig')
+
+        , maintainers = ''
+        , title       = item.name
+        , last
+
+      if (item.description) title += ' - '
+        + item.description.substring(0, 80)
+        + (item.description.length > 80 ? '...' : '')
+
+      out.log('+ ' + title.replace(reg, '$1'.cyan))
+
+      if (item.maintainers && item.maintainers.length) {
+        item.maintainers = item.maintainers.map(function (maintainer) {
+          return maintainer.replace(/^=/, '@')
+        })
+
+        if (item.maintainers.length > 1) {
+          last        = item.maintainers.splice(-1)[0]
+          maintainers = item.maintainers.join(', ')
+          maintainers += ' & ' + last
+        } else {
+          maintainers = item.maintainers[0]
+        }
+      }
+
+      out.log('  by ' + maintainers.replace(reg, '$1'.cyan) + '\n')
     }
 
   , handle = function (terms, max, out, callback, err, data) {
@@ -78,7 +135,7 @@ var repository = require('ender-repository')
       }
 
       if (!primary.length && !secondary.length) {
-        out && out.searchNoResults()
+        out.log('Sorry, we couldn\'t find anything. :('.grey)
         return callback()
       }
 
@@ -89,23 +146,36 @@ var repository = require('ender-repository')
       }
 
       // let main-search-output handle this mess of data
-      out && out.searchResults({
-          terms          : terms
-        , max            : max
-        , primary        : primary.length ? primary : null
-        , secondary      : relevance
-        , secondaryTotal : secondary.length
-      })
+      if (primary) {
+        out.log('Ender tagged results:'.yellow)
+        out.log('---------------------')
+
+        primary.forEach(function (item) {
+          processItem(out, item, terms)
+        })
+      }
+
+      if (relevance) {
+        var meta = secondary.length > relevance.length
+                   ? relevance.length + ' of ' + secondary.length
+                   : ''
+        out.log('NPM general results:'.yellow + (meta ? (' (' + meta + ')').grey : ''))
+        out.log('--------------------')
+
+        relevance.forEach(function (item) {
+          processItem(out, item, terms)
+        })
+      }
 
       callback()
     }
 
-  , exec = function (args, out, callback) {
-      var terms   = args.packages
-        , max     = args.max || defaultMax
+  , exec = function (options, out, callback) {
+      var terms   = options.packages
+        , max     = options.max || defaultMax
         , handler = handle.bind(null, terms, max, out, callback)
 
-      out && out.searchInit()
+      out.log('Searching NPM registry...\n\n', false)
 
       repository.setup(function (err) {
         if (err) return callback(err) // wrapped in repository.js

@@ -29,23 +29,27 @@ var buster          = require('bustermove')
   , fs              = require('fs')
   , path            = require('path')
   , xregexp         = require('xregexp')
-  , mainVersion     = require('../../lib/main-version')
-  , mainVersionOut  = require('../../lib/output/main-version-output').create()
-  , FilesystemError = require('../../lib/errors').FilesystemError
-  , JSONParseError  = require('../../lib/errors').JSONParseError
+  , version         = require('../../../src/commands/version')
+  , FilesystemError = require('../../../src/commands/errors').FilesystemError
+  , JSONParseError  = require('../../../src/commands/errors').JSONParseError
 
 buster.testCase('Version', {
     'test version': function (done) {
       var fsMock = this.mock(fs)
-        , outMock = this.mock(mainVersionOut)
+        , outArg = {
+              log: function (str) { outArg.actual += str + '\n'; }
+            , actual: ''
+            , expected: 'Active version: vfoobar\n'
+          }
 
       fsMock.expects('readFile')
         .once()
-        .withArgs(path.resolve(__dirname, '../../package.json'), 'utf-8')
+        .withArgs(path.resolve(__dirname, '../../../package.json'), 'utf-8')
         .callsArgWith(2, null, '{ "version": "foobar" }')
-      outMock.expects('version').once().withArgs('foobar')
-      mainVersion.exec({}, mainVersionOut, function (err) {
+
+      version.exec({}, outArg, function (err) {
         refute(err)
+        assert.same(outArg.actual, outArg.expected)
         done()
       })
     }
@@ -53,10 +57,11 @@ buster.testCase('Version', {
   , 'test fs error': function (done) {
       var fsMock = this.mock(fs)
         , errArg = new Error('this is an error')
+        , outArg = { log: function () {} }
 
       fsMock.expects('readFile').once().callsArgWith(2, errArg)
 
-      mainVersion.exec({}, mainVersionOut, function (err) {
+      version.exec({}, outArg, function (err) {
         assert(err)
         assert(err instanceof FilesystemError)
         assert.same(err.cause, errArg)
@@ -67,16 +72,17 @@ buster.testCase('Version', {
 
   , 'test JSON.parse error': function (done) {
       var mockFs = this.mock(fs)
+        , outArg = { log: function () {} }
 
       mockFs.expects('readFile').once().callsArgWith(2, null, 'not;json!@#$%^&*()')
 
-      mainVersion.exec({}, mainVersionOut, function (err) {
+      version.exec({}, outArg, function (err) {
         assert(err)
         assert(err instanceof JSONParseError)
         assert(err.cause)
         assert.match(err.message, /Unexpected token/)
         // includes reference to filename:
-        assert.match(err.message, new RegExp(xregexp.XRegExp.escape(path.resolve(__dirname, '../../package.json'))))
+        assert.match(err.message, new RegExp(xregexp.XRegExp.escape(path.resolve(__dirname, '../../../package.json'))))
         done()
       })
     }

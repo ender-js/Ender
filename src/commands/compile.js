@@ -74,36 +74,39 @@ var childProcess      = require('child_process')
       })
     }
 
-  , exec = function (args, out, callback) {
-      var outfile, rawsize
+  , exec = function (options, out, callback) {
+      var outfile
 
-      out.compiling()
+      out.log('Running Closure Compiler...')
 
       async.waterfall([
           function (callback) {
-            closure(args, function (err, file) {
-              if (err)
-                return callback(err) // wrapped in closure()
+            closure(options, function (err, file) {
+              if (err) return callback(err) // wrapped in closure()
               callback(null, outfile = file)
             })
           }
         , function (file, callback) {
             fs.readFile(file, 'utf-8', function (err, data) {
-              if (err)
-                return callback(new FilesystemError(err))
-              rawsize = data.length
+              if (err) return callback(new FilesystemError(err))
               callback(null, data)
             })
           }
-        , function (data, callback) {
-            zlib.gzip(data, function (err) {
-              if (err)
-                return callback(new CompressionError(err))
-              callback.apply(null, arguments)
+        , function (raw, callback) {
+            zlib.gzip(raw, function (err, gzipped) {
+              if (err) return callback(new CompressionError(err))
+              callback(null, raw, gzipped)
             })
           }
-        , function (data, callback) {
-            out.compiled(outfile, rawsize, data.length)
+        , function (raw, gzipped, callback) {
+            out.log(
+                'Success! Your compiled source is '
+              + util.toKb(raw.length).cyan
+              + ' minified and '
+              + util.toKb(gzipped.length).cyan
+              + ' gzipped and is available at '
+              + outfile.green)
+
             callback()
           }
       ], callback)

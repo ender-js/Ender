@@ -26,34 +26,25 @@
 var buster           = require('bustermove')
   , assert           = require('referee').assert
   , refute           = require('referee').refute
-  , ender            = require('../../lib/main')
+  , ender            = require('../../src/main')
   , fs               = require('fs')
   , path             = require('path')
   , util             = require('util')
 
 buster.testCase('Functional: version', {
-    'setUp': function () {
-      this.output = []
-      this.stub(util, 'print', function (s) {
-        this.output.push(s)
-      }.bind(this))
-    }
+    'exec version': function (complete) {
+      var outArg = {
+              log: function (str) { outArg.actual += str + '\n'; }
+            , actual: ''
+          }
 
-  , 'exec version (API)': function (complete) {
       fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8', function (err, contents) {
         refute(err, 'read package.json')
 
-        var expectedVersion = contents.match(/"version"\s*:\s*"([^"]+)"/)[1]
+        outArg.expected = 'Active version: v' + contents.match(/"version"\s*:\s*"([^"]+)"/)[1] + '\n'
 
-        ender.exec('ender version', function () {
-          var actualVersionString
-
-          this.output.forEach(function (str) {
-            if (/^Active /.test(str))
-              actualVersionString = str.replace(/[^\w\:\s\.\-]/, '')
-          }.bind(this))
-
-          assert.equals(actualVersionString, 'Active version: v' + expectedVersion, 'printed correct version string')
+        ender.exec('ender version', outArg, function () {
+          assert.equals(outArg.actual, outArg.expected, 'printed correct version string')
           complete()
         }.bind(this))
       }.bind(this))
