@@ -1,0 +1,6 @@
+{
+  "version" : 3,
+  "file": "{{{buildName}}}",
+  "sources": {{{sourceList}}},
+  "mappings": ";;;;;;;;;{{#packages}}{{>package.map.mustache}}{{/packages}}{{#packages}}{{^isBare}}{{#main}};{{/main}}{{#bridge}};{{/bridge}}{{/isBare}}{{/packages}};;;;"
+}

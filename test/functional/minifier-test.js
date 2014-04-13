@@ -42,8 +42,7 @@ buster.testCase('Functional: minify', {
         this.javaAvailable =
             !err && (javaVersionRe.test(stderr.toString()) || javaVersionRe.test(stdout.toString()))
         if (err) {
-          require('colors')
-          console.log('\nWARNING: java not available on this system, can\'t test Closure'.magenta.bold.inverse)
+          console.log('\nWARNING: java not available on this system, can\'t test Closure')
         }
         done()
       }.bind(this))

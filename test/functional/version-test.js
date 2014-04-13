@@ -26,27 +26,33 @@
 var buster           = require('bustermove')
   , assert           = require('referee').assert
   , refute           = require('referee').refute
-  , ender            = require('../../src/main')
   , fs               = require('fs')
   , path             = require('path')
   , util             = require('util')
 
+  , ender            = require('../../lib/main')
+
 buster.testCase('Functional: version', {
-    'exec version': function (complete) {
-      var outArg = {
-              log: function (str) { outArg.actual += str + '\n'; }
-            , actual: ''
+    'exec version': function (done) {
+      var logArg = {
+              infoActual: ''
+            , warnActual: ''
+            , errorActual: ''
+
+            , info: function (str) { logArg.infoActual += str + '\n' }
+            , warn: function (str) { logArg.warnActual += str + '\n' }
+            , error: function (str) { logArg.errorActual += str + '\n' }
           }
 
-      fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8', function (err, contents) {
+      fs.readFile(path.resolve(__dirname, '..', '..', 'package.json'), 'utf-8', function (err, contents) {
         refute(err, 'read package.json')
 
-        outArg.expected = 'Active version: v' + contents.match(/"version"\s*:\s*"([^"]+)"/)[1] + '\n'
+        logArg.infoExpected = 'Active version: v' + contents.match(/"version"\s*:\s*"([^"]+)"/)[1] + '\n'
 
-        ender.exec('ender version', outArg, function () {
-          assert.equals(outArg.actual, outArg.expected, 'printed correct version string')
-          complete()
-        }.bind(this))
-      }.bind(this))
+        ender.exec('ender version', logArg, function () {
+          assert.equals(logArg.infoActual, logArg.infoExpected, 'printed correct version string')
+          done()
+        })
+      })
     }
 })

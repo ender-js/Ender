@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
-require('../src/main').exec(process.argv, function (err) {
+var main = require('../lib/main')
+  , log  = require('../lib/util').defaultLogger
+
+main.exec(process.argv, log, function (err) {
   process.exit(err ? 1 : 0)
 })

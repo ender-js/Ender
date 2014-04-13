@@ -1,7 +1,7 @@
 {
     "predef": []
   , "boss": true
-  , "bitwise": true
+  , "bitwise": false
   , "shadow": true
   , "trailing": true
   , "immed": true

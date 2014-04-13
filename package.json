@@ -12,21 +12,14 @@
   , "main": "./lib/main.js"
   , "homepage": "http://enderjs.com"
   , "dependencies": {
-
-        "ender-args-parser"      : "1.0.3"
-      , "ender-builder"          : "1.0.5"
-      , "ender-installer"        : "1.0.3"
-      , "ender-package"          : "1.0.3"
-      , "ender-repository"       : "1.0.3"
-
-      , "colors"           : "~0.6.0"
+        "archy"            : "~0.0.2"
       , "async"            : "~0.2.10"
-      , "hogan.js"         : "~2.0.0"
-      , "archy"            : "~0.0.2"
-      , "colors-tmpl"      : "~0.1.0"
+      , "errno"            : "~0.0.5"
+      , "glob"             : "~3.2.9"
+      , "mu2"              : "~0.5.20"
+      , "npm"              : "~1.4.6"
+      , "semver"           : "~2.2.1"
       , "xregexp"          : "~2.0.0"
-      , "errno"            : "~0.0.3"
-
     }
   , "directories": {
         "lib"         : "./lib"
@@ -39,7 +32,6 @@
       , "rimraf"           : "*"
       , "jshint"           : "*"
       , "mkfiletree"       : "*"
-      , "require-subvert"  : "*"
     }
   , "bin": {
         "ender"       : "./bin/ender"
