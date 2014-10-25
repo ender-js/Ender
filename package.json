@@ -33,6 +33,9 @@
       , "jshint"           : "*"
       , "mkfiletree"       : "*"
     }
+  , "optionalDependencies": {
+        "uglify-js"        : "^2.4.0"
+  }
   , "bin": {
         "ender"       : "./bin/ender"
     }
