@@ -20,6 +20,7 @@
       , "npm"              : "~1.4.6"
       , "semver"           : "~2.2.1"
       , "xregexp"          : "~2.0.0"
+      , "uglify-js"        : "~2.4.17"
     }
   , "directories": {
         "lib"         : "./lib"
