@@ -1,51 +1,57 @@
 {
-    "name": "ender"
-  , "description": "Open Module JavaScript Framework"
-  , "version": "2.1.0"
-  , "authors": [
-        "Andrew McCollum (https://github.com/amccollum)"
-      , "Rod Vagg (https://github.com/rvagg)"
-      , "Dustin Diaz (https://github.com/ded)"
-      , "Jacob Thornton (https://github.com/fat)"
-    ]
-  , "keywords": [ "ender", "modules", "builder", "framework", "packager" ]
-  , "main": "./lib/main.js"
-  , "homepage": "http://enderjs.com"
-  , "dependencies": {
-        "archy"            : "~0.0.2"
-      , "async"            : "~0.2.10"
-      , "errno"            : "~0.0.5"
-      , "glob"             : "~3.2.9"
-      , "mu2"              : "~0.5.20"
-      , "npm"              : "~1.4.6"
-      , "semver"           : "~2.2.1"
-      , "xregexp"          : "~2.0.0"
-      , "uglify-js"        : "~2.4.17"
-    }
-  , "directories": {
-        "lib"         : "./lib"
-      , "bin"         : "./bin"
-    }
-  , "devDependencies": {
-        "bustermove"       : "*"
-      , "referee"          : "*"
-      , "tap"              : "*"
-      , "rimraf"           : "*"
-      , "jshint"           : "*"
-      , "mkfiletree"       : "*"
-    }
-  , "optionalDependencies": {
-        "uglify-js"        : "^2.4.0"
+  "name": "ender",
+  "description": "Open Module JavaScript Framework",
+  "version": "2.1.1",
+  "authors": [
+    "Andrew McCollum (https://github.com/amccollum)",
+    "Rod Vagg (https://github.com/rvagg)",
+    "Dustin Diaz (https://github.com/ded)",
+    "Jacob Thornton (https://github.com/fat)"
+  ],
+  "keywords": [
+    "ender",
+    "modules",
+    "builder",
+    "framework",
+    "packager"
+  ],
+  "main": "./lib/main.js",
+  "homepage": "http://enderjs.com",
+  "dependencies": {
+    "archy": "~0.0.2",
+    "async": "~0.2.10",
+    "errno": "~0.0.5",
+    "glob": "~3.2.9",
+    "mu2": "~0.5.20",
+    "npm": "~1.4.6",
+    "semver": "~2.2.1",
+    "xregexp": "~2.0.0",
+    "uglify-js": "~2.4.17"
+  },
+  "directories": {
+    "lib": "./lib",
+    "bin": "./bin"
+  },
+  "devDependencies": {
+    "bustermove": "*",
+    "referee": "*",
+    "tap": "*",
+    "rimraf": "*",
+    "jshint": "*",
+    "mkfiletree": "*"
+  },
+  "optionalDependencies": {
+    "uglify-js": "^2.4.0"
+  },
+  "bin": {
+    "ender": "./bin/ender"
+  },
+  "preferGlobal": true,
+  "scripts": {
+    "test": "make alltests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ender-js/Ender.git"
   }
-  , "bin": {
-        "ender"       : "./bin/ender"
-    }
-  , "preferGlobal": true
-  , "scripts": {
-        "test"        : "make alltests"
-    }
-  , "repository": {
-        "type"        : "git"
-      , "url"         : "https://github.com/ender-js/Ender.git"
-    }
 }
